@@ -1,0 +1,13 @@
+<% content_for :title, "Orders" %>
+<div class="w-full">
+  <% if notice.present? %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+  <% end %>
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="font-bold text-xl">Zamówienia</h1>
+    <%= link_to "New order", new_order_path, class: "btn btn-primary" %>
+  </div>
+  <div id="orders" class="min-w-full divide-y divide-gray-200 space-y-5">
+    <%= render partial: "orders/table", locals: { orders: @orders } %>
+  </div>
+</div>

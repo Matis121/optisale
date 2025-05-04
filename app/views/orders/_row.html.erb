@@ -1,0 +1,22 @@
+<tr class="border-b align-top">
+  <td class="px-2 py-3">
+    <div><%= link_to "#{order.id}", order_path(order) %></div>
+  </td>
+  <td class="px-2 py-3">
+    <div class="text-xs">z <%= order.source %></div>
+  </td>
+  <td class="px-2 py-3">
+  </td>
+  <td class="px-2 py-3">
+  </td>
+  <td class="px-2 py-3 whitespace-nowrap"><%= order.total_amount %></td>
+  <td class="px-2 py-3">
+    <div><%= order.status %></div>
+    <div class="flex space-x-1 mt-1">
+    </div>
+  </td>
+  <td class="px-2 py-3">
+    <div><%= order.created_at.strftime('%d.%m.%Y %H:%M') %></div>
+    <div class="text-xs"><%= order.updated_at.strftime('%d.%m.%Y %H:%M') %></div>
+  </td>
+</tr>

@@ -1,0 +1,33 @@
+<div class="fixed top-0 left-0 h-full w-64 bg-base-200 p-4 overflow-y-auto">
+  <div class="text-lg font-bold mb-4">Optisale</div>
+  <ul class="menu bg-base-200 w-full rounded-box">
+    <li><a class="text-base"><i class="fas fa-globe"></i> Strona główna</a></li>
+    <li>
+      <details open>
+        <summary><i class="fas fa-shopping-cart"></i> Zamówienia</summary>
+        <ul>
+          <li><%= link_to "Lista zamówień", orders_path  %></li>
+          <li><a>Statusy zamówień</a></li>
+          <li><a>Automatyczne akcje</a></li>
+        </ul>
+      </details>
+    </li>
+    <li>
+      <details>
+        <summary><i class="fas fa-box"></i> Produkty</summary>
+        <ul>
+          <li><a>Lista produktów</a></li>
+          <li><a>Import/Eksport</a></li>
+          <li><a>Ustawienia</a></li>
+        </ul>
+      </details>
+    </li>
+    <li><a><i class="fas fa-plug"></i> Integracje</a></li>
+    <li><a><i class="fas fa-eye"></i> B2B Connect</a></li>
+    <li><a><i class="fas fa-question-circle"></i> Pomoc i kontakt</a></li>
+    <li class="menu-title">MARKETPLACE</li>
+    <li><a><span class="badge">All</span> Allegro</a></li>
+    <li><a><span class="badge">Em</span> Empik</a></li>
+    <li><a><span class="badge">Ce</span> Ceneo</a></li>
+  </ul>
+</div>

@@ -1,0 +1,23 @@
+<%= form_with(model: order, class: "contents") do |form| %>
+  <% if order.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+      <h2><%= pluralize(order.errors.count, "error") %> prohibited this order from being saved:</h2>
+      <ul class="list-disc ml-6">
+        <% order.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="flex flex-col my-5">
+    <%= form.label :source %>
+    <%= form.text_field :source, class: "input" %>
+  </div>
+  <div class="flex flex-col my-5">
+    <%= form.label :total_amount %>
+    <%= form.text_field :total_amount, class: "input" %>
+  </div>
+  <div class="inline">
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>
