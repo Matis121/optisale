@@ -17,6 +17,13 @@
     <%= form.label :total_amount %>
     <%= form.text_field :total_amount, class: "input" %>
   </div>
+  <div class="flex flex-col my-5">
+    <%= form.label :status_id, "Status zamówienia" %>
+    <%= form.select :status_id,
+                  options_from_collection_for_select(@order_statuses, :id, :full_name, order.status_id),
+                  { prompt: "Wybierz status" },
+                  class: "select" %>
+  </div>
   <div class="inline">
     <%= form.submit class: "btn btn-primary" %>
   </div>

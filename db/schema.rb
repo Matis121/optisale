@@ -10,19 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_03_210555) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_05_142943) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "order_statuses", force: :cascade do |t|
+    t.string "full_name"
+    t.string "short_name"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_order_statuses_on_user_id"
+  end
 
   create_table "orders", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "source"
-    t.string "status"
     t.datetime "order_date"
     t.decimal "total_amount"
     t.string "currency"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -38,5 +47,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_210555) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "order_statuses", "users"
   add_foreign_key "orders", "users"
 end

@@ -9,11 +9,11 @@
   </div>
   <div>
     <strong class="block font-medium mb-1">Status:</strong>
-    <%= order.status %>
+    <%= order.order_status&.full_name %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Order date:</strong>
-    <%= order.order_date %>
+    <%= order.created_at %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Total amount:</strong>

@@ -1,0 +1,14 @@
+<table class="min-w-full table-fixed text-sm border-collapse">
+  <thead class="text-[10px]">
+    <tr class="border-b">
+      <th class="px-2 py-2 text-left w-32">NAZWA</th>
+      <th class="px-2 py-2 text-left w-56">NAZWA KRÓTKA</th>
+      <th class="px-2 py-2 text-left w-64"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @order_statuses.each do |status| %>
+      <%= render partial: "order_statuses/row", locals: { status: status } %>
+    <% end %>
+  </tbody>
+</table>

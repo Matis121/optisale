@@ -18,10 +18,10 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-  <body data-theme="light">
+  <body data-theme="business">
     <main class="flex">
       <%= render partial: "layouts/sidebar" %>
-      <div class="ml-64 p-4 min-h-screen h-full w-full">
+      <div class="ml-64 p-4 min-h-screen h-full w-full relative">
         <%= render partial: "layouts/alerts" %>
         <%= yield %>
       </div>

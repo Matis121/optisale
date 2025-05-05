@@ -1,0 +1,14 @@
+<tr class="border-b">
+  <td class="px-2 py-3">
+    <%= status.full_name %>
+  </td>
+  <td class="px-2 py-3">
+    <%= status.short_name %>
+  </td>
+  <td class="px-2 py-3">
+    <div class="flex gap-2 justify-end">
+      <%= link_to "Edit", edit_order_status_path(status), class: "btn" %>
+      <%= button_to "Destroy", status, method: :delete, class: "btn btn-error", data: { turbo_confirm: "Are you sure?" } %>
+    </div>
+  </td>
+</tr>

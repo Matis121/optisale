@@ -1,5 +1,8 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: %i[ show edit update destroy ]
+  before_action :set_order, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_order_statuses
+
+  @statuses = OrderStatus.all
 
   # GET /orders or /orders.json
   def index
@@ -67,6 +70,10 @@ class OrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_params
-      params.expect(order: [ :user_id, :source, :status, :order_date, :total_amount, :currency ])
+      params.expect(order: [ :user_id, :source, :order_date, :total_amount, :currency, :status_id ])
+    end
+
+    def set_order_statuses
+      @order_statuses = OrderStatus.all
     end
 end
