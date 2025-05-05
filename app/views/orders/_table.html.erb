@@ -11,8 +11,14 @@
     </tr>
   </thead>
   <tbody>
-    <% @orders.each do |order| %>
-      <%= render partial: "orders/row", locals: { order: order } %>
+    <% if @orders.present? %>
+      <% @orders.each do |order| %>
+        <%= render partial: "orders/row", locals: { order: order } %>
+      <% end %>
+    <% else %>
+      <tr class="my-14">
+        <td colspan="7" class="text-gray-400 text-center pt-18">Brak zamówień do wyświetlenia.</td>
+      </tr>
     <% end %>
   </tbody>
 </table>

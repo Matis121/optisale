@@ -6,7 +6,14 @@ class OrdersController < ApplicationController
 
   # GET /orders or /orders.json
   def index
-    @orders = Order.all
+    @order_counts = Order.group(:status_id).count
+    @order_counts.default = 0
+
+    if params[:status].present? && params[:status] != "all"
+      @orders = Order.where(status_id: params[:status])
+    else
+      @orders = Order.all
+    end
   end
 
   # GET /orders/1 or /orders/1.json

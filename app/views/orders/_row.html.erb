@@ -11,7 +11,7 @@
   </td>
   <td class="px-2 py-3 whitespace-nowrap"><%= order.total_amount %></td>
   <td class="px-2 py-3">
-    <div><%= order.order_status&.full_name || "Brak statusu" %></div>
+    <div class="badge badge-primary badge-xs"><%= order.order_status&.full_name || "Brak statusu" %></div>
     <div class="flex space-x-1 mt-1">
     </div>
   </td>

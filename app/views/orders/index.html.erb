@@ -3,11 +3,15 @@
   <div class="w-44 h-full fixed border flex flex-col items-center py-4 px-3">
     <%= link_to "Nowe zamówienie", new_order_path, class: "btn btn-primary text-xs" %>
     <div class="flex flex-col gap-4 mt-4 w-full">
-      <% @order_statuses.each do |order_status|  %>
-        <div class="flex gap-1 items-start">
-          <div class="badge badge-primary badge-xs">-</div>
+      <%= link_to orders_path(status: "all"), class: "flex gap-1" do %>
+        <div class="badge badge-xs"></div>
+        <p class="text-xs">Wszystkie</p>
+      <% end %>
+      <% @order_statuses.each do |order_status| %>
+        <%= link_to orders_path(status: order_status.id), class: "flex gap-1" do %>
+          <div class="badge badge-primary badge-xs"><%= @order_counts[order_status.id] %></div>
           <p class="text-xs"><%= order_status.full_name %></p>
-        </div>
+        <% end %>
       <% end %>
     </div>
   </div>
