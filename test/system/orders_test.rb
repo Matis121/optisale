@@ -18,7 +18,6 @@ class OrdersTest < ApplicationSystemTestCase
     fill_in "Order date", with: @order.order_date
     fill_in "Source", with: @order.source
     fill_in "Status", with: @order.status
-    fill_in "Total amount", with: @order.total_amount
     fill_in "User", with: @order.user_id
     click_on "Create Order"
 
@@ -34,7 +33,6 @@ class OrdersTest < ApplicationSystemTestCase
     fill_in "Order date", with: @order.order_date.to_s
     fill_in "Source", with: @order.source
     fill_in "Status", with: @order.status
-    fill_in "Total amount", with: @order.total_amount
     fill_in "User", with: @order.user_id
     click_on "Update Order"
 

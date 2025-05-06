@@ -5,7 +5,6 @@ one:
   source: MyString
   status: MyString
   order_date: 2025-05-03 23:05:55
-  total_amount: 9.99
   currency: MyString
 
 two:
@@ -13,5 +12,4 @@ two:
   source: MyString
   status: MyString
   order_date: 2025-05-03 23:05:55
-  total_amount: 9.99
   currency: MyString
