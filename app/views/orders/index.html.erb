@@ -1,7 +1,7 @@
 <% content_for :title, "Orders" %>
 <div class="w-full flex relative">
   <div class="w-44 h-full fixed border flex flex-col items-center py-4 px-3">
-    <%= link_to "Nowe zamówienie", new_order_path, class: "btn btn-primary text-xs" %>
+    <%= button_to 'Utwórz zamówienie', orders_path, method: :post, remote: true, class: "btn btn-primary text-xs" %>
     <div class="flex flex-col gap-4 mt-4 w-full">
       <%= link_to orders_path(status: "all"), class: "flex gap-1" do %>
         <div class="badge badge-xs"></div>
