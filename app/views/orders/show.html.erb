@@ -1,10 +1,14 @@
 <% content_for :title, "Showing order" %>
 <div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
   <div class="flex flex-col gap-4">
     <%= render(Order::TopComponent.new(order_id: @order.id)) %>
+    <%= render(Order::ProductTableComponent.new(order: @order)) %>
+    <%= form_with model: OrderProduct.new do |f| %>
+      <%= f.hidden_field :order_id, value: @order.id %>
+      <%= f.hidden_field :product_id, value: 7 %>
+      <%= f.number_field :quantity, value: 1 %>
+      <%= f.submit 'Dodaj do zamówienia' %>
+    <% end %>
     <%= render(Order::InfoComponent.new(order: @order)) %>
   </div>
   <div class="flex gap-2">
