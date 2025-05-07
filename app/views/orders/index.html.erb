@@ -1,8 +1,8 @@
 <% content_for :title, "Orders" %>
 <div class="w-full flex relative">
-  <div class="w-44 h-full fixed border flex flex-col items-center py-4 px-3">
+  <div class="w-44 h-full fixed flex flex-col items-center py-4 px-1.5 bg-base-200 shadow-md">
     <%= button_to 'Utwórz zamówienie', orders_path, method: :post, remote: true, class: "btn btn-primary text-xs" %>
-    <div class="flex flex-col gap-4 mt-4 w-full">
+    <div class="flex flex-col gap-3 mt-4 w-full">
       <%= link_to orders_path(status: "all"), class: "flex gap-1" do %>
         <div class="badge badge-xs"></div>
         <p class="text-xs">Wszystkie</p>
@@ -15,9 +15,9 @@
       <% end %>
     </div>
   </div>
-  <div class="ml-44 p-2">
+  <div class="ml-48 pl-2 w-full m-3 rounded-md shadow-md">
     <div class="flex justify-between items-center mb-4">
-      <h1 class="font-bold text-xl">Zamówienia</h1>
+      <h1 class="font-bold text-xl pt-4 px-4">Zamówienia</h1>
     </div>
     <div id="orders" class="min-w-full divide-y divide-gray-200 space-y-5">
       <%= render partial: "orders/table", locals: { orders: @orders } %>

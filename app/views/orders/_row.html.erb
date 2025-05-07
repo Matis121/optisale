@@ -1,22 +1,27 @@
-<tr class="border-b border-neutral-300 align-top">
-  <td class="px-2 py-3">
-    <div><%= link_to "#{order.id}", order_path(order) %></div>
+<tr>
+  <th><%= link_to "#{order.id}", order_path(order), class:"hover:text-blue-500 hover:text-underline" %></th>
+  <td>Imię nazwisko</td>
+  <td>
+    <% if order.order_products.any? %>
+      <% order.order_products.each do |op| %>
+        <div><span class="text-xs"><%= op.quantity %> x</span> <%= op.product.name %></div>
+      <% end %>
+    <% else %>
+      <span class="text-xs text-neutral-300">Brak produktów</span>
+    <% end %>
   </td>
-  <td class="px-2 py-3">
-    <div class="text-xs">z <%= order.source %></div>
+  <td><%= number_to_currency(
+      order.order_products.sum { |op| op.quantity * op.product.gross_price },
+      unit: "PLN",
+      format: "%n %u",          
+      separator: ".",          
+      delimiter: ","          
+) %></td>
+  <td>
+    <div class="badge badge-primary badge-xs"><%= order.order_status&.short_name || "Brak statusu" %></div>
   </td>
-  <td class="px-2 py-3">
-  </td>
-  <td class="px-2 py-3">
-  </td>
-  <td class="px-2 py-3 whitespace-nowrap"></td>
-  <td class="px-2 py-3">
-    <div class="badge badge-primary badge-xs"><%= order.order_status&.full_name || "Brak statusu" %></div>
-    <div class="flex space-x-1 mt-1">
-    </div>
-  </td>
-  <td class="px-2 py-3">
+  <td>
     <div><%= order.created_at.strftime('%d.%m.%Y %H:%M') %></div>
-    <div class="text-xs"><%= order.updated_at.strftime('%d.%m.%Y %H:%M') %></div>
+    <div class="text-xs text-blue-800"><%= order.updated_at.strftime('%d.%m.%Y %H:%M') %></div>
   </td>
 </tr>

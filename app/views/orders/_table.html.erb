@@ -1,24 +1,25 @@
-<table class="min-w-full table-fixed text-sm border-collapse">
-  <thead class="text-[10px]">
-    <tr class="border-b border-neutral-300">
-      <th class="px-2 py-2 text-left w-32">NUMER</th>
-      <th class="px-2 py-2 text-left w-56">IMIĘ NAZWISKO</th>
-      <th class="px-2 py-2 text-left w-64">PRZEDMIOTY</th>
-      <th class="px-2 py-2 text-left w-64">INFORMACJE</th>
-      <th class="px-2 py-2 text-left w-24">KWOTA</th>
-      <th class="px-2 py-2 text-left w-56">INFORMACJE DODATKOWE</th>
-      <th class="px-2 py-2 text-left w-40">DATA ZŁOŻENIA</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% if @orders.present? %>
-      <% @orders.each do |order| %>
-        <%= render partial: "orders/row", locals: { order: order } %>
-      <% end %>
-    <% else %>
-      <tr class="my-14">
-        <td colspan="7" class="text-gray-400 text-center pt-18">Brak zamówień do wyświetlenia.</td>
+<div class="overflow-x-auto w-full">
+  <table class="table table-zebra w-full">
+    <thead>
+      <tr class="text-xs">
+        <th class="font-semibold">Numer</th>
+        <th class="font-semibold">Imię Nazwisko</th>
+        <th class="font-semibold">Przedmioty</th>
+        <th class="font-semibold">Kwota</th>
+        <th class="font-semibold">Informacje dodatkowe</th>
+        <th class="font-semibold flex flex-col"><span>Data złożenia</span><span class="text-[10px] text-blue-800 font-medium">Data modyfikacji</span></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% if @orders.present? %>
+        <% @orders.each do |order| %>
+          <%= render partial: "orders/row", locals: { order: order } %>
+        <% end %>
+      <% else %>
+        <tr class="my-14">
+          <td colspan="6" class="text-gray-400 text-center pt-18">Brak zamówień do wyświetlenia.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
