@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   get "order_product/create"
   resources :products
   resources :order_statuses
-  resources :orders
+  resources :orders do
+    resources :addresses
+  end
   resources :order_products
   devise_for :users, path: ""
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
