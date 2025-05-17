@@ -1,5 +1,5 @@
 <% content_for :title, "Showing order" %>
-<div class="w-full">
+<div class="w-full flex flex-col gap-8 p-4">
   <div class="flex flex-col gap-4">
     <%= render(Order::TopComponent.new(order_id: @order.id)) %>
     <%= render(Order::ProductTableComponent.new(order: @order)) %>
@@ -10,6 +10,11 @@
       <%= f.submit 'Dodaj do zamówienia' %>
     <% end %>
     <%= render(Order::InfoComponent.new(order: @order)) %>
+  </div>
+  <div class="grid grid-cols-3 gap-4">
+    <%= render(Order::ShippingAddressComponent.new(order: @order, address_type: :delivery)) %>
+    <%= render(Order::ShippingAddressComponent.new(order: @order, address_type: :invoice)) %>
+    <%= render(Order::CustomerPickupPointComponent.new(order: @order)) %>
   </div>
   <div class="flex gap-2">
     <%= link_to "Edit this order", edit_order_path(@order), class: "btn" %>

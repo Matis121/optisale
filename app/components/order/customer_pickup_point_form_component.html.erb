@@ -1,0 +1,32 @@
+<%= turbo_frame_tag dom_id(pickup_point) do %>
+  <%= form_with model: pickup_point, url: order_customer_pickup_point_path(pickup_point.order, pickup_point), method: :patch, data: { turbo_frame: dom_id(pickup_point) } do |f| %>
+    <div class="mb-2">
+      <%= f.label :name, "Imię i nazwisko" %>
+      <%= f.text_field :name, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :point_id, "Firma" %>
+      <%= f.text_field :point_id, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :address, "Ulica i numer" %>
+      <%= f.text_field :address, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :postcode, "Kod pocztowy" %>
+      <%= f.text_field :postcode, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :city, "Miasto" %>
+      <%= f.text_field :city, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :country, "Kraj" %>
+      <%= f.text_field :country, class: "input w-full" %>
+    </div>
+    <div class="flex gap-2">
+      <%= f.submit "Zapisz", class: "btn btn-primary" %>
+      <%= link_to "Anuluj", order_path(pickup_point.order), data: { turbo_frame: dom_id(pickup_point) }, class: "btn" %>
+    </div>
+  <% end %>
+<% end %>

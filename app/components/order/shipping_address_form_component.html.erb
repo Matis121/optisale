@@ -1,0 +1,36 @@
+<%= turbo_frame_tag dom_id(@address) do %>
+  <%= form_with model: @address, url: order_address_path(@address.order, @address), method: :patch, data: { turbo_frame: dom_id(@address) } do |f| %>
+    <div class="mb-2">
+      <%= f.label :fullname, "Imię i nazwisko" %>
+      <%= f.text_field :fullname, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :company_name, "Firma" %>
+      <%= f.text_field :company_name, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :street, "Ulica i numer" %>
+      <%= f.text_field :street, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :postcode, "Kod pocztowy" %>
+      <%= f.text_field :postcode, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :city, "Miasto" %>
+      <%= f.text_field :city, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :country, "Kraj" %>
+      <%= f.text_field :country, class: "input w-full" %>
+    </div>
+    <div class="mb-4">
+      <%= f.label :country_code, "Kod kraju (ISO)" %>
+      <%= f.text_field :country_code, class: "input w-full" %>
+    </div>
+    <div class="flex gap-2">
+      <%= f.submit "Zapisz", class: "btn btn-primary" %>
+      <%= link_to "Anuluj", order_path(@address.order), data: { turbo_frame: dom_id(@address) }, class: "btn" %>
+    </div>
+  <% end %>
+<% end %>
