@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(address || Address.new) do %>
   <% if address.present? %>
-    <div class="flex flex-col gap-4 rounded-xl border p-4">
+    <div class="flex flex-col gap-4 p-4 rounded-md bg-white drop-shadow-md border border-neutral-200">
       <span class="font-bold">
         <%= @address_type == :delivery ? 'Adres dostawy' : 'Dane do faktury' %>
       </span>

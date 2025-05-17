@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(pickup_point || CustomerPickupPoint.new) do %>
   <% if pickup_point.present? %>
-    <div class="flex flex-col gap-4 rounded-xl border p-4">
+    <div class="flex flex-col gap-4 p-4 rounded-md bg-white drop-shadow-md border border-neutral-200">
       <span class="font-bold">
         Odbiór w punkcie
       </span>
