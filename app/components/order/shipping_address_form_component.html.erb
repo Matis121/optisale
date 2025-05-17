@@ -30,7 +30,7 @@
     </div>
     <div class="flex gap-2">
       <%= f.submit "Zapisz", class: "btn btn-primary" %>
-      <%= link_to "Anuluj", order_path(@address.order), data: { turbo_frame: dom_id(@address) }, class: "btn btn-secondary" %>
+      <%= link_to "Anuluj", order_path(@address.order), data: { turbo_frame: dom_id(@address) }, class: "btn" %>
     </div>
   <% end %>
 <% end %>

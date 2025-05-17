@@ -1,32 +1,36 @@
-<%= turbo_frame_tag dom_id(address) do %>
-  <div class="flex flex-col gap-4 rounded-xl border p-4">
-    <span class="font-bold">
-      <%= @address_type == 0 ? 'Adres dostawy' : 'Dane do faktury' %>
-    </span>
-    <table>
-      <tbody>
-        <tr>
-          <td>Imię i nazwisko:</td>
-          <td><%= address&.fullname || content_tag(:span, "Brak imienia", class: "text-neutral-200") %></td>
-        </tr>
-        <tr>
-          <td>Firma:</td>
-          <td><%= address&.fullname || "Brak firmy" %></td>
-        </tr>
-        <tr>
-          <td>Adres:</td>
-          <td><%= address&.street || "Brak adresu" %></td>
-        </tr>
-        <tr>
-          <td>Kod i miasto:</td>
-          <td><%= address&.postcode || "Brak kodu" %><%= address&.city || "Brak miasta" %></td>
-        </tr>
-        <tr>
-          <td>Kraj:</td>
-          <td><%= address&.country || "Brak kraju" %></td>
-        </tr>
-      </tbody>
-    </table>
-    <%= link_to "Edytuj", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "btn" %>
-  </div>
+<%= turbo_frame_tag dom_id(address || Address.new) do %>
+  <% if address.present? %>
+    <div class="flex flex-col gap-4 rounded-xl border p-4">
+      <span class="font-bold">
+        <%= @address_type == :delivery ? 'Adres dostawy' : 'Dane do faktury' %>
+      </span>
+      <table>
+        <tbody>
+          <tr>
+            <td>Imię i nazwisko:</td>
+            <td><%= address&.fullname || content_tag(:span, "...", class: "text-neutral-200") %></td>
+          </tr>
+          <tr>
+            <td>Firma:</td>
+            <td><%= address&.company_name || "..." %></td>
+          </tr>
+          <tr>
+            <td>Adres:</td>
+            <td><%= address&.street || "..." %></td>
+          </tr>
+          <tr>
+            <td>Kod i miasto:</td>
+            <td><%= address&.postcode || "..." %><%= address&.city || " ..." %></td>
+          </tr>
+          <tr>
+            <td>Kraj:</td>
+            <td><%= address&.country || "..." %></td>
+          </tr>
+        </tbody>
+      </table>
+      <%= link_to "Edytuj", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "btn" %>
+    </div>
+  <% else %>
+    <p>Adres nie jest dostępny.</p>
+  <% end %>
 <% end %>

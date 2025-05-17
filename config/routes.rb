@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :order_statuses
   resources :orders do
     resources :addresses
+    resources :customer_pickup_points
   end
   resources :order_products
   devise_for :users, path: ""

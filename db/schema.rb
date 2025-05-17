@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_09_203437) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_17_104454) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -27,6 +27,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_09_203437) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_addresses_on_order_id"
+  end
+
+  create_table "customer_pickup_points", force: :cascade do |t|
+    t.string "name"
+    t.string "point_id"
+    t.string "address"
+    t.string "city"
+    t.string "postcode"
+    t.string "country"
+    t.bigint "order_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_customer_pickup_points_on_order_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -104,6 +117,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_09_203437) do
   end
 
   add_foreign_key "addresses", "orders"
+  add_foreign_key "customer_pickup_points", "orders"
   add_foreign_key "customers", "users"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"

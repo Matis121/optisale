@@ -2,7 +2,7 @@
 
 one:
   order: one
-  kind: 1
+  kind: :delivery
   fullname: MyString
   company_name: MyString
   street: MyString
@@ -13,7 +13,7 @@ one:
 
 two:
   order: two
-  kind: 1
+  kind: :invoice
   fullname: MyString
   company_name: MyString
   street: MyString
