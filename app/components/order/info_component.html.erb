@@ -1,41 +1,136 @@
-<div class="p-6 space-y-4 w-full rounded-md bg-white drop-shadow-md border border-neutral-200">
+<div class="p-6 space-y-4 w-full rounded-md bg-white drop-shadow-md border border-neutral-200 relative">
+  <div class="dropdown dropdown-end absolute top-6 right-4">
+    <div tabindex="0" role="button" class="btn btn-sm btn-outline m-1"><span>Akcje</span><%= lucide_icon("chevron-down", class: "w-3") %></div>
+    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm">
+      <li>
+        <%= button_to @order, method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "w-36 cursor-pointer" do %>
+          <div class="flex gap-2 items-center">
+            <%= lucide_icon("trash-2", class: "w-4") %>
+            <span>Usuń zamówienie</span>
+          </div>
+        <% end %>
+      </li>
+      <li>
+        <%= link_to edit_order_path(@order), class: "cursor-pointer" do %>
+          <div class="flex gap-2 items-center">
+            <%= lucide_icon("pencil", class: "w-4") %>
+            <span>Edytuj</span>
+          </div>
+        <% end %>
+      </li>
+    </ul>
+  </div>
   <div class="flex justify-between items-start">
     <div>
-      <h2 class="text-lg font-semibold text-gray-800">Informacje o zamówieniu</h2>
-      <p class="text-sm text-gray-500">Zapłacono: <span class="font-medium text-black">0.00 EUR</span> z 13.68 EUR</p>
-    </div>
-    <button class="text-sm px-3 py-1 border rounded-md text-blue-600 border-blue-600 hover:bg-blue-50">Edytuj wpłatę</button>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-    <div>
-      <p><strong>Klient (login):</strong> ...</p>
-      <p><strong>E-mail:</strong> ...</p>
-      <p><strong>Telefon:</strong> ...</p>
-      <p><strong>Źródło:</strong> ...</p>
-    </div>
-    <div>
-      <p><strong>Status:</strong> <span class="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-xs">Nowe zamówienie</span></p>
-      <p><strong>Paragon:</strong> WYSTAW PARAGON</p>
-      <p><strong>Faktura:</strong> WYSTAW FAKTURĘ PRO FORMA</p>
-      <p><strong>Stany magazynowe:</strong> Zarezerwowane</p>
-    </div>
-    <div>
-      <p><strong>Sposób wysyłki:</strong> Allegro Wysyłka z Polski do Słowacji - ORLEN Paczka</p>
-      <p><strong>Koszt wysyłki:</strong> 2.29 EUR</p>
-      <p><strong>Sposób płatności:</strong> PayU</p>
-    </div>
-    <div>
-      <p><strong>Data złożenia:</strong> 04.05.2025 16:38</p>
-      <p><strong>Data w statusie:</strong> 04.05.2025 16:39</p>
-    </div>
-    <div>
-      <p><strong>Additional field 1:</strong> ...</p>
-      <p><strong>Additional field 2:</strong> ...</p>
-      <p><strong>Uwagi:</strong> ...</p>
+      <h2 class="text-lg font-semibold">Informacje o zamówieniu</h2>
     </div>
   </div>
-  <div class="text-sm text-gray-600 pt-2 border-t">
-    <p><strong>Strona z informacjami o zamówieniu:</strong><br>
-    </p>
+  <div class="grid grid-cols-2 gap-12">
+    <div class="flex flex-col divide-y divide-neutral-300">
+      <div class="flex gap-4 py-4 items-center">
+        <table>
+          <tr>
+            <td class="w-42">Zapłacono:</td>
+            <td class="flex items-center gap-4">
+              <div class="flex gap-1.5">
+                <span class="badge badge-md badge-error text-white">0.00 EUR</span>
+                <span>z</span>
+                <p>13.68 EUR</p>
+              </div>
+              <button class="text-sm px-3 py-1 border rounded-md text-blue-600 border-blue-600 hover:bg-blue-50">Edytuj wpłatę</button></td>
+          </tr>
+        </table>
+      </div>
+      <div class="px-2 py-3 text-sm">
+        <table>
+          <tr>
+            <td class="w-42">Klient (login):</td>
+            <td>...</td>
+          </tr>
+          <tr>
+            <td class="w-42">E-mail:</td>
+            <td>...</td>
+          </tr>
+          <tr>
+            <td class="w-42">Telefon:</td>
+            <td>...</td>
+          </tr>
+          <tr>
+            <td class="w-42">Źródło:</td>
+            <td>...</td>
+          </tr>
+        </table>
+      </div>
+      <div class="px-2 py-3 text-sm">
+        <table>
+          <tr>
+            <td class="w-42">Sposób wysyłki:</td>
+            <td>Allegro Wysyłka z Polski do Słowacji - ORLEN Paczka</td>
+          </tr>
+          <tr>
+            <td class="w-42">Koszt wysyłki:</td>
+            <td>2.29 EUR</td>
+          </tr>
+          <tr>
+            <td class="w-42">Sposób płatności:</td>
+            <td>PayU</td>
+          </tr>
+        </table>
+      </div>
+      <div class="px-2 py-3 text-sm">
+        <table>
+          <tr>
+            <td class="w-42">Additional field 1:</td>
+            <td>...</td>
+          </tr>
+          <tr>
+            <td class="w-42">Additional field 2:</td>
+            <td>...</td>
+          </tr>
+          <tr>
+            <td class="w-42">Uwagi:</td>
+            <td>...</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="flex flex-col gap-4">
+      <div>
+        <table>
+          <tr>
+            <td class="w-42 flex gap-1"><%= lucide_icon("flag", class: "text-neutral-500 w-4") %><span>Status:</span></td>
+            <td><span class="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-md border">Nowe zamówienie</span></td>
+          </tr>
+        </table>
+      </div>
+      <div>
+        <table class="border-separate border-spacing-y-2">
+          <tr>
+            <td class="w-42">Paragon:</td>
+            <td><button class="btn btn-xs">WYSTAW PARAGON</button></td>
+          </tr>
+          <tr>
+            <td class="w-42">Faktura:</td>
+            <td><button class="btn btn-xs">WYSTAW FAKTURĘ</button></td>
+          </tr>
+        </table>
+      </div>
+      <div>
+        <table class="text-sm border-separate border-spacing-y-1">
+          <tr>
+            <td class="w-42">Data złożenia:</td>
+            <td>04.05.2025 16:39</td>
+          </tr>
+          <tr>
+            <td class="w-42">Data w statusie:</td>
+            <td>04.05.2025 16:38</td>
+          </tr>
+          <tr>
+            <td class="w-42">Stany magazynowe:</td>
+            <td class="flex gap-2"><%= lucide_icon("check", class: "text-green-500") %><span class="text-green-500">Zrealizowany</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
