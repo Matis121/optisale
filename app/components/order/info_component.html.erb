@@ -99,7 +99,17 @@
         <table>
           <tr>
             <td class="w-42 flex gap-1"><%= lucide_icon("flag", class: "text-neutral-500 w-4") %><span>Status:</span></td>
-            <td><span class="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-md border">Nowe zamówienie</span></td>
+            <td>
+              <%= form_with(model: @order) do |form| %>
+                <div class="flex gap-2">
+                  <%= form.select :status_id,
+                  options_from_collection_for_select(@order_statuses, :id, :full_name, @order.status_id),
+                  { prompt: "Wybierz status" },
+                  class: "select" %>
+                  <%= form.submit "Przenieś", class: "btn btn-primary" %>
+                </div>
+              <% end %>
+            </td>
           </tr>
         </table>
       </div>

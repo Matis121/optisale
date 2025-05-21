@@ -20,13 +20,10 @@ class OrdersController < ApplicationController
 
   # GET /orders/new
   def new
-    Rails.logger.debug "Current user: #{current_user.inspect}"
     @order = Order.new
   end
 
   # GET /orders/1/edit
-  def edit
-  end
 
   # POST /orders or /orders.json
   def create

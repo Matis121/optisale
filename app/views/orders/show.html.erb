@@ -9,7 +9,7 @@
       <%= f.number_field :quantity, value: 1 %>
       <%= f.submit 'Dodaj do zamówienia' %>
     <% end %>
-    <%= render(Order::InfoComponent.new(order: @order)) %>
+    <%= render(Order::InfoComponent.new(order: @order, order_statuses: @order_statuses)) %>
   </div>
   <div class="grid grid-cols-3 gap-4">
     <%= render(Order::ShippingAddressComponent.new(order: @order, address_type: :delivery)) %>
