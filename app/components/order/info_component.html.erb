@@ -10,14 +10,6 @@
           </div>
         <% end %>
       </li>
-      <li>
-        <%= link_to edit_order_path(@order), class: "cursor-pointer" do %>
-          <div class="flex gap-2 items-center">
-            <%= lucide_icon("pencil", class: "w-4") %>
-            <span>Edytuj</span>
-          </div>
-        <% end %>
-      </li>
     </ul>
   </div>
   <div class="flex justify-between items-start">
@@ -100,14 +92,16 @@
           <tr>
             <td class="w-42 flex gap-1"><%= lucide_icon("flag", class: "text-neutral-500 w-4") %><span>Status:</span></td>
             <td>
-              <%= form_with(model: @order) do |form| %>
-                <div class="flex gap-2">
-                  <%= form.select :status_id,
+              <%= turbo_frame_tag dom_id(@order, :status) do %>
+                <%= form_with(model: @order) do |form| %>
+                  <div class="flex gap-2">
+                    <%= form.select :status_id,
                   options_from_collection_for_select(@order_statuses, :id, :full_name, @order.status_id),
                   { prompt: "Wybierz status" },
                   class: "select" %>
-                  <%= form.submit "Przenieś", class: "btn btn-primary" %>
-                </div>
+                    <%= form.submit "Przenieś", class: "btn btn-primary" %>
+                  </div>
+                <% end %>
               <% end %>
             </td>
           </tr>
