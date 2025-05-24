@@ -5,7 +5,7 @@
     <%= render(Order::ProductTableComponent.new(order: @order)) %>
     <%= form_with model: OrderProduct.new do |f| %>
       <%= f.hidden_field :order_id, value: @order.id %>
-      <%= f.hidden_field :product_id, value: 7 %>
+      <%= f.hidden_field :product_id, value: 12 %>
       <%= f.number_field :quantity, value: 1 %>
       <%= f.submit 'Dodaj do zamówienia' %>
     <% end %>

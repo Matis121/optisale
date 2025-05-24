@@ -1,0 +1,22 @@
+<%= turbo_frame_tag dom_id(@customer || CustomerInfoComponent.new) do %>
+  <table>
+    <tr>
+      <td class="w-42">Klient (login):</td>
+      <td>
+        <%= link_to @order.customer.login, edit_order_customer_path(@order, @customer, field: "login"), data: { turbo_frame: "customer_login_#{@customer.id}" } %>
+      </td>
+    </tr>
+    <tr>
+      <td class="w-42">E-mail:</td>
+      <td>
+        <%= link_to @order.customer.email, edit_order_customer_path(@order, @customer, field: "email"), data: { turbo_frame: "customer_email_#{@customer.id}" } %>
+      </td>
+    </tr>
+    <tr>
+      <td class="w-42">Telefon:</td>
+      <td>
+        <%= link_to @order.customer.phone, edit_order_customer_path(@order, @customer, field: "phone"), data: { turbo_frame: "customer_phone_#{@customer.id}" } %>
+      </td>
+    </tr>
+  </table>
+<% end %>

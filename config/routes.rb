@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
-  get "order_product/create"
   resources :products
   resources :order_statuses
   resources :orders do
     resources :addresses
     resources :customer_pickup_points
+    resources :customers
   end
   resources :order_products
   devise_for :users, path: ""

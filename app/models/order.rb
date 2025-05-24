@@ -1,6 +1,7 @@
 class Order < ApplicationRecord
   belongs_to :user
   belongs_to :order_status, foreign_key: :status_id
+  belongs_to :customer
   has_many :order_products, dependent: :destroy
   has_many :addresses, dependent: :destroy
   has_one :customer_pickup_point, dependent: :destroy
@@ -11,5 +12,6 @@ class Order < ApplicationRecord
     addresses.build(kind: :delivery)
     addresses.build(kind: :invoice)
     build_customer_pickup_point
+    build_customer
   end
 end

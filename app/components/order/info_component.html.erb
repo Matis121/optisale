@@ -34,27 +34,14 @@
         </table>
       </div>
       <div class="px-2 py-3 text-sm">
+        <%= render(Order::CustomerInfoComponent.new(order: @order))  %>
+      </div>
+      <div class="px-2 py-3 text-sm">
         <table>
-          <tr>
-            <td class="w-42">Klient (login):</td>
-            <td>...</td>
-          </tr>
-          <tr>
-            <td class="w-42">E-mail:</td>
-            <td>...</td>
-          </tr>
-          <tr>
-            <td class="w-42">Telefon:</td>
-            <td>...</td>
-          </tr>
           <tr>
             <td class="w-42">Źródło:</td>
             <td>...</td>
           </tr>
-        </table>
-      </div>
-      <div class="px-2 py-3 text-sm">
-        <table>
           <tr>
             <td class="w-42">Sposób wysyłki:</td>
             <td>Allegro Wysyłka z Polski do Słowacji - ORLEN Paczka</td>

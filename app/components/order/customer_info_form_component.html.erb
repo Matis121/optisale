@@ -1,0 +1,20 @@
+<%= turbo_frame_tag dom_id(customer) do %>
+  <%= form_with model: customer, url: order_customer_path(order ,customer), method: :patch, data: { turbo_frame: dom_id(customer) } do |f| %>
+    <div class="mb-2">
+      <%= f.label :login, "Login" %>
+      <%= f.text_field :login, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :email, "E-mail" %>
+      <%= f.text_field :email, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :phone, "Telefon" %>
+      <%= f.text_field :phone, class: "input w-full" %>
+    </div>
+    <div class="flex gap-2">
+      <%= f.submit "Zapisz", class: "btn btn-primary" %>
+      <%= link_to "Anuluj", order_path(order), data: { turbo_frame: dom_id(customer) }, class: "btn" %>
+    </div>
+  <% end %>
+<% end %>
