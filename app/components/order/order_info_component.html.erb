@@ -1,0 +1,21 @@
+<%= turbo_frame_tag dom_id(@order, :info) do %>
+  <table>
+    <tr>
+      <td class="w-42">Źródło:</td>
+      <td><%= link_to @order.source.presence || "...", edit_order_path(@order) %></td>
+    </tr>
+    <tr>
+      <td class="w-42">Sposób wysyłki:</td>
+      <td><%= link_to @order.shipping_method.presence || "...", edit_order_path(@order) %></td>
+    </tr>
+    <tr>
+      <td class="w-42">Koszt wysyłki:</td>
+      <td><%= link_to @order.shipping_cost.presence || "...", edit_order_path(@order) %></td>
+    </tr>
+    <tr>
+      <td class="w-42">Sposób płatności:</td>
+      <td><%= link_to @order.payment_method.presence || "...", edit_order_path(@order) %></td>
+    </tr>
+  </table>
+  <%= link_to "Edytuj", edit_order_path(@order) %>
+<% end %>

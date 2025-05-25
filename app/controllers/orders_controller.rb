@@ -1,5 +1,7 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [ :show, :update, :destroy ]
+  include ActionView::RecordIdentifier
+
+  before_action :set_order, only: [ :show, :update, :destroy, :edit ]
   before_action :set_order_statuses
 
   # GET /orders or /orders.json
@@ -38,16 +40,18 @@ class OrdersController < ApplicationController
     end
   end
 
+  def edit
+    unless request.headers["Turbo-Frame"].present?
+      redirect_to @order, alert: "Brak dostępu"
+    else
+      render Order::OrderInfoFormComponent.new(order: @order)
+    end
+  end
+
   # PATCH/PUT /orders/1 or /orders/1.json
   def update
-    respond_to do |format|
-      if @order.update(order_params)
-        format.html { redirect_to @order, notice: "Order was successfully updated." }
-        format.json { render :show, status: :ok, location: @order }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @order.errors, status: :unprocessable_entity }
-      end
+    if @order.update(order_params)
+      render turbo_stream: turbo_stream.replace(dom_id(@order, :info), Order::OrderInfoComponent.new(order: @order))
     end
   end
 
@@ -69,7 +73,7 @@ class OrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_params
-      params.expect(order: [ :user_id, :status_id ])
+      params.require(:order).permit(:user_id, :status_id, :source, :shipping_cost, :shipping_method, :payment_method)
     end
 
     def set_order_statuses

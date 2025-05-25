@@ -37,24 +37,7 @@
         <%= render(Order::CustomerInfoComponent.new(order: @order))  %>
       </div>
       <div class="px-2 py-3 text-sm">
-        <table>
-          <tr>
-            <td class="w-42">Źródło:</td>
-            <td>...</td>
-          </tr>
-          <tr>
-            <td class="w-42">Sposób wysyłki:</td>
-            <td>Allegro Wysyłka z Polski do Słowacji - ORLEN Paczka</td>
-          </tr>
-          <tr>
-            <td class="w-42">Koszt wysyłki:</td>
-            <td>2.29 EUR</td>
-          </tr>
-          <tr>
-            <td class="w-42">Sposób płatności:</td>
-            <td>PayU</td>
-          </tr>
-        </table>
+        <%= render(Order::OrderInfoComponent.new(order: @order)) %>
       </div>
       <div class="px-2 py-3 text-sm">
         <table>

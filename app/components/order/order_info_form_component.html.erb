@@ -1,0 +1,24 @@
+<%= turbo_frame_tag dom_id(order, :info) do %>
+  <%= form_with model: order, url: order_path(order), method: :patch, data: { turbo_frame: dom_id(order, :info) } do |f| %>
+    <div class="mb-2">
+      <%= f.label :source, "Źródło" %>
+      <%= f.text_field :source, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :shipping_method, "Sposób wysyłki" %>
+      <%= f.text_field :shipping_method, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :shipping_cost, "Koszt wysyłki" %>
+      <%= f.text_field :shipping_cost, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :payment_method, "Sposób płatności" %>
+      <%= f.text_field :payment_method, class: "input w-full" %>
+    </div>
+    <div class="flex gap-2">
+      <%= f.submit "Zapisz", class: "btn btn-primary" %>
+      <%= link_to "Anuluj", order_path(order), data: { turbo_frame: dom_id(order, :info) }, class: "btn" %>
+    </div>
+  <% end %>
+<% end %>

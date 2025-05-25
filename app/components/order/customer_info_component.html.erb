@@ -3,19 +3,19 @@
     <tr>
       <td class="w-42">Klient (login):</td>
       <td>
-        <%= link_to @order.customer.login, edit_order_customer_path(@order, @customer, field: "login"), data: { turbo_frame: "customer_login_#{@customer.id}" } %>
+        <%= link_to @order.customer&.login.presence || "...", edit_order_customer_path(@order, @customer) %>
       </td>
     </tr>
     <tr>
       <td class="w-42">E-mail:</td>
       <td>
-        <%= link_to @order.customer.email, edit_order_customer_path(@order, @customer, field: "email"), data: { turbo_frame: "customer_email_#{@customer.id}" } %>
+        <%= link_to @order.customer&.email.presence || "...", edit_order_customer_path(@order, @customer) %>
       </td>
     </tr>
     <tr>
       <td class="w-42">Telefon:</td>
       <td>
-        <%= link_to @order.customer.phone, edit_order_customer_path(@order, @customer, field: "phone"), data: { turbo_frame: "customer_phone_#{@customer.id}" } %>
+        <%= link_to @order.customer&.phone.presence || "...", edit_order_customer_path(@order, @customer) %>
       </td>
     </tr>
   </table>
