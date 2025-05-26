@@ -1,0 +1,20 @@
+<%= turbo_frame_tag dom_id(order, :extra_fields) do %>
+  <%= form_with model: order, url: update_extra_fields_order_path(order), method: :patch, data: { turbo_frame: dom_id(order, :extra_fields) } do |f| %>
+    <div class="mb-2">
+      <%= f.label :extra_field_1, "Pole dodatkowe 1:" %>
+      <%= f.text_field :extra_field_1, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :extra_field_1, "Pole dodatkowe 2:" %>
+      <%= f.text_field :extra_field_2, class: "input w-full" %>
+    </div>
+    <div class="mb-2">
+      <%= f.label :admin_comments, "Uwagi:" %>
+      <%= f.text_field :admin_comments, class: "input w-full" %>
+    </div>
+    <div class="flex gap-2">
+      <%= f.submit "Zapisz", class: "btn btn-primary" %>
+      <%= link_to "Anuluj", order_path(order), data: { turbo_frame: dom_id(order, :extra_fields) }, class: "btn" %>
+    </div>
+  <% end %>
+<% end %>

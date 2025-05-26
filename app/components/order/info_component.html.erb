@@ -40,20 +40,7 @@
         <%= render(Order::OrderInfoComponent.new(order: @order)) %>
       </div>
       <div class="px-2 py-3 text-sm">
-        <table>
-          <tr>
-            <td class="w-42">Additional field 1:</td>
-            <td>...</td>
-          </tr>
-          <tr>
-            <td class="w-42">Additional field 2:</td>
-            <td>...</td>
-          </tr>
-          <tr>
-            <td class="w-42">Uwagi:</td>
-            <td>...</td>
-          </tr>
-        </table>
+        <%= render(Order::ExtraFieldsInfoComponent.new(order: @order)) %>
       </div>
     </div>
     <div class="flex flex-col gap-4">

@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   resources :products
   resources :order_statuses
   resources :orders do
+    member do
+      get :edit_extra_fields
+      patch :update_extra_fields
+    end
     resources :addresses
     resources :customer_pickup_points
     resources :customers

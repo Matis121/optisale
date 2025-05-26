@@ -1,7 +1,7 @@
 class OrdersController < ApplicationController
   include ActionView::RecordIdentifier
 
-  before_action :set_order, only: [ :show, :update, :destroy, :edit ]
+  before_action :set_order, only: [ :show, :update, :destroy, :edit, :edit_extra_fields, :update_extra_fields ]
   before_action :set_order_statuses
 
   # GET /orders or /orders.json
@@ -48,10 +48,24 @@ class OrdersController < ApplicationController
     end
   end
 
+  def edit_extra_fields
+    unless request.headers["Turbo-Frame"].present?
+      redirect_to @order, alert: "Brak dostępu"
+    else
+      render Order::ExtraFieldsInfoFormComponent.new(order: @order)
+    end
+  end
+
   # PATCH/PUT /orders/1 or /orders/1.json
   def update
     if @order.update(order_params)
       render turbo_stream: turbo_stream.replace(dom_id(@order, :info), Order::OrderInfoComponent.new(order: @order))
+    end
+  end
+
+  def update_extra_fields
+    if @order.update(order_params)
+      render turbo_stream: turbo_stream.replace(dom_id(@order, :extra_fields), Order::ExtraFieldsInfoComponent.new(order: @order))
     end
   end
 
@@ -73,7 +87,7 @@ class OrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_params
-      params.require(:order).permit(:user_id, :status_id, :source, :shipping_cost, :shipping_method, :payment_method)
+      params.require(:order).permit(:user_id, :status_id, :source, :shipping_cost, :shipping_method, :payment_method, :extra_field_1, :extra_field_2, :admin_comments)
     end
 
     def set_order_statuses
