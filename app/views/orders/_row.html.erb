@@ -10,13 +10,15 @@
       <span class="text-xs text-neutral-300">Brak produktów</span>
     <% end %>
   </td>
-  <td><%= number_to_currency(
+  <td>
+    <%= number_to_currency(
       order.order_products.sum { |op| op.quantity * op.product.gross_price },
       unit: "PLN",
       format: "%n %u",          
       separator: ".",          
       delimiter: ","          
-) %></td>
+) %>
+  </td>
   <td>
     <div class="badge badge-primary badge-xs"><%= order.order_status&.short_name || "Brak statusu" %></div>
   </td>

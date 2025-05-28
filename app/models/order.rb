@@ -14,4 +14,8 @@ class Order < ApplicationRecord
     build_customer_pickup_point
     build_customer
   end
+
+  def total_price
+    order_products.sum { |op| op.quantity * op.product.gross_price } + shipping_cost.to_f
+  end
 end

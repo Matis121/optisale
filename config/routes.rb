@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     member do
       get :edit_extra_fields
       patch :update_extra_fields
+      get :edit_payment
+      patch :update_payment
     end
     resources :addresses
     resources :customer_pickup_points

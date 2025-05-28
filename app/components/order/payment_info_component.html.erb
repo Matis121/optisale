@@ -1,0 +1,25 @@
+<%= turbo_frame_tag dom_id(@order, :payment) do %>
+  <% order_paid = @order.amount_paid.to_f == @order.total_price.to_f %>
+  <table>
+    <tbody>
+      <tr>
+        <td class="w-42">Zapłacono:</td>
+        <td class="flex items-center gap-4">
+          <div class="flex gap-1.5">
+            <span class="badge badge-md <%= order_paid ? 'bg-green-600' : 'bg-red-500' %> text-white"><%= number_to_currency(@order.amount_paid, unit: "PLN", format: "%n %u", separator: ".", delimiter: ",") %></span>
+            <span>z</span>
+            <p>
+              <%= number_to_currency(
+            @order.total_price,
+            unit: "PLN",
+            format: "%n %u",          
+            separator: ".",          
+            delimiter: ","          
+            ) %>
+            </p>
+          </div>
+          <%= link_to "Edytuj wpłate", edit_payment_order_path(@order), class: "text-sm px-3 py-1 border rounded-md text-blue-600 border-blue-600 hover:bg-blue-50 hover:cursor-pointer" %>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>

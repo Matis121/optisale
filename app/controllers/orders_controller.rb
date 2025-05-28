@@ -1,7 +1,7 @@
 class OrdersController < ApplicationController
   include ActionView::RecordIdentifier
 
-  before_action :set_order, only: [ :show, :update, :destroy, :edit, :edit_extra_fields, :update_extra_fields ]
+  before_action :set_order, only: [ :show, :update, :destroy, :edit, :edit_extra_fields, :update_extra_fields, :edit_payment, :update_payment ]
   before_action :set_order_statuses
 
   # GET /orders or /orders.json
@@ -56,6 +56,14 @@ class OrdersController < ApplicationController
     end
   end
 
+  def edit_payment
+    unless request.headers["Turbo-Frame"].present?
+      redirect_to @order, alert: "Brak dostępu"
+    else
+      render Order::PaymentInfoFormComponent.new(order: @order)
+    end
+  end
+
   # PATCH/PUT /orders/1 or /orders/1.json
   def update
     if @order.update(order_params)
@@ -67,6 +75,24 @@ class OrdersController < ApplicationController
     if @order.update(order_params)
       render turbo_stream: turbo_stream.replace(dom_id(@order, :extra_fields), Order::ExtraFieldsInfoComponent.new(order: @order))
     end
+  end
+
+  def update_payment
+    case params[:set_amount_paid]
+    when "full"
+      @order.amount_paid = @order.total_price
+    when "zero"
+      @order.amount_paid = 0.0
+    else
+      @order.assign_attributes(order_params)
+    end
+
+   if @order.save
+    render turbo_stream: turbo_stream.replace(
+      dom_id(@order, :payment),
+      Order::PaymentInfoComponent.new(order: @order)
+    )
+   end
   end
 
   # DELETE /orders/1 or /orders/1.json
@@ -87,7 +113,7 @@ class OrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_params
-      params.require(:order).permit(:user_id, :status_id, :source, :shipping_cost, :shipping_method, :payment_method, :extra_field_1, :extra_field_2, :admin_comments)
+      params.require(:order).permit(:user_id, :status_id, :source, :shipping_cost, :shipping_method, :payment_method, :extra_field_1, :extra_field_2, :admin_comments, :amount_paid)
     end
 
     def set_order_statuses
