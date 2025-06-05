@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Order::OrderInfoFormComponent < ViewComponent::Base
+class Ui::Order::Info::Payment::FormComponent < ViewComponent::Base
   include Turbo::FramesHelper
 
   def initialize(order:)

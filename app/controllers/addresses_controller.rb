@@ -6,7 +6,7 @@ class AddressesController < ApplicationController
     else
       @order = Order.find(params[:order_id])
       @address = @order.addresses.find(params[:id])
-      render Order::ShippingAddressFormComponent.new(address: @address)
+      render Ui::Order::Address::Shipping::FormComponent.new(address: @address)
     end
   end
 
@@ -15,7 +15,7 @@ class AddressesController < ApplicationController
     @order = @address.order
 
     if @address.update(address_params)
-      render turbo_stream: turbo_stream.replace(dom_id(@address), Order::ShippingAddressComponent.new(order: @order, address_type: @address.kind))
+      render turbo_stream: turbo_stream.replace(dom_id(@address), Ui::Order::Address::Shipping::Component.new(order: @order, address_type: @address.kind))
     end
   end
 

@@ -4,7 +4,7 @@ class CustomerPickupPointsController < ApplicationController
   def edit
     @order = Order.find(params[:order_id])
     @customer_pickup_point = @order.customer_pickup_point
-    render Order::CustomerPickupPointFormComponent.new(pickup_point: @customer_pickup_point)
+    render Ui::Order::Address::PickupPoint::FormComponent.new(pickup_point: @customer_pickup_point)
   end
 
   def update
@@ -12,7 +12,7 @@ class CustomerPickupPointsController < ApplicationController
     @order = @customer_pickup_point.order
 
     if @customer_pickup_point.update(address_params)
-      render turbo_stream: turbo_stream.replace(dom_id(@customer_pickup_point), Order::CustomerPickupPointComponent.new(order: @order))
+      render turbo_stream: turbo_stream.replace(dom_id(@customer_pickup_point), Ui::Order::Address::PickupPoint::Component.new(order: @order))
     end
   end
 

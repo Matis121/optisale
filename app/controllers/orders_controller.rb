@@ -44,7 +44,7 @@ class OrdersController < ApplicationController
     unless request.headers["Turbo-Frame"].present?
       redirect_to @order, alert: "Brak dostępu"
     else
-      render Order::OrderInfoFormComponent.new(order: @order)
+      render Ui::Order::InfoFormComponent.new(order: @order)
     end
   end
 
@@ -52,7 +52,7 @@ class OrdersController < ApplicationController
     unless request.headers["Turbo-Frame"].present?
       redirect_to @order, alert: "Brak dostępu"
     else
-      render Order::ExtraFieldsInfoFormComponent.new(order: @order)
+      render Ui::Order::Info::ExtraFields::FormComponent.new(order: @order)
     end
   end
 
@@ -60,20 +60,20 @@ class OrdersController < ApplicationController
     unless request.headers["Turbo-Frame"].present?
       redirect_to @order, alert: "Brak dostępu"
     else
-      render Order::PaymentInfoFormComponent.new(order: @order)
+      render Ui::Order::Info::Payment::FormComponent.new(order: @order)
     end
   end
 
   # PATCH/PUT /orders/1 or /orders/1.json
   def update
     if @order.update(order_params)
-      render turbo_stream: turbo_stream.replace(dom_id(@order, :info), Order::OrderInfoComponent.new(order: @order))
+      render turbo_stream: turbo_stream.replace(dom_id(@order, :info), Ui::Order::Info::Component.new(order: @order))
     end
   end
 
   def update_extra_fields
     if @order.update(order_params)
-      render turbo_stream: turbo_stream.replace(dom_id(@order, :extra_fields), Order::ExtraFieldsInfoComponent.new(order: @order))
+      render turbo_stream: turbo_stream.replace(dom_id(@order, :extra_fields), Ui::Order::Info::ExtraFields::Component.new(order: @order))
     end
   end
 
@@ -90,7 +90,7 @@ class OrdersController < ApplicationController
    if @order.save
     render turbo_stream: turbo_stream.replace(
       dom_id(@order, :payment),
-      Order::PaymentInfoComponent.new(order: @order)
+      Ui::Order::Info::Payment::Component.new(order: @order)
     )
    end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Order::CustomerPickupPointFormComponent < ViewComponent::Base
+class Ui::Order::Address::PickupPoint::FormComponent < ViewComponent::Base
   include Turbo::FramesHelper
 
   def initialize (pickup_point:)

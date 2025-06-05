@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Order::ShippingAddressComponent < ViewComponent::Base
+class Ui::Order::Address::Shipping::Component < ViewComponent::Base
   include Turbo::FramesHelper
 
   def initialize (order:, address_type:)

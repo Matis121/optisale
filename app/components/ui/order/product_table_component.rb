@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Order::ProductTableComponent < ViewComponent::Base
+class Ui::Order::ProductTableComponent < ViewComponent::Base
   def initialize (order:)
     @order = order
   end

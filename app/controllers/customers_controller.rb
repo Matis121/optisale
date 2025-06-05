@@ -8,13 +8,13 @@ class CustomersController < ApplicationController
      unless request.headers["Turbo-Frame"].present?
       redirect_to order_path(@order), alert: "Brak dostępu"
      else
-      render Order::CustomerInfoFormComponent.new(order: @order, customer: @customer)
+      render Ui::Order::Info::Customer::FormComponent.new(order: @order, customer: @customer)
      end
   end
 
   def update
     if @customer.update(customer_params)
-      render turbo_stream: turbo_stream.replace(dom_id(@customer), Order::CustomerInfoComponent.new(order: @order))
+      render turbo_stream: turbo_stream.replace(dom_id(@customer), Ui::Order::Info::Customer::Component.new(order: @order))
     end
   end
   private

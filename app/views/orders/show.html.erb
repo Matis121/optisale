@@ -1,20 +1,20 @@
 <% content_for :title, "Showing order" %>
 <div class="w-full flex flex-col gap-8 p-4">
   <div class="flex flex-col gap-4">
-    <%= render(Order::TopComponent.new(order_id: @order.id)) %>
-    <%= render(Order::ProductTableComponent.new(order: @order)) %>
+    <%= render(Ui::Order::TopComponent.new(order_id: @order.id)) %>
+    <%= render(Ui::Order::ProductTableComponent.new(order: @order)) %>
     <%= form_with model: OrderProduct.new do |f| %>
       <%= f.hidden_field :order_id, value: @order.id %>
       <%= f.hidden_field :product_id, value: 12 %>
       <%= f.number_field :quantity, value: 1 %>
       <%= f.submit 'Dodaj do zamówienia' %>
     <% end %>
-    <%= render(Order::InfoComponent.new(order: @order, order_statuses: @order_statuses)) %>
+    <%= render(Ui::Order::Info::Component.new(order: @order, order_statuses: @order_statuses)) %>
   </div>
   <div class="grid grid-cols-3 gap-4">
-    <%= render(Order::ShippingAddressComponent.new(order: @order, address_type: :delivery)) %>
-    <%= render(Order::ShippingAddressComponent.new(order: @order, address_type: :invoice)) %>
-    <%= render(Order::CustomerPickupPointComponent.new(order: @order)) %>
+    <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :delivery)) %>
+    <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :invoice)) %>
+    <%= render(Ui::Order::Address::PickupPoint::Component.new(order: @order)) %>
   </div>
   <div class="flex gap-2">
   </div>
