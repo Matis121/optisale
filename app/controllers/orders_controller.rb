@@ -9,10 +9,13 @@ class OrdersController < ApplicationController
     @order_counts = Order.group(:status_id).count
     @order_counts.default = 0
 
+    @per_page = params[:per_page].to_i
+    @per_page = 20 if @per_page <= 0 || @per_page > 100 # domyślnie 20, max 100
+
     if params[:status].present? && params[:status] != "all"
-      @orders = Order.where(status_id: params[:status])
+      @orders = Order.where(status_id: params[:status]).page(params[:page]).per(@per_page)
     else
-      @orders = Order.all
+      @orders = Order.all.page(params[:page]).per(@per_page)
     end
   end
 
@@ -44,7 +47,7 @@ class OrdersController < ApplicationController
     unless request.headers["Turbo-Frame"].present?
       redirect_to @order, alert: "Brak dostępu"
     else
-      render Ui::Order::InfoFormComponent.new(order: @order)
+      render Ui::Order::Info::OrderDetails::FormComponent.new(order: @order)
     end
   end
 
@@ -67,7 +70,7 @@ class OrdersController < ApplicationController
   # PATCH/PUT /orders/1 or /orders/1.json
   def update
     if @order.update(order_params)
-      render turbo_stream: turbo_stream.replace(dom_id(@order, :info), Ui::Order::Info::Component.new(order: @order))
+      render turbo_stream: turbo_stream.replace(dom_id(@order, :info), Ui::Order::Info::OrderDetails::Component.new(order: @order))
     end
   end
 

@@ -69,3 +69,4 @@ gem "tailwind_devise", "~> 0.0.3"
 gem "view_component"
 
 gem "lucide-rails", "~> 0.5.1"
+gem "kaminari"
