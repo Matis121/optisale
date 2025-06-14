@@ -1,14 +1,27 @@
-<tr class="border-b">
-  <td class="px-2 py-3">
-    <%= status.full_name %>
+<tr class="hover:bg-gray-50 transition-colors duration-150">
+  <td class="px-6 py-4 whitespace-nowrap">
+    <div class="text-sm font-medium text-gray-900">
+      <%= status.full_name %>
+    </div>
   </td>
-  <td class="px-2 py-3">
-    <%= status.short_name %>
+  <td class="px-6 py-4 whitespace-nowrap">
+    <div class="text-sm text-gray-500">
+      <%= status.short_name %>
+    </div>
   </td>
-  <td class="px-2 py-3">
+  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
     <div class="flex gap-2 justify-end">
-      <%= link_to "Edit", edit_order_status_path(status), class: "btn" %>
-      <%= button_to "Destroy", status, method: :delete, class: "btn btn-error", data: { turbo_confirm: "Are you sure?" } %>
+      <%= link_to edit_order_status_path(status), 
+         
+          data: { turbo_frame: "edit_modal" } do %>
+        <%= lucide_icon("pencil", class: "w-5 h-5") %>
+      <% end %>
+      <%= button_to status, 
+          method: :delete, 
+          
+          data: { turbo_confirm: "Are you sure?" } do %>
+        <%= lucide_icon("x", class: "w-5 h-5") %>
+      <% end %>
     </div>
   </td>
 </tr>

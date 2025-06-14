@@ -1,14 +1,24 @@
-<% content_for :title, "Order statuses" %>
-<div class="w-full">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="font-bold text-4xl">Order statuses</h1>
-    <%= link_to "New order status", new_order_status_path, class: "btn btn-primary" %>
-  </div>
-  <div id="order_statuses" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <% if @order_statuses.any? %>
-      <%= render partial: "order_statuses/table", locals: {order_statuses: @order_statuses} %>
-    <% else %>
-      <p class="text-center my-10">No order statuses found.</p>
-    <% end %>
+<% content_for :title, "Statusy zamówień" %>
+<div class="min-h-screen bg-gray-50">
+  <div class="px-4 py-8 sm:px-6 lg:px-8">
+    <%# Page header %>
+    <div class="mb-8">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Statusy zamówień</h1>
+          <p class="mt-1 text-sm text-gray-500">
+            Zarządzaj statusami zamówień w systemie. <br/>
+          </p>
+        </div>
+        <%= link_to new_order_status_path, class: "btn btn-primary" do %>
+          <%= lucide_icon("plus", class: "w-5 h-5 mr-2") %>
+          Nowy status
+        <% end %>
+      </div>
+    </div>
+    <%# Content section %>
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <%= render "table" %>
+    </div>
   </div>
 </div>
