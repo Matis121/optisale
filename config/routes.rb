@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   resources :products
   resources :order_statuses
   resources :orders do
+    collection do
+      patch :bulk_update
+    end
     member do
       get :edit_extra_fields
       patch :update_extra_fields

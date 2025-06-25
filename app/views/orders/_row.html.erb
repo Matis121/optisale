@@ -1,6 +1,13 @@
 <tr>
-  <th><%= link_to "#{order.id}", order_path(order), data: { turbo_frame: "_top" }, class:"hover:text-blue-500 hover:text-underline" %></th>
-  <td>Imię nazwisko</td>
+  <th>
+    <div class="flex items-center gap-2">
+      <%= check_box_tag "order_ids[]", order.id, false, class: "checkbox", multiple: true, form: :bulk_update_form %>
+      <%= link_to "#{order.id}", order_path(order), data: { turbo_frame: "_top" }, class:"hover:text-blue-500 hover:text-underline" %>
+    </div>
+  </th>
+  <td>
+    <%= order.addresses.find_by(kind: :delivery)&.fullname.presence || content_tag(:span, "Brak danych", class: "text-neutral-300 text-xs") %>
+  </td>
   <td>
     <% if order.order_products.any? %>
       <% order.order_products.each do |op| %>

@@ -3,11 +3,11 @@
     <tr>
       <td class="w-42">Zapłacono:</td>
       <td>
-        <%= form_with model: order, url: update_payment_order_path(order), method: :patch, data: { turbo_frame: dom_id(order, :payment) } do |f| %>
+        <%= form_with model: order, url: update_payment_order_path(order), method: :patch do |f| %>
           <div class="flex gap-1">
             <%= f.number_field :amount_paid, step: 0.01, min: 0, class: "input w-full" %>
             <%= f.submit "Zapisz", class: "btn btn-primary" %>
-            <%= link_to "Anuluj", order_path(order), data: { turbo_frame: dom_id(order, :payment) }, class: "btn" %>
+            <%= link_to "Anuluj", order_path(order), class: "btn" %>
             <%= button_tag name: "set_amount_paid", value: "full", class: "btn btn-success" do %>
               <%= @order.total_price %>
             <% end %>

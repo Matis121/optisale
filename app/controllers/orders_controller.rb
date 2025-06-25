@@ -13,9 +13,9 @@ class OrdersController < ApplicationController
     @per_page = 20 if @per_page <= 0 || @per_page > 100 # domyślnie 20, max 100
 
     if params[:status].present? && params[:status] != "all"
-      @orders = Order.where(status_id: params[:status]).page(params[:page]).per(@per_page)
+      @orders = Order.where(status_id: params[:status]).page(params[:page]).per(@per_page).order(created_at: :desc)
     else
-      @orders = Order.all.page(params[:page]).per(@per_page)
+      @orders = Order.all.page(params[:page]).per(@per_page).order(created_at: :desc)
     end
   end
 
@@ -96,6 +96,25 @@ class OrdersController < ApplicationController
       Ui::Order::Info::Payment::Component.new(order: @order)
     )
    end
+  end
+
+  def bulk_update
+    order_ids = Array(params[:order_ids]).compact_blank
+
+    if order_ids.empty?
+      redirect_to orders_path, alert: "Nie wybrano żadnych zamówień."
+      return
+    end
+
+    @orders = Order.where(id: order_ids)
+
+    if params[:delete] == "1"
+      Order.where(id: order_ids).destroy_all
+    elsif params[:order_status_id].present?
+      Order.where(id: order_ids).update_all(status_id: params[:order_status_id])
+    end
+
+    redirect_to orders_path, notice: "Zamówienia zostały zaktualizowane."
   end
 
   # DELETE /orders/1 or /orders/1.json

@@ -14,7 +14,7 @@ class CustomersController < ApplicationController
 
   def update
     if @customer.update(customer_params)
-      render turbo_stream: turbo_stream.replace(dom_id(@customer), Ui::Order::Info::Customer::Component.new(order: @order))
+      render turbo_stream: turbo_stream.replace(dom_id(@order, :customer), Ui::Order::Info::Customer::Component.new(order: @order))
     end
   end
   private

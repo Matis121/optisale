@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(order, :info) do %>
-  <%= form_with model: order, url: order_path(order), method: :patch, data: { turbo_frame: dom_id(order, :info) } do |f| %>
+  <%= form_with model: order, url: order_path(order), method: :patch do |f| %>
     <div class="mb-2">
       <%= f.label :source, "Źródło" %>
       <%= f.text_field :source, class: "input w-full" %>
@@ -18,7 +18,7 @@
     </div>
     <div class="flex gap-2">
       <%= f.submit "Zapisz", class: "btn btn-primary" %>
-      <%= link_to "Anuluj", order_path(order), data: { turbo_frame: dom_id(order, :info) }, class: "btn" %>
+      <%= link_to "Anuluj", order_path(order), class: "btn" %>
     </div>
   <% end %>
 <% end %>

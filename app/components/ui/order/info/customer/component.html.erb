@@ -1,4 +1,4 @@
-<%= turbo_frame_tag dom_id(@customer || CustomerInfoComponent.new) do %>
+<%= turbo_frame_tag dom_id(@order, :customer) do %>
   <table>
     <tr>
       <td class="w-42">Klient (login):</td>
