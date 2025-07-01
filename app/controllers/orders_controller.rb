@@ -99,23 +99,33 @@ class OrdersController < ApplicationController
   end
 
   def bulk_update
-    order_ids = Array(params[:order_ids]).compact_blank
+    order_ids = JSON.parse(params[:order_ids]).reject(&:blank?)
 
     if order_ids.empty?
-      redirect_to orders_path, alert: "Nie wybrano żadnych zamówień."
+      flash[:notice] = "Nie wybrano zamówienia."
+      redirect_to request.referer || orders_path
       return
     end
 
     @orders = Order.where(id: order_ids)
 
     if params[:delete] == "1"
-      Order.where(id: order_ids).destroy_all
-    elsif params[:order_status_id].present?
-      Order.where(id: order_ids).update_all(status_id: params[:order_status_id])
+      @orders.destroy_all
+      flash[:success] = "Zmiany zostały wprowadzone."
+      redirect_to request.referer || orders_path
+      return
     end
 
-    redirect_to orders_path, notice: "Zamówienia zostały zaktualizowane."
+    if params[:order_status_id].present?
+      @orders.update_all(status_id: params[:order_status_id])
+      flash[:success] = "Zmiany zostały wprowadzone."
+      redirect_to request.referer || orders_path
+      return
+    end
+
+    head :ok
   end
+
 
   # DELETE /orders/1 or /orders/1.json
   def destroy

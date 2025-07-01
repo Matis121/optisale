@@ -15,14 +15,12 @@
       <% end %>
     </div>
   </div>
-  <div class="ml-48 pl-2 w-full m-3 rounded-md shadow-md">
+  <div class="ml-48 w-full m-3 rounded-md shadow-md">
     <div class="flex justify-between items-center mb-4">
       <h1 class="font-bold text-xl pt-4 px-4">Zamówienia</h1>
     </div>
     <div id="orders" class="min-w-full divide-y divide-gray-200">
-      <%= turbo_frame_tag "orders_frame" do %>
-        <%= render partial: "orders/table", locals: { orders: @orders } %>
-      <% end %>
+      <%= render partial: "orders/table", locals: { orders: @orders } %>
     </div>
   </div>
 </div>

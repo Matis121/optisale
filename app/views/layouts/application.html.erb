@@ -23,6 +23,25 @@
       <%= render partial: "layouts/sidebar" %>
       <div class="ml-60 min-h-screen h-full w-full relative bg-neutral-100">
         <%= yield %>
+        <% if flash.any? %>
+          <div class="toast toast-end">
+            <% if flash[:error].present? %>
+              <div class="alert bg-red-600 px-8 py-6">
+                <span class="text-white"> <%= flash[:error] %> </span>
+              </div>
+            <% end %>
+            <% if flash[:success].present? %>
+              <div class="alert bg-emerald-600 px-8 py-6">
+                <span class="text-white"> <%= flash[:success] %> </span>
+              </div>
+            <% end %>
+            <% if flash[:notice].present? %>
+              <div class="alert bg-blue-500 px-8 py-6">
+                <span class="text-white"> <%= flash[:notice] %> </span>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </div>
     </main>
   </body>

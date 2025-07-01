@@ -1,7 +1,26 @@
 <%# Top section %>
-<div class="flex justify-between items-center py-4 px-2">
-  <%= form_with url: bulk_update_orders_path, method: :patch, id: "bulk_update_form" do |f| %>
+<div class="flex flex-col gap-4" data-controller="checkbox-selection" data-checkbox-selection-target="parent" data-status="<%= params[:status] || 'all' %>" data-checkbox-selection-total-orders-value="<%= @orders.total_count %>">
+  <%= form_with url: bulk_update_orders_path, method: :patch, data: { checkbox_selection_target: "form", action: "turbo:submit-end->checkbox-selection#clearCheckboxes" } do |f|  %>
     <div class="flex gap-2 items-center">
+      <div class="dropdown dropdown-down">
+        <label tabindex="0" class="btn btn-square btn-ghost btn-md border border-base-300 w-full min-w-18">
+          <div class="badge badge-xs hidden badge-primary" data-checkbox-selection-target="counter">0</div>
+          <%= lucide_icon("square-check", class: "w-4 h-4") %>
+        </label>
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-b ase-100 rounded-box w-52">
+          <li>
+            <button data-action="click->checkbox-selection#selectAllOnPage" type="button" onclick="document.activeElement.blur()">
+              Zaznacz wszystkie
+              <div class="badge badge-neutral badge-dash badge-xs">strona</div>
+            </button>
+          </li>
+          <li>
+            <button data-action="click->checkbox-selection#deselectAll" type="button" onclick="document.activeElement.blur()">
+              Odznacz wszystkie
+            </button>
+          </li>
+        </ul>
+      </div>
       <div class="dropdown dropdown-down">
         <label tabindex="0" class="btn btn-square btn-ghost btn-md border border-base-300">
           <%= lucide_icon("flag", class: "w-4 h-4") %>
@@ -37,77 +56,83 @@
         </div>
       </dialog>
     </div>
-  <% end %>
-  <%# Pagination Section %>
-  <div class="flex items-center gap-4">
-    <div class="text-sm text-gray-700">
-      <%# Items count %>
-      <span class="font-medium"><%= @orders.offset_value + 1 %></span>-<span class="font-medium"><%= @orders.offset_value + @orders.length %></span> z 
-      <span class="font-medium"><%= @orders.total_count %></span> pozycji
-      <%# Per page selector %>
-      <div class="dropdown dropdown-down ml-2">
-        <button tabindex="0" class="btn btn-ghost btn-xs">
-          <%= @per_page %>
-          <%= lucide_icon("chevron-down", class: "h-4 w-4") %>
-        </button>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-16">
-          <% [20, 30, 50, 75, 100].each do |per_page| %>
-            <li>
-              <%= link_to per_page, 
+    <%= turbo_frame_tag "orders_frame" do %>
+      <div>
+        <%# Pagination Section %>
+        <div class="flex justify-end items-center gap-4 mb-8 -mt-9">
+          <div class="text-sm text-gray-700">
+            <%# Items count %>
+            <span class="font-medium"><%= @orders.offset_value + 1 %></span>-<span class="font-medium"><%= @orders.offset_value + @orders.length %></span> z 
+            <span class="font-medium"><%= @orders.total_count %></span> pozycji
+            <%# Per page selector %>
+            <div class="dropdown dropdown-down ml-2">
+              <button tabindex="0" class="btn btn-ghost btn-xs">
+                <%= @per_page %>
+                <%= lucide_icon("chevron-down", class: "h-4 w-4") %>
+              </button>
+              <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-16">
+                <% [20, 30, 50, 75, 100].each do |per_page| %>
+                  <li>
+                    <%= link_to per_page, 
                     orders_path(page: 1, per_page: per_page, status: params[:status]), 
                     class: @per_page == per_page ? 'active' : '',
                     data: { turbo_frame: "orders_frame" } %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-    </div>
-    <div class="flex items-center">
-      <%# Previous page button %>
-      <%= link_to orders_path(page: @orders.prev_page, status: params[:status], per_page: @per_page), 
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <%# Previous page button %>
+            <%= link_to orders_path(page: @orders.prev_page, status: params[:status], per_page: @per_page), 
           class: "btn btn-sm #{@orders.prev_page ? 'text-gray-700 bg-white hover:bg-gray-50' : 'text-gray-400 bg-gray-50 cursor-not-allowed'}", 
           data: { turbo_frame: "orders_frame" },
           onclick: @orders.prev_page ? nil : "return false" do %>
-        <%= lucide_icon("chevron-left", class: "h-5 w-5") %>
-      <% end %>
-      <%# Next page button %>
-      <%= link_to orders_path(page: @orders.next_page, status: params[:status], per_page: @per_page), 
+              <%= lucide_icon("chevron-left", class: "h-5 w-5") %>
+            <% end %>
+            <%# Next page button %>
+            <%= link_to orders_path(page: @orders.next_page, status: params[:status], per_page: @per_page), 
           class: "btn btn-sm #{@orders.next_page ? 'text-gray-700 bg-white hover:bg-gray-50' : 'text-gray-400 bg-gray-50 cursor-not-allowed'}", 
           data: { turbo_frame: "orders_frame" },
           onclick: @orders.next_page ? nil : "return false" do %>
-        <%= lucide_icon("chevron-right", class: "h-5 w-5") %>
-      <% end %>
-    </div>
-  </div>
-</div>
-<%# Table Section %>
-<div class="overflow-x-auto w-full">
-  <table class="table table-zebra w-full">
-    <thead>
-      <tr class="text-xs">
-        <th class="font-semibold">Numer</th>
-        <th class="font-semibold">Imię Nazwisko</th>
-        <th class="font-semibold">Przedmioty</th>
-        <th class="font-semibold">Kwota</th>
-        <th class="font-semibold">Informacje dodatkowe</th>
-        <th class="font-semibold flex flex-col">
-          <span>Data złożenia</span>
-          <span class="text-[10px] text-blue-800 font-medium">Data modyfikacji</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if @orders.present? %>
-        <% @orders.each do |order| %>
-          <%= render partial: "orders/row", locals: { order: order } %>
-        <% end %>
-      <% else %>
-        <tr class="my-14">
-          <td colspan="6" class="text-gray-400 text-center pt-18">
-            Brak zamówień do wyświetlenia.
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+              <%= lucide_icon("chevron-right", class: "h-5 w-5") %>
+            <% end %>
+          </div>
+        </div>
+        <%# Table Section %>
+        <div class="overflow-x-auto w-full">
+          <table class="table w-full">
+            <thead>
+              <tr class="text-xs">
+                <th class="font-semibold">Numer</th>
+                <th class="font-semibold">Imię Nazwisko</th>
+                <th class="font-semibold">Przedmioty</th>
+                <th class="font-semibold">Kwota</th>
+                <th class="font-semibold">Informacje dodatkowe</th>
+                <th class="font-semibold flex flex-col">
+                  <span>Data złożenia</span>
+                  <span class="text-[10px] text-blue-800 font-medium">Data modyfikacji</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if @orders.present? %>
+                <% @orders.each do |order| %>
+                  <%= render partial: "orders/row", locals: { order: order } %>
+                <% end %>
+              <% else %>
+                <tr class="my-14">
+                  <td colspan="6" class="text-gray-400 text-center pt-18">
+                    Brak zamówień do wyświetlenia.
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+    <%# Hidden input do przechowywania zaznaczonych zamówień %>
+    <%= hidden_field_tag "order_ids", "[]", data: { checkbox_selection_target: "selectionInput" } %>
+  <% end %>
 </div>
