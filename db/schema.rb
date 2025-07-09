@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_28_221737) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_09_223005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -27,6 +27,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_221737) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_addresses_on_order_id"
+  end
+
+  create_table "catalogs", force: :cascade do |t|
+    t.string "name"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_catalogs_on_user_id"
   end
 
   create_table "customer_pickup_points", force: :cascade do |t|
@@ -95,18 +103,46 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_221737) do
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
+  create_table "price_groups", force: :cascade do |t|
+    t.string "name"
+    t.bigint "catalog_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["catalog_id"], name: "index_price_groups_on_catalog_id"
+  end
+
+  create_table "product_prices", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "price_group_id", null: false
+    t.decimal "nett_price"
+    t.decimal "gross_price"
+    t.string "currency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["price_group_id"], name: "index_product_prices_on_price_group_id"
+    t.index ["product_id"], name: "index_product_prices_on_product_id"
+  end
+
+  create_table "product_stocks", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "warehouse_id", null: false
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_stocks_on_product_id"
+    t.index ["warehouse_id"], name: "index_product_stocks_on_warehouse_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.string "sku"
     t.string "ean"
     t.decimal "tax_rate"
-    t.decimal "nett_price"
-    t.decimal "gross_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_products_on_user_id"
+    t.bigint "catalog_id", null: false
+    t.index ["catalog_id"], name: "index_products_on_catalog_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -121,12 +157,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_221737) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "warehouses", force: :cascade do |t|
+    t.string "name"
+    t.boolean "default"
+    t.bigint "catalog_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["catalog_id"], name: "index_warehouses_on_catalog_id"
+  end
+
   add_foreign_key "addresses", "orders"
+  add_foreign_key "catalogs", "users"
   add_foreign_key "customer_pickup_points", "orders"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "order_statuses", "users"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "users"
-  add_foreign_key "products", "users"
+  add_foreign_key "price_groups", "catalogs"
+  add_foreign_key "product_prices", "price_groups"
+  add_foreign_key "product_prices", "products"
+  add_foreign_key "product_stocks", "products"
+  add_foreign_key "product_stocks", "warehouses"
+  add_foreign_key "products", "catalogs"
+  add_foreign_key "warehouses", "catalogs"
 end

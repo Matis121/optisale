@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: one
+  price_group: one
+  nett_price: 9.99
+  gross_price: 9.99
+  currency: MyString
+
+two:
+  product: two
+  price_group: two
+  nett_price: 9.99
+  gross_price: 9.99
+  currency: MyString
