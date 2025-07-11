@@ -15,6 +15,7 @@
             <thead>
               <tr>
                 <th>Nazwa</th>
+                <th>Domyślna</th>
                 <th>Katalog</th>
                 <th>Produkty</th>
                 <th>Integracje</th>
@@ -26,6 +27,9 @@
                 <tr>
                   <td>
                     <div class="font-medium"><%= price_group.name %></div>
+                  </td>
+                  <td>
+                    <span class="badge badge-outline"><%= price_group.default? ? "Tak" : "Nie" %></span>
                   </td>
                   <td>
                     <span class="badge badge-outline"><%= price_group.catalog.name %></span>
