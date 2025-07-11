@@ -57,17 +57,19 @@
                             <i class="fas fa-edit"></i> Edytuj
                           <% end %>
                         </li>
-                        <li>
-                          <%= link_to storage_warehouse_path(warehouse), 
+                        <% unless warehouse.default? %>
+                          <li>
+                            <%= link_to storage_warehouse_path(warehouse), 
                               method: :delete,
                               data: { 
                                 confirm: "Czy na pewno chcesz usunąć magazyn '#{warehouse.name}'?",
                                 turbo_method: :delete
                               },
                               class: "text-error" do %>
-                            <i class="fas fa-trash"></i> Usuń
-                          <% end %>
-                        </li>
+                              <i class="fas fa-trash"></i> Usuń
+                            <% end %>
+                          </li>
+                        <% end %>
                       </ul>
                     </div>
                   </td>
