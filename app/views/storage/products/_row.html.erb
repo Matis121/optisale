@@ -1,0 +1,45 @@
+<tr class="font-semibold">
+  <td>
+    <%= link_to product.name, edit_storage_product_path(product), data: { turbo_frame: "_top" }, class: "hover:text-blue-500 hover:text-underline" %>
+    <div class="text-xs text-gray-500">ID <%= product.id%> | SKU <%= product.sku%> | EAN <%= product.ean%></div>
+  </td>
+  <td>
+    <%= product.product_prices.map { |pp| pp.nett_price }.join(", ") %>
+  </td>
+  <td>
+    <%= product.product_prices.map { |pp| pp.gross_price }.join(", ") %>
+  </td>
+  <td>
+    <%= product.product_stocks.map { |ps| ps.quantity }.sum %>
+  </td>
+  <td>
+    <div><%= product.created_at.strftime('%d.%m.%Y %H:%M') %></div>
+    <div class="text-xs text-blue-800"><%= product.updated_at.strftime('%d.%m.%Y %H:%M') %></div>
+  </td>
+  <td>
+    <div class="dropdown dropdown-end">
+      <label tabindex="0" class="btn btn-square btn-ghost btn-md border border-base-300">
+        <%= lucide_icon("ellipsis", class: "w-4 h-4") %>
+      </label>
+      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+        <li>
+          <%= link_to "Edytuj", edit_storage_product_path(product), data: { turbo_frame: "_top" } %>
+        </li>
+        <li>
+          <%= button_to "Usuń", storage_product_path(product), method: :delete, data: { turbo_confirm: "Czy na pewno chcesz usunąć ten produkt?" } %>
+        </li>
+      </ul>
+    </div>
+  </td>
+</tr>
+<style>
+  .dropdown-content li form{
+  display: flex;
+  width: 100%;
+    }
+    .dropdown-content li form button {
+  min-width: 100%;
+  text-align: left;
+  cursor: pointer;
+    }
+</style>

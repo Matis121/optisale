@@ -1,0 +1,2 @@
+module Storage::WarehousesHelper
+end

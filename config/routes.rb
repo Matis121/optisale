@@ -1,6 +1,21 @@
 Rails.application.routes.draw do
-  resources :products
-  resources :order_statuses
+  # Storage
+  namespace :storage do
+    get "warehouses/index"
+    get "warehouses/show"
+    get "warehouses/new"
+    get "warehouses/edit"
+    get "warehouses/create"
+    get "warehouses/update"
+    get "warehouses/destroy"
+    root to: "products#index"
+    resources :products
+    resources :warehouses
+    resources :catalogs
+    resources :price_groups
+  end
+
+  # Orders
   resources :orders do
     collection do
       patch :bulk_update
@@ -15,7 +30,14 @@ Rails.application.routes.draw do
     resources :customer_pickup_points
     resources :customers
   end
+
+  # Order statuses
+  resources :order_statuses
+
+  # Order products
   resources :order_products
+
+
   devise_for :users, path: ""
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

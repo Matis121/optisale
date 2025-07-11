@@ -1,0 +1,35 @@
+<% content_for :title, "Nowy katalog" %>
+<div class="w-full max-w-2xl mx-auto">
+  <div class="flex items-center mb-6">
+    <%= link_to storage_catalogs_path, class: "btn btn-ghost btn-sm mr-4" do %>
+      <i class="fas fa-arrow-left"></i>
+    <% end %>
+    <h1 class="font-bold text-2xl">Nowy katalog</h1>
+  </div>
+  <div class="bg-base-100 rounded-lg shadow-sm border p-6">
+    <%= form_with model: [:storage, @catalog], local: true do |form| %>
+      <% if @catalog.errors.any? %>
+        <div class="alert alert-error mb-6">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div>
+            <h3 class="font-bold">Błąd podczas zapisywania:</h3>
+            <ul class="list-disc list-inside">
+              <% @catalog.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+      <div class="form-control w-full mb-6">
+        <%= form.label :name, "Nazwa katalogu", class: "label" %>
+        <%= form.text_field :name, class: "input input-bordered w-full", placeholder: "np. Katalog główny" %>
+      </div>
+      <div class="flex gap-3">
+        <%= form.submit "Utwórz katalog", class: "btn btn-primary" %>
+        <%= link_to "Anuluj", storage_catalogs_path, class: "btn btn-ghost" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+ 

@@ -1,0 +1,8 @@
+<% content_for :title, "Products" %>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
+  <div id="products" class="min-w-full divide-y divide-gray-200">
+    <%= turbo_frame_tag "products_frame" do %>
+      <%= render partial: "storage/products/table", locals: { products: @products } %>
+    <% end %>
+  </div>
+<% end %>

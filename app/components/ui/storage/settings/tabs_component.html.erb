@@ -1,0 +1,14 @@
+<div role="tablist" class="tabs tabs-box">
+  <%= link_to storage_catalogs_path, 
+        class: "tab #{current_page?(storage_catalogs_path) ? 'tab-active' : ''}" do %>
+    <i class="fas fa-folder mr-2"></i> Katalogi
+  <% end %>
+  <%= link_to storage_warehouses_path, 
+        class: "tab #{current_page?(storage_warehouses_path) ? 'tab-active' : ''}" do %>
+    <i class="fas fa-warehouse mr-2"></i> Magazyny
+  <% end %>
+  <%= link_to storage_price_groups_path, 
+        class: "tab #{current_page?(storage_price_groups_path) ? 'tab-active' : ''}" do %>
+    <i class="fas fa-tags mr-2"></i> Grupy cenowe
+  <% end %>
+</div>

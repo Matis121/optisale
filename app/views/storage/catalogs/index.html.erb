@@ -1,0 +1,93 @@
+<% content_for :title, "Katalogi" %>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
+  <%= render Ui::Storage::Settings::TabsComponent.new %>
+  <!-- Content -->
+  <div class="bg-base-100 rounded-lg shadow-sm">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Katalogi</h2>
+        <div class="text-sm text-base-content/60">
+          <%= link_to new_storage_catalog_path, class: "btn btn-sm btn-primary" do %>
+            <i class="fas fa-plus mr-1"></i> Nowy katalog
+          <% end %>
+        </div>
+      </div>
+      <% if @catalogs.any? %>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead>
+              <tr>
+                <th>Nazwa</th>
+                <th>Produkty</th>
+                <th>Magazyny</th>
+                <th>Grupy cenowe</th>
+                <th>Integracje</th>
+                <th class="text-right">Akcje</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @catalogs.each do |catalog| %>
+                <tr>
+                  <td>
+                    <div class="font-medium"><%= catalog.name %></div>
+                  </td>
+                  <td>
+                    <span class="badge badge-outline"><%= catalog.products.count %></span>
+                  </td>
+                  <td>
+                    <span class="badge badge-outline"><%= catalog.warehouses.count %></span>
+                  </td>
+                  <td>
+                    <span class="badge badge-outline"><%= catalog.price_groups.count %></span>
+                  </td>
+                  <td>
+                    <div class="flex gap-1">
+                      <span class="badge badge-info badge-sm">Allegro</span>
+                      <span class="badge badge-warning badge-sm">Empik</span>
+                    </div>
+                  </td>
+                  <td class="text-right">
+                    <div class="dropdown dropdown-end">
+                      <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
+                        <i class="fas fa-ellipsis-v"></i>
+                      </div>
+                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li>
+                          <%= link_to edit_storage_catalog_path(catalog) do %>
+                            <i class="fas fa-edit"></i> Edytuj
+                          <% end %>
+                        </li>
+                        <li>
+                          <%= link_to storage_catalog_path(catalog), 
+                              method: :delete,
+                              data: { 
+                                confirm: "Czy na pewno chcesz usunąć katalog '#{catalog.name}'? Wszystkie powiązane produkty, magazyny i grupy cenowe zostaną również usunięte.",
+                                turbo_method: :delete
+                              },
+                              class: "text-error" do %>
+                            <i class="fas fa-trash"></i> Usuń
+                          <% end %>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center py-12">
+          <div class="text-6xl text-base-content/20 mb-4">
+            <i class="fas fa-folder"></i>
+          </div>
+          <h3 class="text-lg font-medium mb-2">Brak katalogów</h3>
+          <p class="text-base-content/60 mb-4">Utwórz swój pierwszy katalog, aby rozpocząć zarządzanie produktami.</p>
+          <%= link_to new_storage_catalog_path, class: "btn btn-primary" do %>
+            <i class="fas fa-plus mr-2"></i> Utwórz katalog
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

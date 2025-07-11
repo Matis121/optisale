@@ -4,9 +4,11 @@ class Product < ApplicationRecord
   has_many :product_stocks, dependent: :destroy
   has_many :product_prices, dependent: :destroy
 
+  accepts_nested_attributes_for :product_stocks, :product_prices
+
   validates :name, presence: true
   validates :tax_rate, presence: true, numericality: true
-  validates :sku, presence: true, uniqueness: { scope: :catalog_id }
-  validates :ean, presence: true, uniqueness: { scope: :catalog_id }
+  validates :sku, uniqueness: { scope: :catalog_id }, allow_blank: true
+  validates :ean, uniqueness: { scope: :catalog_id }, allow_blank: true
   validates :catalog_id, presence: true
 end
