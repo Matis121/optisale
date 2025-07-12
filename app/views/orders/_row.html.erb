@@ -1,36 +1,52 @@
-<tr data-order-id="<%= order.id %>">
-  <th>
-    <div class="flex items-center gap-2">
-      <%= check_box_tag "", order.id, false, class: "checkbox checkbox-primary", data: { checkbox_selection_target: "child", action: "change->checkbox-selection#updateSelection" } %>
-      <%= link_to "#{order.id}", order_path(order), data: { turbo_frame: "_top" }, class:"hover:text-blue-500 hover:text-underline" %>
+<tr class="border-b border-base-200 hover:bg-base-50 transition-colors duration-150">
+  <td class="py-4 px-6">
+    <div class="flex items-center gap-3">
+      <%= check_box_tag "", order.id, false, class: "checkbox checkbox-primary checkbox-sm", data: { checkbox_selection_target: "child", action: "change->checkbox-selection#updateSelection" } %>
+      <%= link_to "#{order.id}", order_path(order), data: { turbo_frame: "_top" }, class: "font-medium text-base-content hover:text-primary transition-colors duration-150" %>
     </div>
-  </th>
-  <td>
-    <%= order.addresses.find_by(kind: :delivery)&.fullname.presence || content_tag(:span, "Brak danych", class: "text-neutral-300 text-xs") %>
   </td>
-  <td>
+  <td class="py-4 px-6">
+    <div class="font-medium text-base-content">
+      <%= order.addresses.find_by(kind: :delivery)&.fullname.presence || content_tag(:span, "Brak danych", class: "text-base-content/40 text-sm") %>
+    </div>
+  </td>
+  <td class="py-4 px-6">
     <% if order.order_products.any? %>
-      <% order.order_products.each do |op| %>
-        <div><span class="text-xs"><%= op.quantity %> x</span> <%= op.product.name %></div>
-      <% end %>
+      <div class="space-y-1">
+        <% order.order_products.each do |op| %>
+          <div class="text-sm text-base-content/80">
+            <span class="text-base-content/60"><%= op.quantity %>×</span> <%= op.product.name %>
+          </div>
+        <% end %>
+      </div>
     <% else %>
-      <span class="text-xs text-neutral-300">Brak produktów</span>
+      <span class="text-sm text-base-content/40">Brak produktów</span>
     <% end %>
   </td>
-  <td>
-    <%= number_to_currency(
-      order.order_products.sum { |op| op.quantity * op.product.gross_price },
-      unit: "PLN",
-      format: "%n %u",          
-      separator: ".",          
-      delimiter: ","          
-) %>
+  <td class="py-4 px-6">
+    <div class="font-medium text-base-content">
+      <%= number_to_currency(
+        order.order_products.sum { |op| op.quantity * op.product.gross_price },
+        unit: "PLN",
+        format: "%n %u",          
+        separator: ".",          
+        delimiter: ","          
+      ) %>
+    </div>
   </td>
-  <td>
-    <div class="badge badge-primary badge-xs"><%= order.order_status&.short_name || "Brak statusu" %></div>
+  <td class="py-4 px-6">
+    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+      <%= order.order_status&.short_name || "Brak statusu" %>
+    </span>
   </td>
-  <td>
-    <div><%= order.created_at.strftime('%d.%m.%Y %H:%M') %></div>
-    <div class="text-xs text-blue-800"><%= order.updated_at.strftime('%d.%m.%Y %H:%M') %></div>
+  <td class="py-4 px-6">
+    <div class="space-y-1">
+      <div class="text-sm font-medium text-base-content">
+        <%= order.created_at.strftime('%d.%m.%Y %H:%M') %>
+      </div>
+      <div class="text-xs text-base-content/60">
+        <%= order.updated_at.strftime('%d.%m.%Y %H:%M') %>
+      </div>
+    </div>
   </td>
 </tr>

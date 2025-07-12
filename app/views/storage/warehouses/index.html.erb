@@ -1,60 +1,72 @@
 <% content_for :title, "Magazyny" %>
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <%= render Ui::Storage::Settings::TabsComponent.new %>
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 my-8">
+    <div>
+      <h1 class="text-2xl font-bold text-base-content">Magazyny</h1>
+      <p class="text-base-content/60 mt-1">Zarządzaj swoimi magazynami produktów</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <%= link_to new_storage_warehouse_path, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
+        <i class="fas fa-plus"></i>
+        Nowy magazyn
+      <% end %>
+    </div>
+  </div>
   <!-- Content -->
-  <div class="bg-base-100 rounded-lg shadow-sm">
-    <div class="p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold">Magazyny</h2>
-        <div class="text-sm text-base-content/60">
-          <%= link_to new_storage_warehouse_path, class: "btn btn-sm btn-primary" do %>
-            <i class="fas fa-plus mr-1"></i> Nowy magazyn
-          <% end %>
-        </div>
-      </div>
-      <% if @warehouses.any? %>
-        <div class="overflow-x-auto">
-          <table class="table table-zebra w-full">
-            <thead>
-              <tr>
-                <th>Nazwa</th>
-                <th>Katalog</th>
-                <th>Domyślny</th>
-                <th>Integracje</th>
-                <th class="text-right">Akcje</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @warehouses.each do |warehouse| %>
-                <tr>
-                  <td>
-                    <div class="font-medium"><%= warehouse.name %></div>
-                  </td>
-                  <td>
-                    <span class="badge badge-outline"><%= warehouse.catalog.name %></span>
-                  </td>
-                  <td>
-                    <% if warehouse.default? %>
-                      <span class="badge badge-success">Tak</span>
-                    <% else %>
-                      <span class="badge badge-ghost">Nie</span>
-                    <% end %>
-                  </td>
-                  <td>
-                    <div class="flex gap-1">
-                      <span class="badge badge-info badge-sm">Allegro</span>
-                      <span class="badge badge-warning badge-sm">Empik</span>
+  <% if @warehouses.any? %>
+    <div class="bg-base-200 rounded-lg border border-base-200 overflow-hidden shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="table  w-full">
+          <thead class="bg-base-100">
+            <tr>
+              <th class="text-base-content font-semibold">Nazwa magazynu</th>
+              <th class="text-base-content font-semibold">Katalog</th>
+              <th class="text-base-content font-semibold text-center">Domyślny</th>
+              <th class="text-base-content font-semibold">Integracje</th>
+              <th class="text-base-content font-semibold text-right">Akcje</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @warehouses.each do |warehouse| %>
+              <tr class="hover:bg-base-300/50 transition-colors duration-200">
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center">
+                      <i class="fas fa-warehouse text-secondary text-sm"></i>
                     </div>
-                  </td>
-                  <td class="text-right">
+                    <div>
+                      <div class="font-semibold text-base-content"><%= warehouse.name %></div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge badge-outline badge-sm"><%= warehouse.catalog.name %></span>
+                </td>
+                <td class="text-center">
+                  <% if warehouse.default? %>
+                    <span class="badge badge-success badge-sm">Tak</span>
+                  <% else %>
+                    <span class="badge badge-ghost badge-sm">Nie</span>
+                  <% end %>
+                </td>
+                <td>
+                  <div class="flex gap-1">
+                    <span class="badge badge-info badge-sm">Allegro</span>
+                    <span class="badge badge-warning badge-sm">Empik</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-2">
                     <div class="dropdown dropdown-end">
-                      <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-                        <i class="fas fa-ellipsis-v"></i>
+                      <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                        <i class="fas fa-ellipsis-v text-base-content/60"></i>
                       </div>
-                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
                         <li>
-                          <%= link_to edit_storage_warehouse_path(warehouse) do %>
-                            <i class="fas fa-edit"></i> Edytuj
+                          <%= link_to edit_storage_warehouse_path(warehouse), class: "gap-2", data: { turbo_frame: "modal-frame" }, onclick: "document.activeElement.blur()" do %>
+                            <i class="fas fa-edit text-primary"></i> Edytuj
                           <% end %>
                         </li>
                         <% unless warehouse.default? %>
@@ -65,31 +77,37 @@
                                 confirm: "Czy na pewno chcesz usunąć magazyn '#{warehouse.name}'?",
                                 turbo_method: :delete
                               },
-                              class: "text-error" do %>
+                              class: "text-error gap-2" do %>
                               <i class="fas fa-trash"></i> Usuń
                             <% end %>
                           </li>
                         <% end %>
                       </ul>
                     </div>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <div class="text-center py-12">
-          <div class="text-6xl text-base-content/20 mb-4">
-            <i class="fas fa-warehouse"></i>
-          </div>
-          <h3 class="text-lg font-medium mb-2">Brak magazynów</h3>
-          <p class="text-base-content/60 mb-4">Utwórz swój pierwszy magazyn, aby rozpocząć zarządzanie produktami.</p>
-          <%= link_to new_storage_warehouse_path, class: "btn btn-primary" do %>
-            <i class="fas fa-plus mr-2"></i> Utwórz magazyn
-          <% end %>
-        </div>
-      <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  <% else %>
+    <!-- Empty State -->
+    <div class="text-center py-16">
+      <div class="max-w-sm mx-auto">
+        <div class="w-20 h-20 bg-gradient-to-br from-secondary/10 to-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <i class="fas fa-warehouse text-3xl text-secondary"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-base-content mb-3">Brak magazynów</h3>
+        <p class="text-base-content/60 mb-6">
+          Utwórz swój pierwszy magazyn, aby rozpocząć zarządzanie produktami.
+        </p>
+        <%= link_to new_storage_warehouse_path, class: "btn btn-primary gap-2" do %>
+          <i class="fas fa-plus"></i>
+          Utwórz magazyn
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 <% end %>

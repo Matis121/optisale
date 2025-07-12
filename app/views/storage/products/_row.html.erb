@@ -1,45 +1,58 @@
-<tr class="font-semibold">
+<tr class="hover:bg-base-300/50 transition-colors duration-200">
   <td>
-    <%= link_to product.name, edit_storage_product_path(product), data: { turbo_frame: "_top" }, class: "hover:text-blue-500 hover:text-underline" %>
-    <div class="text-xs text-gray-500">ID <%= product.id%> | SKU <%= product.sku%> | EAN <%= product.ean%></div>
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+        <i class="fas fa-box text-primary text-sm"></i>
+      </div>
+      <div>
+        <div class="font-semibold text-base-content">
+          <%= link_to product.name, edit_storage_product_path(product), data: { turbo_frame: "_top" }, class: "hover:text-primary transition-colors" %>
+        </div>
+        <div class="text-xs text-base-content/60">ID <%= product.id %> | SKU <%= product.sku %> | EAN <%= product.ean %></div>
+      </div>
+    </div>
+  </td>
+  <td class="text-center">
+    <div class="font-medium text-base-content">
+      <%= product.product_prices.map { |pp| pp.nett_price }.join(", ") %>
+    </div>
+  </td>
+  <td class="text-center">
+    <div class="font-medium text-base-content">
+      <%= product.product_prices.map { |pp| pp.gross_price }.join(", ") %>
+    </div>
+  </td>
+  <td class="text-center">
+    <span class="badge badge-secondary badge-sm">
+      <%= product.product_stocks.map { |ps| ps.quantity }.sum %>
+    </span>
   </td>
   <td>
-    <%= product.product_prices.map { |pp| pp.nett_price }.join(", ") %>
+    <div class="text-sm text-base-content"><%= product.created_at.strftime('%d.%m.%Y %H:%M') %></div>
+    <div class="text-xs text-base-content/60">Zmodyfikowano: <%= product.updated_at.strftime('%d.%m.%Y %H:%M') %></div>
   </td>
-  <td>
-    <%= product.product_prices.map { |pp| pp.gross_price }.join(", ") %>
-  </td>
-  <td>
-    <%= product.product_stocks.map { |ps| ps.quantity }.sum %>
-  </td>
-  <td>
-    <div><%= product.created_at.strftime('%d.%m.%Y %H:%M') %></div>
-    <div class="text-xs text-blue-800"><%= product.updated_at.strftime('%d.%m.%Y %H:%M') %></div>
-  </td>
-  <td>
-    <div class="dropdown dropdown-end">
-      <label tabindex="0" class="btn btn-square btn-ghost btn-md border border-base-300">
-        <%= lucide_icon("ellipsis", class: "w-4 h-4") %>
-      </label>
-      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-        <li>
-          <%= link_to "Edytuj", edit_storage_product_path(product), data: { turbo_frame: "_top" } %>
-        </li>
-        <li>
-          <%= button_to "Usuń", storage_product_path(product), method: :delete, data: { turbo_confirm: "Czy na pewno chcesz usunąć ten produkt?" } %>
-        </li>
-      </ul>
+  <td class="text-right">
+    <div class="flex items-center justify-end gap-2">
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+          <i class="fas fa-ellipsis-v text-base-content/60"></i>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
+          <li>
+            <%= link_to edit_storage_product_path(product), data: { turbo_frame: "_top" }, class: "gap-2" do %>
+              <i class="fas fa-edit text-primary"></i> Edytuj
+            <% end %>
+          </li>
+          <li>
+            <%= button_to storage_product_path(product), 
+                method: :delete, 
+                data: { turbo_confirm: "Czy na pewno chcesz usunąć ten produkt?" },
+                class: "text-error gap-2 w-full text-left" do %>
+              <i class="fas fa-trash"></i> Usuń
+            <% end %>
+          </li>
+        </ul>
+      </div>
     </div>
   </td>
 </tr>
-<style>
-  .dropdown-content li form{
-  display: flex;
-  width: 100%;
-    }
-    .dropdown-content li form button {
-  min-width: 100%;
-  text-align: left;
-  cursor: pointer;
-    }
-</style>

@@ -1,0 +1,40 @@
+  <%= form_with model: [:storage, @warehouse], data: { turbo: false } do |form| %>
+  <% if @warehouse.errors.any? %>
+    <div class="alert alert-error mb-6">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div>
+        <h3 class="font-bold">Błąd podczas zapisywania:</h3>
+        <ul class="list-disc list-inside">
+          <% @warehouse.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+  <div class="form-control w-full mb-4 flex flex-col gap-1">
+    <%= form.label :name, "Nazwa magazynu", class: "label" %>
+    <%= form.text_field :name, class: "input input-bordered w-full", placeholder: "np. Magazyn główny" %>
+  </div>
+  <div class="form-control w-full mb-4">
+    <%= form.label :catalog_id, "Katalog", class: "label" %>
+    <%= form.select :catalog_id, 
+            options_from_collection_for_select(@catalogs, :id, :name, @warehouse.catalog_id), 
+            { prompt: "Wybierz katalog" }, 
+            { class: "select select-bordered w-full" } %>
+  </div>
+  <div class="form-control mb-6">
+    <label class="label cursor-pointer">
+      <span class="label-text">Magazyn domyślny</span>
+      <%= form.check_box :default, class: "checkbox" %>
+    </label>
+  </div>
+  <div class="flex gap-3 justify-end">
+    <% if @warehouse.new_record? %>
+      <%= form.submit "Utwórz", class: "btn btn-primary" %>
+    <% else %>
+      <%= form.submit "Zapisz", class: "btn btn-primary" %>
+    <% end %>
+    <button type="button" class="btn btn-ghost" onclick="modal.close()">Zamknij</button>
+  </div>
+<% end %>

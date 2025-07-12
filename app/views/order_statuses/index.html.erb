@@ -1,24 +1,19 @@
 <% content_for :title, "Statusy zamówień" %>
-<div class="min-h-screen bg-gray-50">
-  <div class="px-4 py-8 sm:px-6 lg:px-8">
-    <%# Page header %>
-    <div class="mb-8">
-      <div class="flex justify-between items-center">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900">Statusy zamówień</h1>
-          <p class="mt-1 text-sm text-gray-500">
-            Zarządzaj statusami zamówień w systemie. <br/>
-          </p>
-        </div>
-        <%= link_to new_order_status_path, class: "btn btn-primary" do %>
-          <%= lucide_icon("plus", class: "w-5 h-5 mr-2") %>
-          Nowy status
-        <% end %>
-      </div>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+    <div>
+      <h1 class="text-2xl font-bold text-base-content">Statusy zamówień</h1>
+      <p class="text-base-content/60 mt-1">Zarządzaj statusami zamówień w systemie</p>
     </div>
-    <%# Content section %>
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-      <%= render "table" %>
-    </div>
+    <%= link_to new_order_status_path, class: "btn btn-primary btn-sm gap-2" do %>
+      <i class="fas fa-plus text-xs"></i>
+      Nowy status
+    <% end %>
   </div>
-</div>
+
+  <!-- Content -->
+  <div class="bg-base-100 rounded-lg border border-base-300 shadow-sm">
+    <%= render "table" %>
+  </div>
+<% end %>

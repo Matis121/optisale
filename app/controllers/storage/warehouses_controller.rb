@@ -1,5 +1,6 @@
 class Storage::WarehousesController < ApplicationController
   before_action :set_warehouse, only: %i[ show edit update destroy ]
+  before_action :ensure_turbo_frame, only: %i[ edit new ]
 
   def index
     @warehouses = Warehouse.joins(:catalog).where(catalogs: { user: current_user }).includes(:catalog)
@@ -56,6 +57,13 @@ class Storage::WarehousesController < ApplicationController
   end
 
   private
+
+    def ensure_turbo_frame
+      unless turbo_frame_request?
+        redirect_to storage_warehouses_path
+      end
+    end
+
     def set_warehouse
       @warehouse = Warehouse.joins(:catalog).where(catalogs: { user: current_user }).find(params[:id])
     end

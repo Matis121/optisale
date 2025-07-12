@@ -1,26 +1,37 @@
-<% content_for :title, "Orders" %>
-<div class="w-full flex relative">
-  <div class="w-44 h-full fixed flex flex-col items-center py-4 px-1.5 bg-base-200 shadow-md">
-    <%= button_to 'Utwórz zamówienie', orders_path, method: :post, remote: true, class: "btn btn-primary text-xs" %>
-    <div class="flex flex-col gap-3 mt-4 w-full">
-      <%= link_to orders_path(status: "all"), class: "flex gap-1" do %>
-        <div class="badge badge-xs"></div>
-        <p class="text-xs">Wszystkie</p>
-      <% end %>
-      <% @order_statuses.each do |order_status| %>
-        <%= link_to orders_path(status: order_status.id), class: "flex gap-1" do %>
-          <div class="badge badge-primary badge-xs"><%= @order_counts[order_status.id] %></div>
-          <p class="text-xs"><%= order_status.full_name %></p>
+<% content_for :title, "Zamówienia" %>
+<!-- Sidebar and Content -->
+<div class="p-1">
+  <div class="flex gap-2">
+    <!-- Sidebar -->
+    <div class="w-52 flex-shrink-0 relative">
+      <div class="bg-base-100/50 rounded-lg border border-base-200 p-2 fixed w-52">
+        <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-sm gap-2 w-full mb-4" do %>
+          <i class="fas fa-plus text-xs"></i>
+          Nowe zamówienie
         <% end %>
-      <% end %>
+        <h3 class="text-sm font-medium text-base-content/60 mb-3">Statusy</h3>
+        <div>
+          <%= link_to orders_path(status: "all"), 
+              class: "flex items-center justify-between p-2 rounded-md hover:bg-base-100 transition-colors duration-150 #{params[:status] == 'all' || params[:status].blank? ? 'bg-primary/5 text-primary' : 'text-base-content/60'}" do %>
+            <span class="text-xs">Wszystkie</span>
+          <% end %>
+          <% @order_statuses.each do |order_status| %>
+            <%= link_to orders_path(status: order_status.id), 
+                class: "flex items-center justify-between p-2 rounded-md hover:bg-base-100 transition-colors duration-150 #{params[:status] == order_status.id.to_s ? 'bg-primary/5 text-primary' : 'text-base-content/70'}" do %>
+              <span class="text-xs"><%= order_status.full_name %></span>
+              <span class="text-xs bg-primary/5 text-primary px-2 py-1 rounded-full">
+                <%= @order_counts[order_status.id] %>
+              </span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="ml-48 w-full m-3 rounded-md shadow-md">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="font-bold text-xl pt-4 px-4">Zamówienia</h1>
-    </div>
-    <div id="orders" class="min-w-full divide-y divide-gray-200">
-      <%= render partial: "orders/table", locals: { orders: @orders } %>
+    <!-- Main Content -->
+    <div class="flex-1">
+      <div id="orders" class="min-w-full">
+        <%= render partial: "orders/table", locals: { orders: @orders } %>
+      </div>
     </div>
   </div>
 </div>

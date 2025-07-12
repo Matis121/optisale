@@ -1,22 +1,15 @@
 <%# Table Section %>
-<div class="bg-base-100 rounded-lg shadow-sm">
-  <div class="flex justify-between items-center mb-4 py-4 px-4">
-    <h1 class="font-bold text-xl">Produkty</h1>
-    <%= link_to "Nowy produkt", new_storage_product_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
-  </div>
+<div class="bg-base-200 rounded-lg border border-base-200 overflow-hidden shadow-sm">
   <div class="overflow-x-auto w-full">
-    <table class="table table-zebra w-full">
-      <thead>
-        <tr class="text-xs">
-          <th class="font-semibold">Nazwa</th>
-          <th class="font-semibold">Cena netto</th>
-          <th class="font-semibold">Cena brutto</th>
-          <th class="font-semibold">Stan</th>
-          <th class="font-semibold flex flex-col">
-            <span>Data utworzenia</span>
-            <span class="text-[10px] text-blue-800 font-medium">Data modyfikacji</span>
-          </th>
-          <th class="font-semibold">Akcje</th>
+    <table class="table w-full">
+      <thead class="bg-base-100">
+        <tr>
+          <th class="text-base-content font-semibold">Nazwa produktu</th>
+          <th class="text-base-content font-semibold text-center">Cena netto</th>
+          <th class="text-base-content font-semibold text-center">Cena brutto</th>
+          <th class="text-base-content font-semibold text-center">Stan magazynowy</th>
+          <th class="text-base-content font-semibold">Data utworzenia</th>
+          <th class="text-base-content font-semibold text-right">Akcje</th>
         </tr>
       </thead>
       <tbody>
@@ -25,9 +18,21 @@
             <%= render partial: "storage/products/row", locals: { product: product } %>
           <% end %>
         <% else %>
-          <tr class="my-14">
-            <td colspan="8" class="text-gray-400 text-center pt-18">
-              Brak produktów do wyświetlenia.
+          <tr>
+            <td colspan="6" class="text-center py-16">
+              <div class="max-w-sm mx-auto">
+                <div class="w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-box text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-base-content mb-3">Brak produktów</h3>
+                <p class="text-base-content/60 mb-6">
+                  Utwórz swój pierwszy produkt, aby rozpocząć zarządzanie asortymentem.
+                </p>
+                <%= link_to new_storage_product_path, class: "btn btn-primary gap-2" do %>
+                  <i class="fas fa-plus"></i>
+                  Utwórz produkt
+                <% end %>
+              </div>
             </td>
           </tr>
         <% end %>
@@ -35,50 +40,54 @@
     </table>
   </div>
   <%# Pagination Section %>
-  <div class="px-2 py-4">
-    <div class="mt-4 flex flex-col gap-3 justify-between">
-      <%# Left side - Items count and per page selector %>
-      <div class="flex items-center gap-4">
-        <div class="text-sm text-gray-700">
-          <%# Items count %>
-          Pokazuję 
-          <span class="font-medium"><%= @products.offset_value + 1 %></span>-<span class="font-medium"><%= @products.offset_value + @products.length %></span> z 
-          <span class="font-medium"><%= @products.total_count %></span> pozycji
+  <% if @products.present? %>
+    <div class="px-6 py-4 border-t border-base-200">
+      <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+        <%# Left side - Items count and per page selector %>
+        <div class="flex items-center gap-4">
+          <div class="text-sm text-base-content/70">
+            Pokazuję 
+            <span class="font-medium text-base-content"><%= @products.offset_value + 1 %></span>-<span class="font-medium text-base-content"><%= @products.offset_value + @products.length %></span> z 
+            <span class="font-medium text-base-content"><%= @products.total_count %></span> pozycji
+          </div>
           <%# Per page selector %>
-          <div class="dropdown dropdown-top ml-2">
-            <button tabindex="0" class="btn btn-ghost btn-xs">
-              <%= @per_page %>
-              <%= lucide_icon("chevron-down", class: "h-4 w-4") %>
+          <div class="dropdown dropdown-top">
+            <button tabindex="0" class="btn btn-ghost btn-sm">
+              <%= @per_page %> na stronę
+              <i class="fas fa-chevron-down text-xs"></i>
             </button>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-16">
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
               <% [20, 30, 50, 75, 100].each do |per_page| %>
                 <li>
-                  <%= link_to per_page, 
+                  <%= link_to "#{per_page} na stronę", 
                     storage_products_path(page: 1, per_page: per_page), 
-                    class: @per_page == per_page ? 'active' : '',
+                    class: @per_page == per_page ? 'active bg-primary text-primary-content' : 'hover:bg-base-200',
                     data: { turbo_frame: "products_frame" } %>
                 </li>
               <% end %>
             </ul>
           </div>
         </div>
-      </div>
-      <div class="flex justify-end gap-2">
-        <%# Previous page button %>
-        <%= link_to storage_products_path(page: @products.prev_page, per_page: @per_page), 
-          class: "inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md #{@products.prev_page ? 'text-gray-700 bg-white hover:bg-gray-50' : 'text-gray-400 bg-gray-50 cursor-not-allowed'}", 
-          data: { turbo_frame: "products_frame" },
-          onclick: @products.prev_page ? nil : "return false" do %>
-          <%= lucide_icon("chevron-left", class: "h-5 w-5") %>
-        <% end %>
-        <%# Next page button %>
-        <%= link_to storage_products_path(page: @products.next_page, per_page: @per_page), 
-          class: "inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md #{@products.next_page ? 'text-gray-700 bg-white hover:bg-gray-50' : 'text-gray-400 bg-gray-50 cursor-not-allowed'}", 
-          data: { turbo_frame: "products_frame" },
-          onclick: @products.next_page ? nil : "return false" do %>
-          <%= lucide_icon("chevron-right", class: "h-5 w-5") %>
-        <% end %>
+        <%# Pagination buttons %>
+        <div class="flex gap-2">
+          <%# Previous page button %>
+          <%= link_to storage_products_path(page: @products.prev_page, per_page: @per_page), 
+            class: "btn btn-outline btn-sm #{@products.prev_page ? 'hover:bg-base-200' : 'opacity-50 cursor-not-allowed'}", 
+            data: { turbo_frame: "products_frame" },
+            onclick: @products.prev_page ? nil : "return false" do %>
+            <i class="fas fa-chevron-left"></i>
+            Poprzednia
+          <% end %>
+          <%# Next page button %>
+          <%= link_to storage_products_path(page: @products.next_page, per_page: @per_page), 
+            class: "btn btn-outline btn-sm #{@products.next_page ? 'hover:bg-base-200' : 'opacity-50 cursor-not-allowed'}", 
+            data: { turbo_frame: "products_frame" },
+            onclick: @products.next_page ? nil : "return false" do %>
+            Następna
+            <i class="fas fa-chevron-right"></i>
+          <% end %>
+        </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>

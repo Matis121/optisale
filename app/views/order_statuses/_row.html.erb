@@ -1,27 +1,41 @@
-<tr class="hover:bg-gray-50 transition-colors duration-150">
-  <td class="px-6 py-4 whitespace-nowrap">
-    <div class="text-sm font-medium text-gray-900">
-      <%= status.full_name %>
+<tr class="hover:bg-base-300/50 transition-colors duration-200">
+  <td>
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center">
+        <i class="fas fa-tag text-secondary text-sm"></i>
+      </div>
+      <div>
+        <div class="font-semibold text-base-content"><%= status.full_name %></div>
+      </div>
     </div>
   </td>
-  <td class="px-6 py-4 whitespace-nowrap">
-    <div class="text-sm text-gray-500">
-      <%= status.short_name %>
-    </div>
+  <td>
+    <span class="badge badge-outline badge-sm"><%= status.short_name %></span>
   </td>
-  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-    <div class="flex gap-2 justify-end">
-      <%= link_to edit_order_status_path(status), 
-         
-          data: { turbo_frame: "edit_modal" } do %>
-        <%= lucide_icon("pencil", class: "w-5 h-5") %>
-      <% end %>
-      <%= button_to status, 
-          method: :delete, 
-          
-          data: { turbo_confirm: "Are you sure?" } do %>
-        <%= lucide_icon("x", class: "w-5 h-5") %>
-      <% end %>
+  <td class="text-right">
+    <div class="flex items-center justify-end gap-2">
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+          <i class="fas fa-ellipsis-v text-base-content/60"></i>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
+          <li>
+            <%= link_to edit_order_status_path(status), 
+                class: "gap-2",
+                data: { turbo_frame: "edit_modal" } do %>
+              <i class="fas fa-edit text-primary"></i> Edytuj
+            <% end %>
+          </li>
+          <li>
+            <%= button_to status, 
+                method: :delete, 
+                class: "text-error gap-2",
+                data: { turbo_confirm: "Czy na pewno chcesz usunąć ten status?" } do %>
+              <i class="fas fa-trash"></i> Usuń
+            <% end %>
+          </li>
+        </ul>
+      </div>
     </div>
   </td>
 </tr>

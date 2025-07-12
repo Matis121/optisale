@@ -1,13 +1,6 @@
 Rails.application.routes.draw do
   # Storage
   namespace :storage do
-    get "warehouses/index"
-    get "warehouses/show"
-    get "warehouses/new"
-    get "warehouses/edit"
-    get "warehouses/create"
-    get "warehouses/update"
-    get "warehouses/destroy"
     root to: "products#index"
     resources :products
     resources :warehouses
