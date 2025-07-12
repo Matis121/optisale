@@ -1,7 +1,5 @@
-<%= turbo_frame_tag "modal-frame" do %>
-  <dialog id="modal" class="modal backdrop-blur-xs" open="true">
-    <div class="modal-box bg-base-200 border border-base-300 shadow-md rounded-lg max-w-2xl px-8 py-6">
-      <%= content %>
-    </div>
-  </dialog>
-<% end %>
+<dialog id="modal" class="modal" open="true">
+  <div class="modal-box bg-base-200 border border-base-300 shadow-md rounded-lg max-w-2xl px-8 py-6">
+    <%= content %>
+  </div>
+</dialog>

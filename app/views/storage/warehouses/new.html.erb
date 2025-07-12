@@ -1,3 +1,5 @@
-<%= render Ui::Layout::Modal::DefaultComponent.new(title: "Magazyn") do %>
-  <%= render "form" %>
+<%= turbo_frame_tag "modal-frame" do %>
+  <%= render Ui::Layout::Modal::DefaultComponent.new(title: "Magazyn") do %>
+    <%= render "form" %>
+  <% end %>
 <% end %>

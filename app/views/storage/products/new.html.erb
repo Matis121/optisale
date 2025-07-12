@@ -1,8 +1,5 @@
-<% content_for :title, "Nowy produkt" %>
-
-<div class="w-full py-8 px-12">
-  <h1 class="font-bold text-4xl mb-12">Nowy produkt</h1>
-
-  <%= render "form", product: @product %>
-
-</div>
+<%= turbo_frame_tag "modal-frame" do %>
+  <%= render Ui::Layout::Modal::DefaultComponent.new(title: "Produkt") do %>
+    <%= render "form" %>
+  <% end %>
+<% end %>

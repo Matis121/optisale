@@ -1,5 +1,6 @@
 class Storage::ProductsController < ApplicationController
   before_action :set_product, only: %i[ edit update destroy ]
+  before_action :ensure_turbo_frame, only: %i[ edit new ]
 
   # GET /products or /products.json
   def index
@@ -51,7 +52,7 @@ class Storage::ProductsController < ApplicationController
         format.html { redirect_to storage_products_path, notice: "Product was successfully created." }
         format.json { render :show, status: :created, location: @product }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("product-form", partial: "storage/products/form") }
       end
     end
   end
@@ -63,14 +64,7 @@ class Storage::ProductsController < ApplicationController
         format.html { redirect_to storage_products_path, notice: "Product was successfully updated." }
         format.json { render :show, status: :ok, location: @product }
       else
-        Rails.logger.debug "PRODUCT ERRORS: #{@product.errors.full_messages}"
-        @product.product_stocks.each do |ps|
-          Rails.logger.debug "PRODUCT_STOCK ERRORS: #{ps.errors.full_messages}"
-        end
-        @product.product_prices.each do |pp|
-          Rails.logger.debug "PRODUCT_PRICE ERRORS: #{pp.errors.full_messages}"
-        end
-        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("product-form", partial: "storage/products/form") }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
     end
@@ -87,17 +81,22 @@ class Storage::ProductsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_product
-      @product = Product.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def product_params
-      params.require(:product).permit(
-        :name, :sku, :ean, :tax_rate, :catalog_id,
-        product_stocks_attributes: [ :id, :warehouse_id, :quantity ],
-        product_prices_attributes: [ :id, :price_group_id, :nett_price, :gross_price, :currency ]
-      )
+  def ensure_turbo_frame
+    unless turbo_frame_request?
+      redirect_to storage_products_path
     end
+  end
+
+  def set_product
+    @product = Product.find(params.expect(:id))
+  end
+
+  def product_params
+    params.require(:product).permit(
+      :name, :sku, :ean, :tax_rate, :catalog_id,
+      product_stocks_attributes: [ :id, :warehouse_id, :quantity ],
+      product_prices_attributes: [ :id, :price_group_id, :nett_price, :gross_price, :currency ]
+    )
+  end
 end

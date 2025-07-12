@@ -67,7 +67,7 @@
                 <div class="text-xs text-base-content/60">
                   <span class="font-semibold text-base-content"><%= @products.total_count %></span> produktów
                 </div>
-                <%= link_to new_storage_product_path, class: "btn btn-primary btn-xs gap-1" do %>
+                <%= link_to new_storage_product_path, class: "btn btn-primary btn-xs gap-1", data: { turbo_frame: "modal-frame" } do %>
                   <i class="fas fa-plus text-xs"></i>
                   Nowy produkt
                 <% end %>

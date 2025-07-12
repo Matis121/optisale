@@ -1,5 +1,6 @@
 class Storage::PriceGroupsController < ApplicationController
   before_action :set_price_group, only: %i[ show edit update destroy ]
+  before_action :ensure_turbo_frame, only: %i[ edit new ]
 
   def index
     @price_groups = PriceGroup.joins(:catalog).where(catalogs: { user: current_user }).includes(:catalog)
@@ -27,7 +28,7 @@ class Storage::PriceGroupsController < ApplicationController
         format.json { render :show, status: :created, location: @price_group }
       else
         @catalogs = current_user.catalogs
-        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("price-group-form", partial: "storage/price_groups/form") }
         format.json { render json: @price_group.errors, status: :unprocessable_entity }
       end
     end
@@ -40,7 +41,7 @@ class Storage::PriceGroupsController < ApplicationController
         format.json { render :show, status: :ok, location: @price_group }
       else
         @catalogs = current_user.catalogs
-        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("price-group-form", partial: "storage/price_groups/form") }
         format.json { render json: @price_group.errors, status: :unprocessable_entity }
       end
     end
@@ -56,11 +57,18 @@ class Storage::PriceGroupsController < ApplicationController
   end
 
   private
-    def set_price_group
-      @price_group = PriceGroup.joins(:catalog).where(catalogs: { user: current_user }).find(params[:id])
-    end
 
-    def price_group_params
-      params.require(:price_group).permit(:name, :catalog_id)
+  def ensure_turbo_frame
+    unless turbo_frame_request?
+      redirect_to storage_price_groups_path
     end
+  end
+
+  def set_price_group
+    @price_group = PriceGroup.joins(:catalog).where(catalogs: { user: current_user }).find(params[:id])
+  end
+
+  def price_group_params
+    params.require(:price_group).permit(:name, :catalog_id)
+  end
 end

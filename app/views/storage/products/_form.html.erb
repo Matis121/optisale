@@ -1,115 +1,119 @@
-<!-- Updated form with DaisyUI classes -->
-<%= form_with(model: [:storage, product], class: "space-y-6") do |form| %>
-  <%= form.hidden_field :catalog_id, value: product.catalog&.id || current_user.catalogs.first&.id %>
-  <!-- Form Fields in Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Product Name -->
-    <div class="form-control w-full">
-      <%= form.label :name, class: "label" do %>
-        <span class="label-text font-semibold">Product Name</span>
-      <% end %>
-      <%= form.text_field :name, 
-          class: "input input-bordered w-full #{'input-error' if product.errors[:name].any?}",
-          placeholder: "Enter product name" %>
-      <% if product.errors[:name].any? %>
-        <div class="label">
-          <span class="label-text-alt text-error"><%= product.errors[:name].first %></span>
-        </div>
-      <% end %>
-    </div>
-    <!-- SKU -->
-    <div class="form-control w-full">
-      <%= form.label :sku, class: "label" do %>
-        <span class="label-text font-semibold">SKU</span>
-      <% end %>
-      <%= form.text_field :sku, 
-          class: "input input-bordered w-full #{'input-error' if product.errors[:sku].any?}",
-          placeholder: "Product SKU" %>
-      <% if product.errors[:sku].any? %>
-        <div class="label">
-          <span class="label-text-alt text-error"><%= product.errors[:sku].first %></span>
-        </div>
-      <% end %>
-    </div>
-    <!-- EAN -->
-    <div class="form-control w-full">
-      <%= form.label :ean, class: "label" do %>
-        <span class="label-text font-semibold">EAN</span>
-      <% end %>
-      <%= form.text_field :ean, 
-          class: "input input-bordered w-full #{'input-error' if product.errors[:ean].any?}",
-          placeholder: "EAN barcode" %>
-      <% if product.errors[:ean].any? %>
-        <div class="label">
-          <span class="label-text-alt text-error"><%= product.errors[:ean].first %></span>
-        </div>
-      <% end %>
-    </div>
-    <!-- Tax Rate -->
-    <div class="form-control w-full">
-      <%= form.label :tax_rate, class: "label" do %>
-        <span class="label-text font-semibold">Tax Rate (%)</span>
-      <% end %>
-      <div class="input-group">
-        <%= form.number_field :tax_rate, 
-            class: "input input-bordered w-full #{'input-error' if product.errors[:tax_rate].any?}",
-            placeholder: "23.00",
-            step: 0.01 %>
-      </div>
-      <% if product.errors[:tax_rate].any? %>
-        <div class="label">
-          <span class="label-text-alt text-error"><%= product.errors[:tax_rate].first %></span>
-        </div>
-      <% end %>
-    </div>
-  </div>
-  <div class="divider">Ceny</div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <% @product.product_prices.each do |price| %>
-      <%= form.fields_for :product_prices, price do |price_fields| %>
-        <%= price_fields.hidden_field :price_group_id %>
-        <div class="form-control w-full">
-          <%= price_fields.label :gross_price, "#{price.price_group.name} - Cena brutto", class: "label" %>
-          <%= price_fields.number_field :gross_price, 
-            class: "input input-bordered w-full",
-            step: 0.01,
-            value: price.gross_price || 0 %>
-        </div>
-        <div class="form-control w-full">
-          <%= price_fields.label :nett_price, "#{price.price_group.name} - Cena netto", class: "label" %>
-          <%= price_fields.number_field :nett_price, 
-            class: "input input-bordered w-full",
-            step: 0.01,
-            value: price.nett_price || 0 %>
-        </div>
-        <div class="form-control w-full">
-          <%= price_fields.label :currency, "#{price.price_group.name} - Waluta", class: "label" %>
-          <%= price_fields.text_field :currency, 
-            class: "input input-bordered w-full",
-            value: price.currency || "PLN" %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
-  <div class="divider">Stany magazynowe</div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <% @product.product_stocks.each do |stock| %>
-      <div class="form-control w-full">
-        <%= form.fields_for :product_stocks, stock do |stock_fields| %>
-          <%= stock_fields.hidden_field :warehouse_id %>
-          <%= stock_fields.label :quantity, "#{stock.warehouse.name}", class: "label" %>
-          <%= stock_fields.number_field :quantity, 
-            class: "input input-bordered w-full",
-            value: stock.quantity || 0 %>
+<%= form_with(model: [:storage, @product], class: "space-y-6", id: "product-form", data: { turbo_frame: "_top" }) do |form| %>
+  <%= form.hidden_field :catalog_id, value: @product.catalog&.id || current_user.catalogs.first&.id %>
+  <!-- Basic Information -->
+  <div class="space-y-4">
+    <h3 class="text-lg font-semibold">Informacje podstawowe</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="form-control">
+        <%= form.label :name, "Nazwa produktu", class: "label" %>
+        <%= form.text_field :name, 
+            class: "input input-bordered w-full #{'input-error' if @product.errors[:name].any?}",
+            placeholder: "Wprowadź nazwę produktu" %>
+        <% if @product.errors[:name].any? %>
+          <div class="label">
+            <span class="label-text-alt text-error"><%= @product.errors[:name].first %></span>
+          </div>
         <% end %>
       </div>
-    <% end %>
+      <div class="form-control">
+        <%= form.label :sku, "SKU", class: "label" %>
+        <%= form.text_field :sku, 
+            class: "input input-bordered w-full #{'input-error' if @product.errors[:sku].any?}",
+            placeholder: "Kod SKU produktu" %>
+        <% if @product.errors[:sku].any? %>
+          <div class="label">
+            <span class="label-text-alt text-error"><%= @product.errors[:sku].first %></span>
+          </div>
+        <% end %>
+      </div>
+      <div class="form-control">
+        <%= form.label :ean, "EAN", class: "label" %>
+        <%= form.text_field :ean, 
+            class: "input input-bordered w-full #{'input-error' if @product.errors[:ean].any?}",
+            placeholder: "Kod kreskowy EAN" %>
+        <% if @product.errors[:ean].any? %>
+          <div class="label">
+            <span class="label-text-alt text-error"><%= @product.errors[:ean].first %></span>
+          </div>
+        <% end %>
+      </div>
+      <div class="form-control">
+        <%= form.label :tax_rate, "Stawka VAT (%)", class: "label" %>
+        <%= form.number_field :tax_rate, 
+            class: "input input-bordered w-full #{'input-error' if @product.errors[:tax_rate].any?}",
+            placeholder: "23.00",
+            step: 0.01 %>
+        <% if @product.errors[:tax_rate].any? %>
+          <div class="label">
+            <span class="label-text-alt text-error"><%= @product.errors[:tax_rate].first %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <!-- Pricing -->
+  <div class="space-y-4">
+    <h3 class="text-lg font-semibold">Cennik</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <% @product.product_prices.each do |price| %>
+        <%= form.fields_for :product_prices, price do |price_fields| %>
+          <%= price_fields.hidden_field :price_group_id %>
+          <div class="border border-base-300 rounded-lg p-4">
+            <h4 class="font-medium mb-3"><%= price.price_group.name %></h4>
+            <div class="space-y-3">
+              <div class="form-control">
+                <%= price_fields.label :gross_price, "Cena brutto", class: "label label-text-sm" %>
+                <%= price_fields.number_field :gross_price, 
+                  class: "input input-bordered input-sm w-full",
+                  step: 0.01,
+                  value: price.gross_price || 0 %>
+              </div>
+              <div class="form-control">
+                <%= price_fields.label :nett_price, "Cena netto", class: "label label-text-sm" %>
+                <%= price_fields.number_field :nett_price, 
+                  class: "input input-bordered input-sm w-full",
+                  step: 0.01,
+                  value: price.nett_price || 0 %>
+              </div>
+              <div class="form-control">
+                <%= price_fields.label :currency, "Waluta", class: "label label-text-sm" %>
+                <%= price_fields.text_field :currency, 
+                  class: "input input-bordered input-sm w-full",
+                  value: price.currency || "PLN" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <!-- Stock Levels -->
+  <div class="space-y-4">
+    <h3 class="text-lg font-semibold">Stany magazynowe</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <% @product.product_stocks.each do |stock| %>
+        <div class="form-control">
+          <%= form.fields_for :product_stocks, stock do |stock_fields| %>
+            <%= stock_fields.hidden_field :warehouse_id %>
+            <div class="border border-base-300 rounded-lg p-4">
+              <h4 class="font-medium mb-3"><%= stock.warehouse.name %></h4>
+              <%= stock_fields.label :quantity, "Ilość", class: "label label-text-sm" %>
+              <%= stock_fields.number_field :quantity, 
+                class: "input input-bordered input-sm w-full",
+                value: stock.quantity || 0 %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
   <!-- Form Actions -->
-  <div class="divider"></div>
-  <div class="flex flex-col sm:flex-row gap-3 justify-end">
-    <%= link_to "Anuluj", storage_products_path, class: "btn btn-ghost order-2 sm:order-1" %>
-    <%= form.submit "Zapisz", 
-        class: "btn btn-primary order-1 sm:order-2" %>
+  <div class="flex flex-col sm:flex-row gap-3 justify-end pt-4">
+    <% if @product.new_record? %>
+      <%= form.submit "Utwórz", class: "btn btn-primary" %>
+    <% else %>
+      <%= form.submit "Zapisz", class: "btn btn-primary" %>
+    <% end %>
+    <button type="button" class="btn btn-ghost" onclick="modal.close()">Zamknij</button>
   </div>
 <% end %>

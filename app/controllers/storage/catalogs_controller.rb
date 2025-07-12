@@ -1,5 +1,6 @@
 class Storage::CatalogsController < ApplicationController
   before_action :set_catalog, only: %i[ show edit update destroy ]
+  before_action :ensure_turbo_frame, only: %i[ edit new ]
 
   def index
     @catalogs = current_user.catalogs
@@ -24,7 +25,7 @@ class Storage::CatalogsController < ApplicationController
         format.html { redirect_to storage_catalogs_path, notice: "Katalog został utworzony." }
         format.json { render :show, status: :created, location: @catalog }
       else
-        format.html { render :new, status: :unprocessable_entity }
+      format.turbo_stream { render turbo_stream: turbo_stream.update("catalog-form", partial: "storage/catalogs/form") }
         format.json { render json: @catalog.errors, status: :unprocessable_entity }
       end
     end
@@ -36,7 +37,7 @@ class Storage::CatalogsController < ApplicationController
         format.html { redirect_to storage_catalogs_path, notice: "Katalog został zaktualizowany." }
         format.json { render :show, status: :ok, location: @catalog }
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("catalog-form", partial: "storage/catalogs/form") }
         format.json { render json: @catalog.errors, status: :unprocessable_entity }
       end
     end
@@ -52,6 +53,13 @@ class Storage::CatalogsController < ApplicationController
   end
 
   private
+
+    def ensure_turbo_frame
+      unless turbo_frame_request?
+        redirect_to storage_catalogs_path
+      end
+    end
+
     def set_catalog
       @catalog = current_user.catalogs.find(params[:id])
     end
