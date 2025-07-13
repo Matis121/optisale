@@ -50,7 +50,11 @@
                   <% end %>
                 </td>
                 <td>
-                  <span class="badge badge-outline badge-sm"><%= price_group.catalog.name %></span>
+                  <div class="flex gap-2">
+                    <% price_group.catalogs.each do |catalog| %>
+                      <span class="badge badge-outline badge-sm"><%= catalog.name %></span>
+                    <% end %>
+                  </div>
                 </td>
                 <td class="text-center">
                   <span class="badge badge-accent badge-sm"><%= price_group.product_prices.count %></span>
@@ -73,17 +77,19 @@
                             <i class="fas fa-edit text-primary"></i> Edytuj
                           <% end %>
                         </li>
-                        <li>
-                          <%= link_to storage_price_group_path(price_group), 
+                        <% unless price_group.default? %>
+                          <li>
+                            <%= link_to storage_price_group_path(price_group), 
                               method: :delete,
                               data: { 
                                 confirm: "Czy na pewno chcesz usunąć grupę cenową '#{price_group.name}'?",
                                 turbo_method: :delete
                               },
                               class: "text-error gap-2" do %>
-                            <i class="fas fa-trash"></i> Usuń
-                          <% end %>
-                        </li>
+                              <i class="fas fa-trash"></i> Usuń
+                            <% end %>
+                          </li>
+                        <% end %>
                       </ul>
                     </div>
                   </div>

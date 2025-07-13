@@ -11,10 +11,7 @@ class Warehouse < ApplicationRecord
 
   def ensure_default_warehouse
     if default?
-      self.catalog.warehouses
-        .where(default: true)
-        .where.not(id: self.id)
-        .update_all(default: false)
+      Warehouse.where(default: true).where.not(id: self.id).update_all(default: false)
     end
   end
 

@@ -1,4 +1,4 @@
-  <%= form_with model: [:storage, @catalog], data: { turbo_frame: "_top" }, id: "catalog-form" do |form| %>
+<%= form_with model: [:storage, @catalog], data: { turbo_frame: "_top" }, id: "catalog-form" do |form| %>
   <% if @catalog.errors.any? %>
     <div class="alert alert-error mb-6">
       <i class="fas fa-exclamation-triangle"></i>
@@ -12,15 +12,20 @@
       </div>
     </div>
   <% end %>
-  <div class="form-control w-full mb-6">
-    <%= form.label :name, "Nazwa katalogu", class: "label" %>
-    <%= form.text_field :name, class: "input input-bordered w-full", placeholder: "np. Katalog główny" %>
+  <div class="space-y-8">
+    <div class="form-control w-full">
+      <%= form.label :name, "Nazwa katalogu", class: "label" %>
+      <%= form.text_field :name, class: "input input-bordered w-full focus:input-primary", placeholder: "np. Katalog główny" %>
+      <div class="label">
+        <span class="label-text-alt text-base-content/40 text-xs">Nazwa katalogu będzie widoczna w systemie i używana do organizacji produktów</span>
+      </div>
+    </div>
   </div>
-  <div class="flex gap-3 justify-end">
+  <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-base-300">
     <% if @catalog.new_record? %>
-      <%= form.submit "Utwórz", class: "btn btn-primary" %>
+      <%= form.submit "Utwórz katalog", class: "btn btn-primary" %>
     <% else %>
-      <%= form.submit "Zapisz", class: "btn btn-primary" %>
+      <%= form.submit "Zapisz zmiany", class: "btn btn-primary" %>
     <% end %>
     <button type="button" class="btn btn-ghost" onclick="modal.close()">Zamknij</button>
   </div>

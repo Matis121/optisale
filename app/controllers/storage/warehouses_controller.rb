@@ -3,7 +3,7 @@ class Storage::WarehousesController < ApplicationController
   before_action :ensure_turbo_frame, only: %i[ edit new ]
 
   def index
-    @warehouses = Warehouse.joins(:catalog).where(catalogs: { user: current_user }).includes(:catalog)
+    @warehouses = Warehouse.joins(:catalogs).where(catalogs: { user: current_user }).distinct
   end
 
   def show
@@ -20,7 +20,7 @@ class Storage::WarehousesController < ApplicationController
 
   def create
     @warehouse = Warehouse.new(warehouse_params)
-    @warehouse.catalog = current_user.catalogs.find(warehouse_params[:catalog_id])
+    @warehouse.catalogs = current_user.catalogs.where(id: warehouse_params[:catalog_ids])
 
     respond_to do |format|
       if @warehouse.save
@@ -28,7 +28,7 @@ class Storage::WarehousesController < ApplicationController
         format.json { render :show, status: :created, location: @warehouse }
       else
         @catalogs = current_user.catalogs
-        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("warehouse-form", partial: "storage/warehouses/form") }
         format.json { render json: @warehouse.errors, status: :unprocessable_entity }
       end
     end
@@ -41,7 +41,7 @@ class Storage::WarehousesController < ApplicationController
         format.json { render :show, status: :ok, location: @warehouse }
       else
         @catalogs = current_user.catalogs
-        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("warehouse-form", partial: "storage/warehouses/form") }
         format.json { render json: @warehouse.errors, status: :unprocessable_entity }
       end
     end
@@ -65,10 +65,10 @@ class Storage::WarehousesController < ApplicationController
     end
 
     def set_warehouse
-      @warehouse = Warehouse.joins(:catalog).where(catalogs: { user: current_user }).find(params[:id])
+      @warehouse = Warehouse.joins(:catalogs).where(catalogs: { user: current_user }).find(params[:id])
     end
 
     def warehouse_params
-      params.require(:warehouse).permit(:name, :default, :catalog_id)
+      params.require(:warehouse).permit(:name, :default, catalog_ids: [])
     end
 end

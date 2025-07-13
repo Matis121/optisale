@@ -42,7 +42,11 @@
                   </div>
                 </td>
                 <td>
-                  <span class="badge badge-outline badge-sm"><%= warehouse.catalog.name %></span>
+                  <div class="flex gap-2">
+                    <% warehouse.catalogs.each do |catalog| %>
+                      <span class="badge badge-outline badge-sm"><%= catalog.name %></span>
+                    <% end %>
+                  </div>
                 </td>
                 <td class="text-center">
                   <% if warehouse.default? %>
