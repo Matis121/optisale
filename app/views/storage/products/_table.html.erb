@@ -28,7 +28,7 @@
                 <p class="text-base-content/60 mb-6">
                   Utwórz swój pierwszy produkt, aby rozpocząć zarządzanie asortymentem.
                 </p>
-                <%= link_to new_storage_product_path, class: "btn btn-primary gap-2" do %>
+                <%= link_to new_storage_product_path, data: { turbo_frame: "modal-frame" }, class: "btn btn-primary gap-2" do %>
                   <i class="fas fa-plus"></i>
                   Utwórz produkt
                 <% end %>

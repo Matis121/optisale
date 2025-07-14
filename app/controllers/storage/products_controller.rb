@@ -4,10 +4,16 @@ class Storage::ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
+    catalog = current_user.catalogs.first
+
+    if catalog.nil?
+      @products = Product.none.page(params[:page])
+    else
+      @products = catalog.products.page(params[:page]).per(params[:per_page])
+    end
+
     @per_page = params[:per_page].to_i
     @per_page = 20 if @per_page <= 0 || @per_page > 100 # domyślnie 20, max 100
-
-    @products = Product.all.page(params[:page]).per(@per_page)
   end
 
   # GET /products/new
