@@ -105,8 +105,10 @@ class Storage::ProductsController < ApplicationController
     warehouse_id = params[:warehouse_id]
     if warehouse_id == "all"
       session[:current_warehouse_id] = nil
-    elsif current_user.warehouses.exists?(warehouse_id)
-      session[:current_warehouse_id] = warehouse_id
+    else
+      if current_user.warehouses.exists?(warehouse_id)
+        session[:current_warehouse_id] = warehouse_id
+      end
     end
     redirect_to storage_products_path
   end
@@ -131,11 +133,14 @@ class Storage::ProductsController < ApplicationController
 
   def set_current_warehouse_in_session
     warehouse_id = session[:current_warehouse_id]
-    @current_warehouse = @current_catalog.warehouses.find_by(id: warehouse_id) if warehouse_id.present?
 
-    unless @current_warehouse
-      @current_warehouse = @current_catalog.warehouses.first
-      session[:current_warehouse_id] = @current_warehouse&.id
+    if warehouse_id.present?
+      @current_warehouse = @current_catalog.warehouses.find_by(id: warehouse_id)
+      unless @current_warehouse
+        session[:current_warehouse_id] = nil
+      end
+    else
+      @current_warehouse = nil
     end
   end
 
