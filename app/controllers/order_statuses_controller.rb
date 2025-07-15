@@ -12,7 +12,6 @@ class OrderStatusesController < ApplicationController
 
   # GET /order_statuses/new
   def new
-    Rails.logger.debug "Current user: #{current_user.inspect}"
     @order_status = OrderStatus.new
   end
 
@@ -27,11 +26,9 @@ class OrderStatusesController < ApplicationController
 
     respond_to do |format|
       if @order_status.save
-        format.html { redirect_to @order_status, notice: "Order status was successfully created." }
-        format.json { render :show, status: :created, location: @order_status }
+        format.html { redirect_to order_statuses_path, notice: "Order status was successfully created." }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @order_status.errors, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("order-status-form", partial: "order_statuses/form") }
       end
     end
   end
@@ -40,11 +37,9 @@ class OrderStatusesController < ApplicationController
   def update
     respond_to do |format|
       if @order_status.update(order_status_params)
-        format.html { redirect_to @order_status, notice: "Order status was successfully updated." }
-        format.json { render :show, status: :ok, location: @order_status }
+        format.html { redirect_to order_statuses_path, notice: "Order status was successfully updated." }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @order_status.errors, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("order-status-form", partial: "order_statuses/form") }
       end
     end
   end

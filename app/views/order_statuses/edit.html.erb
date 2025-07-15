@@ -1,7 +1,5 @@
-<% content_for :title, "Editing order status" %>
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing order status</h1>
-  <%= render "form", order_status: @order_status %>
-  <%= link_to "Show this order status", @order_status, class: "btn" %>
-  <%= link_to "Back to order statuses", order_statuses_path, class: "btn" %>
-</div>
+<%= turbo_frame_tag "modal-frame" do %>
+  <%= render Ui::Layout::Modal::DefaultComponent.new(title: "Status zamówienia") do %>
+    <%= render "form" %>
+  <% end %>
+<% end %>
