@@ -1,10 +1,13 @@
 class Storage::ProductsController < ApplicationController
   before_action :set_product, only: %i[ edit update destroy ]
   before_action :ensure_turbo_frame, only: %i[ edit new ]
+  before_action :set_current_catalog_in_session, only: %i[ index create update ]
+  before_action :set_current_warehouse_in_session, only: %i[ index create update ]
+  before_action :set_current_price_group_in_session, only: %i[ index create update ]
 
   # GET /products or /products.json
   def index
-    catalog = current_user.catalogs.first
+    catalog = current_user.catalogs.find(session[:current_catalog_id])
 
     if catalog.nil?
       @products = Product.none.page(params[:page])
@@ -51,7 +54,7 @@ class Storage::ProductsController < ApplicationController
   # POST /products or /products.json
   def create
     @product = Product.new(product_params)
-    @product.catalog ||= current_user.catalogs.first
+    @product.catalog = @current_catalog
 
     respond_to do |format|
       if @product.save
@@ -86,7 +89,61 @@ class Storage::ProductsController < ApplicationController
     end
   end
 
+  def update_current_catalog_in_session
+    session[:current_catalog_id] = params[:catalog_id]
+    redirect_to storage_products_path
+  end
+
+  def update_current_warehouse_in_session
+    session[:current_warehouse] ||= {}
+    warehouse_id = params[:warehouse_id]
+
+    if warehouse_id == "all"
+      session[:current_warehouse][session[:current_catalog_id]] = nil
+    else
+      session[:current_warehouse][session[:current_catalog_id]] = warehouse_id
+    end
+
+    redirect_to storage_products_path
+  end
+
+  def update_current_price_group_in_session
+    session[:current_price_group] ||= {}
+    session[:current_price_group][session[:current_catalog_id]] = params[:price_group_id]
+    redirect_to storage_products_path
+  end
+
   private
+
+  def set_current_catalog_in_session
+    session[:current_catalog_id] ||= current_user.catalogs.first.id
+    @current_catalog = current_user.catalogs.find(session[:current_catalog_id])
+  end
+
+  def set_current_price_group_in_session
+    session[:current_price_group] ||= {}
+    current_catalog_id = session[:current_catalog_id]
+
+    @current_price_group = current_user.price_groups.find_by(id: session[:current_price_group][current_catalog_id])
+
+    unless @current_price_group
+      @current_price_group = current_user.price_groups.first
+      session[:current_price_group][current_catalog_id] = @current_price_group&.id
+    end
+  end
+
+
+  def set_current_warehouse_in_session
+    session[:current_warehouse] ||= {}
+    current_catalog_id = session[:current_catalog_id]
+
+    @current_warehouse = current_user.warehouses.find_by(id: session[:current_warehouse][current_catalog_id])
+
+    unless @current_warehouse
+      @current_warehouse = current_user.warehouses.first
+      session[:current_warehouse][current_catalog_id] = @current_warehouse&.id
+    end
+  end
 
   def ensure_turbo_frame
     unless turbo_frame_request?

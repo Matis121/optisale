@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_220637) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_15_161912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -122,6 +122,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_220637) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "default"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_price_groups_on_user_id"
   end
 
   create_table "product_prices", force: :cascade do |t|
@@ -174,6 +176,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_220637) do
     t.boolean "default"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_warehouses_on_user_id"
   end
 
   add_foreign_key "addresses", "orders"
@@ -184,9 +188,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_220637) do
   add_foreign_key "order_statuses", "users"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "users"
+  add_foreign_key "price_groups", "users"
   add_foreign_key "product_prices", "price_groups"
   add_foreign_key "product_prices", "products"
   add_foreign_key "product_stocks", "products"
   add_foreign_key "product_stocks", "warehouses"
   add_foreign_key "products", "catalogs"
+  add_foreign_key "warehouses", "users"
 end

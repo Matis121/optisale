@@ -3,7 +3,7 @@ class Storage::WarehousesController < ApplicationController
   before_action :ensure_turbo_frame, only: %i[ edit new ]
 
   def index
-    @warehouses = Warehouse.joins(:catalogs).where(catalogs: { user: current_user }).distinct
+    @warehouses = current_user.warehouses
   end
 
   def show
@@ -20,6 +20,7 @@ class Storage::WarehousesController < ApplicationController
 
   def create
     @warehouse = Warehouse.new(warehouse_params)
+    @warehouse.user = current_user
     @warehouse.catalogs = current_user.catalogs.where(id: warehouse_params[:catalog_ids])
 
     respond_to do |format|
@@ -65,7 +66,7 @@ class Storage::WarehousesController < ApplicationController
     end
 
     def set_warehouse
-      @warehouse = Warehouse.joins(:catalogs).where(catalogs: { user: current_user }).find(params[:id])
+      @warehouse = current_user.warehouses.find(params[:id])
     end
 
     def warehouse_params

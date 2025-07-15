@@ -12,7 +12,6 @@
 
 # Tworzenie przykładowego użytkownika
 user = User.find_or_create_by!(email: "test@example.com")
-user.update!(password: "password", password_confirmation: "password")
 
 puts "Utworzono użytkownika: #{user.email}"
 

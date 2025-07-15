@@ -111,7 +111,7 @@
         <p class="text-base-content/60 mb-6">
           Utwórz swoją pierwszą grupę cenową, aby zarządzać cenami produktów.
         </p>
-        <%= link_to new_storage_price_group_path, class: "btn btn-primary gap-2" do %>
+        <%= link_to new_storage_price_group_path, class: "btn btn-primary gap-2", data: { turbo_frame: "modal-frame" } do %>
           <i class="fas fa-plus"></i>
           Utwórz grupę cenową
         <% end %>

@@ -14,17 +14,21 @@
   </td>
   <td class="text-center">
     <div class="font-medium text-base-content">
-      <%= product.product_prices.map { |pp| pp.nett_price }.join(", ") %>
+      <%= product.product_prices.find { |pp| pp.price_group_id == @current_price_group.id }&.nett_price || "0.00" %>
     </div>
   </td>
   <td class="text-center">
     <div class="font-medium text-base-content">
-      <%= product.product_prices.map { |pp| pp.gross_price }.join(", ") %>
+      <%= product.product_prices.find { |pp| pp.price_group_id == @current_price_group.id }&.gross_price || "0.00" %>
     </div>
   </td>
   <td class="text-center">
     <span class="badge badge-secondary badge-sm">
-      <%= product.product_stocks.map { |ps| ps.quantity }.sum %>
+      <% if @current_warehouse.present? %>
+        <%= product.product_stocks.find { |ps| ps.warehouse_id == @current_warehouse.id }&.quantity || "0" %>
+      <% else %>
+        <%= product.product_stocks.map { |ps| ps.quantity }&.sum || "0" %>
+      <% end %>
     </span>
   </td>
   <td>

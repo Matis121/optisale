@@ -54,58 +54,74 @@
   <!-- Pricing -->
   <div class="space-y-4">
     <h3 class="text-lg font-semibold">Cennik</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <% @product.product_prices.each do |price| %>
-        <%= form.fields_for :product_prices, price do |price_fields| %>
-          <%= price_fields.hidden_field :price_group_id %>
-          <div class="border border-base-300 rounded-lg p-4">
-            <h4 class="font-medium mb-3"><%= price.price_group.name %></h4>
-            <div class="space-y-3">
-              <div class="form-control">
-                <%= price_fields.label :gross_price, "Cena brutto", class: "label label-text-sm" %>
-                <%= price_fields.number_field :gross_price, 
+    <% unless @product.product_prices.present? %>
+      <div class="alert alert-alert">
+        <i class="fas fa-info-circle"></i>
+        Brak cen dla produktu.
+        <%= link_to "Dodaj grupę cenową", storage_price_groups_path, class: "btn btn-primary", data: { turbo_frame: "_top" } %>
+      </div>
+    <% else %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% @product.product_prices.each do |price| %>
+          <%= form.fields_for :product_prices, price do |price_fields| %>
+            <%= price_fields.hidden_field :price_group_id %>
+            <div class="border border-base-300 rounded-lg p-4">
+              <h4 class="font-medium mb-3"><%= price.price_group.name %></h4>
+              <div class="space-y-3">
+                <div class="form-control">
+                  <%= price_fields.label :gross_price, "Cena brutto", class: "label label-text-sm" %>
+                  <%= price_fields.number_field :gross_price, 
                   class: "input input-bordered input-sm w-full",
                   step: 0.01,
                   value: price.gross_price || 0 %>
-              </div>
-              <div class="form-control">
-                <%= price_fields.label :nett_price, "Cena netto", class: "label label-text-sm" %>
-                <%= price_fields.number_field :nett_price, 
+                </div>
+                <div class="form-control">
+                  <%= price_fields.label :nett_price, "Cena netto", class: "label label-text-sm" %>
+                  <%= price_fields.number_field :nett_price, 
                   class: "input input-bordered input-sm w-full",
                   step: 0.01,
                   value: price.nett_price || 0 %>
-              </div>
-              <div class="form-control">
-                <%= price_fields.label :currency, "Waluta", class: "label label-text-sm" %>
-                <%= price_fields.text_field :currency, 
+                </div>
+                <div class="form-control">
+                  <%= price_fields.label :currency, "Waluta", class: "label label-text-sm" %>
+                  <%= price_fields.text_field :currency, 
                   class: "input input-bordered input-sm w-full",
                   value: price.currency || "PLN" %>
+                </div>
               </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
   </div>
   <!-- Stock Levels -->
   <div class="space-y-4">
     <h3 class="text-lg font-semibold">Stany magazynowe</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <% @product.product_stocks.each do |stock| %>
-        <div class="form-control">
-          <%= form.fields_for :product_stocks, stock do |stock_fields| %>
-            <%= stock_fields.hidden_field :warehouse_id %>
-            <div class="border border-base-300 rounded-lg p-4">
-              <h4 class="font-medium mb-3"><%= stock.warehouse.name %></h4>
-              <%= stock_fields.label :quantity, "Ilość", class: "label label-text-sm" %>
-              <%= stock_fields.number_field :quantity, 
+    <% unless @product.product_stocks.present? %>
+      <div class="alert alert-alert">
+        <i class="fas fa-info-circle"></i>
+        Brak stanów magazynowych.
+        <%= link_to "Dodaj magazyn", storage_warehouses_path, class: "btn btn-primary", data: { turbo_frame: "_top" } %>
+      </div>
+    <% else %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% @product.product_stocks.each do |stock| %>
+          <div class="form-control">
+            <%= form.fields_for :product_stocks, stock do |stock_fields| %>
+              <%= stock_fields.hidden_field :warehouse_id %>
+              <div class="border border-base-300 rounded-lg p-4">
+                <h4 class="font-medium mb-3"><%= stock.warehouse.name %></h4>
+                <%= stock_fields.label :quantity, "Ilość", class: "label label-text-sm" %>
+                <%= stock_fields.number_field :quantity, 
                 class: "input input-bordered input-sm w-full",
                 value: stock.quantity || 0 %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   </div>
   <!-- Form Actions -->
   <div class="flex flex-col sm:flex-row gap-3 justify-end pt-4">

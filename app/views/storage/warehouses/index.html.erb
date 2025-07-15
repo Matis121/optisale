@@ -107,7 +107,7 @@
         <p class="text-base-content/60 mb-6">
           Utwórz swój pierwszy magazyn, aby rozpocząć zarządzanie produktami.
         </p>
-        <%= link_to new_storage_warehouse_path, class: "btn btn-primary gap-2" do %>
+        <%= link_to new_storage_warehouse_path, class: "btn btn-primary gap-2", data: { turbo_frame: "modal-frame" } do %>
           <i class="fas fa-plus"></i>
           Utwórz magazyn
         <% end %>

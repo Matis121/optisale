@@ -8,138 +8,115 @@
       <div class="flex flex-wrap items-center gap-3">
         <!-- Stan magazynowy -->
         <div class="form-control">
-          <select name="stock_status" class="select select-bordered select-xs bg-base-100 text-base-content border-base-300 focus:border-primary w-32">
-            <option value="" class="text-base-content">Stan magazynowy</option>
-            <option value="in_stock" class="text-base-content" <%= 'selected' if params[:stock_status] == 'in_stock' %>>W magazynie</option>
-            <option value="low_stock" class="text-base-content" <%= 'selected' if params[:stock_status] == 'low_stock' %>>Niski stan</option>
-            <option value="out_of_stock" class="text-base-content" <%= 'selected' if params[:stock_status] == 'out_of_stock' %>>Brak w magazynie</option>
-          </select>
         </div>
-
         <!-- Katalog (tylko jeśli więcej niż jeden) -->
-        <% if Catalog.count > 1 %>
-          <div class="form-control">
-              <select name="catalog_id" class="select select-bordered select-xs bg-base-100 text-base-content border-base-300 focus:border-primary w-40">
-                <option value="" class="text-base-content">Katalog</option>
-                <% Catalog.all.each do |catalog| %>
-                  <option value="<%= catalog.id %>" class="text-base-content" <%= 'selected' if params[:catalog_id] == catalog.id.to_s %>>
-                  <%= catalog.name %>
-                </option>
-                  <% end %>
-                </select>
-              </div>
-            <% end %>
-            <!-- Magazyn (tylko jeśli więcej niż jeden) -->
-            <% if Warehouse.count > 1 %>
-              <div class="form-control">
-                <select name="warehouse_id" class="select select-bordered select-xs bg-base-100 text-base-content border-base-300 focus:border-primary w-40">
-                  <option value="" class="text-base-content">Magazyn</option>
-                  <% Warehouse.all.each do |warehouse| %>
-                    <option value="<%= warehouse.id %>" class="text-base-content" <%= 'selected' if params[:warehouse_id] == warehouse.id.to_s %>>
-                  <%= warehouse.name %>
-                </option>
-                    <% end %>
-                  </select>
-                </div>
-              <% end %>
-              <!-- Grupa cenowa (tylko jeśli więcej niż jeden) -->
-              <% if PriceGroup.count > 1 %>
-                <div class="form-control">
-                  <select name="price_group_id" class="select select-bordered select-xs bg-base-100 text-base-content border-base-300 focus:border-primary w-40">
-                    <option value="" class="text-base-content">Grupa cenowa</option>
-                    <% PriceGroup.all.each do |price_group| %>
-                      <option value="<%= price_group.id %>" class="text-base-content" <%= 'selected' if params[:price_group_id] == price_group.id.to_s %>>
-                  <%= price_group.name %>
-                </option>
-                      <% end %>
-                    </select>
-                  </div>
-                <% end %>
-                <!-- Advanced filters toggle -->
-                <button class="btn btn-ghost btn-xs gap-2" onclick="toggleFilters()">
-                  <i class="fas fa-filter text-base-content text-xs"></i>
-                  Więcej
-                  <i class="fas fa-chevron-down text-xs transition-transform" id="filter-icon"></i>
-                </button>
-              </div>
-              <!-- Actions -->
-              <div class="flex items-center gap-2">
-                <div class="text-xs text-base-content/60">
-                  <span class="font-semibold text-base-content"><%= @products.total_count %></span> produktów
-                </div>
-                <%= link_to new_storage_product_path, class: "btn btn-primary btn-xs gap-1", data: { turbo_frame: "modal-frame" } do %>
-                  <i class="fas fa-plus text-xs"></i>
-                  Nowy produkt
-                <% end %>
-              </div>
-            </div>
-            <!-- Collapsible advanced filters -->
-            <div class="hidden mt-3 pt-3 border-t border-base-300" id="filters-section">
-              <form class="space-y-3">
-                <!-- Text filters -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <input type="text" 
+        <% if @current_catalog.present? %>
+          <%= form_with url: update_current_catalog_in_session_storage_products_path, method: :post, class: "form-control" do |f| %>
+            <%= f.label :catalog_id, "Katalog", class: "label" %>
+            <%= f.select :catalog_id, options_from_collection_for_select(current_user.catalogs, :id, :name, @current_catalog.id), {}, { class: "input", onchange: 'this.form.submit()' } %>
+          <% end %>
+        <% end %>
+        <!-- Magazyn (tylko jeśli więcej niż jeden) -->
+        <% if @current_catalog.warehouses.count > 1 %>
+          <%= form_with url: update_current_warehouse_in_session_storage_products_path, method: :post, class: "form-control" do |f| %>
+            <%= f.label :warehouse_id, "Magazyn", class: "label" %>
+            <% options = @current_catalog.warehouses.map { |w| [w.name, w.id] } %>
+            <% options.unshift(['Wszystkie stany', 'all']) %>
+            <%= f.select :warehouse_id, options_for_select(options, @current_warehouse&.id || 'all'), {}, { class: "input", onchange: 'this.form.submit()' } %>
+          <% end %>
+        <% end %>
+        <!-- Grupa cenowa (tylko jeśli więcej niż jeden) -->
+        <% if @current_catalog.price_groups.count > 1 %>
+          <%= form_with url: update_current_price_group_in_session_storage_products_path, method: :post, class: "form-control" do |f| %>
+            <%= f.label :price_group_id, "Grupa cenowa", class: "label" %>
+            <%= f.select :price_group_id, options_from_collection_for_select(@current_catalog.price_groups, :id, :name, @current_price_group.id), {}, { class: "input", onchange: 'this.form.submit()' } %>
+          <% end %>
+        <% end %>
+        <!-- Advanced filters toggle -->
+        <button class="btn btn-ghost btn-xs gap-2" onclick="toggleFilters()">
+          <i class="fas fa-filter text-base-content text-xs"></i>
+          Więcej
+          <i class="fas fa-chevron-down text-xs transition-transform" id="filter-icon"></i>
+        </button>
+      </div>
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <div class="text-xs text-base-content/60">
+          <span class="font-semibold text-base-content"><%= @products.total_count %></span> produktów
+        </div>
+        <%= link_to new_storage_product_path, class: "btn btn-primary btn-xs gap-1", data: { turbo_frame: "modal-frame" } do %>
+          <i class="fas fa-plus text-xs"></i>
+          Nowy produkt
+        <% end %>
+      </div>
+    </div>
+    <!-- Collapsible advanced filters -->
+    <div class="hidden mt-3 pt-3 border-t border-base-300" id="filters-section">
+      <form class="space-y-3">
+        <!-- Text filters -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <input type="text" 
                  name="name" 
                  placeholder="Nazwa produktu..." 
                  class="input input-bordered input-xs bg-base-100 text-base-content border-base-300 focus:border-primary placeholder:text-base-content/50"
                  value="<%= params[:name] %>">
-                  <input type="text" 
+          <input type="text" 
                  name="sku" 
                  placeholder="SKU..." 
                  class="input input-bordered input-xs bg-base-100 text-base-content border-base-300 focus:border-primary placeholder:text-base-content/50"
                  value="<%= params[:sku] %>">
-                  <input type="text" 
+          <input type="text" 
                  name="ean" 
                  placeholder="EAN..." 
                  class="input input-bordered input-xs bg-base-100 text-base-content border-base-300 focus:border-primary placeholder:text-base-content/50"
                  value="<%= params[:ean] %>">
-                </div>
-                <!-- Price filters -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <input type="number" 
+        </div>
+        <!-- Price filters -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <input type="number" 
                  name="price_min" 
                  placeholder="Cena min" 
                  step="0.01"
                  class="input input-bordered input-xs bg-base-100 text-base-content border-base-300 focus:border-primary placeholder:text-base-content/50"
                  value="<%= params[:price_min] %>">
-                  <input type="number" 
+          <input type="number" 
                  name="price_max" 
                  placeholder="Cena max" 
                  step="0.01"
                  class="input input-bordered input-xs bg-base-100 text-base-content border-base-300 focus:border-primary placeholder:text-base-content/50"
                  value="<%= params[:price_max] %>">
-                  <div class="flex gap-2">
-                    <button type="submit" class="btn btn-primary btn-xs gap-1">
-                      <i class="fas fa-search text-xs"></i>
-                      Filtruj
-                    </button>
-                    <a href="<%= storage_products_path %>" class="btn btn-outline btn-xs gap-1">
-                      <i class="fas fa-times text-xs"></i>
-                      Wyczyść
-                    </a>
-                  </div>
-                </div>
-              </form>
-            </div>
+          <div class="flex gap-2">
+            <button type="submit" class="btn btn-primary btn-xs gap-1">
+              <i class="fas fa-search text-xs"></i>
+              Filtruj
+            </button>
+            <a href="<%= storage_products_path %>" class="btn btn-outline btn-xs gap-1">
+              <i class="fas fa-times text-xs"></i>
+              Wyczyść
+            </a>
           </div>
-          <!-- Content -->
-          <div id="products" class="min-w-full">
-            <%= turbo_frame_tag "products_frame" do %>
-              <%= render partial: "storage/products/table", locals: { products: @products } %>
-            <% end %>
-          </div>
-          <script>
-            function toggleFilters() {
-              const filtersSection = document.getElementById('filters-section');
-              const filterIcon = document.getElementById('filter-icon');
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Content -->
+  <div id="products" class="min-w-full">
+    <%= turbo_frame_tag "products_frame" do %>
+      <%= render partial: "storage/products/table", locals: { products: @products } %>
+    <% end %>
+  </div>
+  <script>
+    function toggleFilters() {
+      const filtersSection = document.getElementById('filters-section');
+      const filterIcon = document.getElementById('filter-icon');
 
-              if (filtersSection.classList.contains('hidden')) {
-                filtersSection.classList.remove('hidden');
-                filterIcon.style.transform = 'rotate(180deg)';
-              } else {
-                filtersSection.classList.add('hidden');
-                filterIcon.style.transform = 'rotate(0deg)';
-              }
-            }
-          </script>
-        <% end %>
+      if (filtersSection.classList.contains('hidden')) {
+        filtersSection.classList.remove('hidden');
+        filterIcon.style.transform = 'rotate(180deg)';
+      } else {
+        filtersSection.classList.add('hidden');
+        filterIcon.style.transform = 'rotate(0deg)';
+      }
+    }
+  </script>
+<% end %>

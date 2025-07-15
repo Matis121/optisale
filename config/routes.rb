@@ -15,7 +15,13 @@ Rails.application.routes.draw do
   # Storage
   namespace :storage do
     root to: "products#index"
-    resources :products
+    resources :products do
+      collection do
+        post :update_current_catalog_in_session
+        post :update_current_warehouse_in_session
+        post :update_current_price_group_in_session
+      end
+    end
     resources :warehouses
     resources :catalogs
     resources :price_groups

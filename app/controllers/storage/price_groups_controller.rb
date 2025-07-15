@@ -3,7 +3,7 @@ class Storage::PriceGroupsController < ApplicationController
   before_action :ensure_turbo_frame, only: %i[ edit new ]
 
   def index
-    @price_groups = PriceGroup.joins(:catalogs).where(catalogs: { user: current_user }).distinct
+    @price_groups = current_user.price_groups
   end
 
   def show
@@ -20,6 +20,7 @@ class Storage::PriceGroupsController < ApplicationController
 
   def create
     @price_group = PriceGroup.new(price_group_params)
+    @price_group.user = current_user
     @price_group.catalogs = current_user.catalogs.where(id: price_group_params[:catalog_ids])
 
     respond_to do |format|
@@ -65,7 +66,7 @@ class Storage::PriceGroupsController < ApplicationController
   end
 
   def set_price_group
-    @price_group = PriceGroup.joins(:catalogs).where(catalogs: { user: current_user }).find(params[:id])
+    @price_group = current_user.price_groups.find(params[:id])
   end
 
   def price_group_params
