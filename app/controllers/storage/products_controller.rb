@@ -137,11 +137,14 @@ class Storage::ProductsController < ApplicationController
     session[:current_warehouse] ||= {}
     current_catalog_id = session[:current_catalog_id]
 
-    @current_warehouse = current_user.warehouses.find_by(id: session[:current_warehouse][current_catalog_id])
+    session[:current_warehouse][current_catalog_id] ||= nil
 
-    unless @current_warehouse
-      @current_warehouse = current_user.warehouses.first
-      session[:current_warehouse][current_catalog_id] = @current_warehouse&.id
+    warehouse_id = session[:current_warehouse][current_catalog_id]
+
+    if warehouse_id.present?
+      @current_warehouse = current_user.warehouses.find_by(id: warehouse_id)
+    else
+      @current_warehouse = nil
     end
   end
 
