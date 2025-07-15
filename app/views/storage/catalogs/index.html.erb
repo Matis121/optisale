@@ -21,6 +21,7 @@
         <thead class="bg-base-100">
           <tr>
             <th class="text-base-content font-semibold">Nazwa katalogu</th>
+            <th class="text-base-content font-semibold">Domyślny</th>
             <th class="text-base-content font-semibold text-center">Produkty</th>
             <th class="text-base-content font-semibold text-center">Magazyny</th>
             <th class="text-base-content font-semibold text-center">Grupy cenowe</th>
@@ -39,6 +40,11 @@
                   <div>
                     <div class="font-semibold text-base-content"><%= catalog.name %></div>
                   </div>
+                </div>
+              </td>
+              <td>
+                <div class="flex items-center gap-3">
+                  <div class="font-semibold text-base-content"><%= catalog.default ? "Tak" : "Nie" %></div>
                 </div>
               </td>
               <td class="text-center">
@@ -65,42 +71,43 @@
                           <i class="fas fa-edit text-primary"></i> Edytuj
                         <% end %>
                       </li>
-                      <li>
-                        <%= link_to storage_catalog_path(catalog), 
-                              method: :delete,
-                              data: { 
-                                confirm: "Czy na pewno chcesz usunąć katalog '#{catalog.name}'?",
-                                turbo_method: :delete
-                              },
-                              class: "text-error gap-2" do %>
-                          <i class="fas fa-trash"></i> Usuń
+                      <% unless catalog.default %>
+                        <li>
+                          <%= link_to storage_catalog_path(catalog), 
+                                method: :delete,
+                                data: { 
+                                  confirm: "Czy na pewno chcesz usunąć katalog '#{catalog.name}'?",
+                                  turbo_method: :delete
+                                },
+                                class: "text-error gap-2" do %>
+                            <i class="fas fa-trash"></i> Usuń
+                          <% end %>
                         <% end %>
-                      </li>
-                    </ul>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <!-- Empty State -->
-    <div class="text-center py-16">
-      <div class="max-w-sm mx-auto">
-        <div class="w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <i class="fas fa-folder text-3xl text-primary"></i>
-        </div>
-        <h3 class="text-xl font-semibold text-base-content mb-3">Brak katalogów</h3>
-        <p class="text-base-content/60 mb-6">
-          Utwórz swój pierwszy katalog, aby rozpocząć organizowanie produktów.
-        </p>
-        <%= link_to new_storage_catalog_path, class: "btn btn-primary gap-2" do %>
-          <i class="fas fa-plus"></i>
-          Utwórz katalog
-        <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
       </div>
-    </div>
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-16">
+        <div class="max-w-sm mx-auto">
+          <div class="w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-folder text-3xl text-primary"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-base-content mb-3">Brak katalogów</h3>
+          <p class="text-base-content/60 mb-6">
+            Utwórz swój pierwszy katalog, aby rozpocząć organizowanie produktów.
+          </p>
+          <%= link_to new_storage_catalog_path, class: "btn btn-primary gap-2" do %>
+            <i class="fas fa-plus"></i>
+            Utwórz katalog
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   <% end %>
-<% end %>

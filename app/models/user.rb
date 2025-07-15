@@ -17,7 +17,7 @@ class User < ApplicationRecord
   private
 
   def create_default_data
-    default_catalog = catalogs.create!(name: "Domyślny")
+    default_catalog = catalogs.create!(name: "Domyślny", default: true)
     default_catalog.warehouses.create!(name: "Domyślny", default: true)
     default_catalog.price_groups.create!(name: "Podstawowa", default: true)
   end

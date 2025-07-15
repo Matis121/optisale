@@ -65,6 +65,6 @@ class Storage::CatalogsController < ApplicationController
     end
 
     def catalog_params
-      params.require(:catalog).permit(:name)
+      params.require(:catalog).permit(:name, :default)
     end
 end

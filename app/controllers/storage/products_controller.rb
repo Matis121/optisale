@@ -116,8 +116,14 @@ class Storage::ProductsController < ApplicationController
   private
 
   def set_current_catalog_in_session
-    session[:current_catalog_id] ||= current_user.catalogs.first.id
-    @current_catalog = current_user.catalogs.find(session[:current_catalog_id])
+    session[:current_catalog_id] ||= current_user.catalogs.first&.id
+
+    @current_catalog = current_user.catalogs.find_by(id: session[:current_catalog_id])
+
+    unless @current_catalog
+      @current_catalog = current_user.catalogs.first
+      session[:current_catalog_id] = @current_catalog&.id
+    end
   end
 
   def set_current_price_group_in_session
