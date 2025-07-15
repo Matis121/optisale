@@ -89,70 +89,66 @@ class Storage::ProductsController < ApplicationController
     end
   end
 
+
   def update_current_catalog_in_session
-    session[:current_catalog_id] = params[:catalog_id]
+    catalog_id = params[:catalog_id]
+    if current_user.catalogs.exists?(catalog_id)
+      session[:current_catalog_id] = catalog_id
+      # resetuj zależności przy zmianie katalogu
+      session[:current_warehouse_id] = nil
+      session[:current_price_group_id] = nil
+    end
     redirect_to storage_products_path
   end
 
   def update_current_warehouse_in_session
-    session[:current_warehouse] ||= {}
     warehouse_id = params[:warehouse_id]
-
     if warehouse_id == "all"
-      session[:current_warehouse][session[:current_catalog_id]] = nil
-    else
-      session[:current_warehouse][session[:current_catalog_id]] = warehouse_id
+      session[:current_warehouse_id] = nil
+    elsif current_user.warehouses.exists?(warehouse_id)
+      session[:current_warehouse_id] = warehouse_id
     end
-
     redirect_to storage_products_path
   end
 
   def update_current_price_group_in_session
-    session[:current_price_group] ||= {}
-    session[:current_price_group][session[:current_catalog_id]] = params[:price_group_id]
+    price_group_id = params[:price_group_id]
+    if current_user.price_groups.exists?(price_group_id)
+      session[:current_price_group_id] = price_group_id
+    end
     redirect_to storage_products_path
   end
 
   private
 
   def set_current_catalog_in_session
-    session[:current_catalog_id] ||= current_user.catalogs.first&.id
-
     @current_catalog = current_user.catalogs.find_by(id: session[:current_catalog_id])
-
     unless @current_catalog
       @current_catalog = current_user.catalogs.first
       session[:current_catalog_id] = @current_catalog&.id
     end
   end
 
-  def set_current_price_group_in_session
-    session[:current_price_group] ||= {}
-    current_catalog_id = session[:current_catalog_id]
+  def set_current_warehouse_in_session
+    warehouse_id = session[:current_warehouse_id]
+    @current_warehouse = @current_catalog.warehouses.find_by(id: warehouse_id) if warehouse_id.present?
 
-    @current_price_group = current_user.price_groups.find_by(id: session[:current_price_group][current_catalog_id])
+    unless @current_warehouse
+      @current_warehouse = @current_catalog.warehouses.first
+      session[:current_warehouse_id] = @current_warehouse&.id
+    end
+  end
+
+  def set_current_price_group_in_session
+    price_group_id = session[:current_price_group_id]
+    @current_price_group = current_user.price_groups.find_by(id: price_group_id) if price_group_id.present?
 
     unless @current_price_group
       @current_price_group = current_user.price_groups.first
-      session[:current_price_group][current_catalog_id] = @current_price_group&.id
+      session[:current_price_group_id] = @current_price_group&.id
     end
   end
 
-
-  def set_current_warehouse_in_session
-    session[:current_warehouse] ||= {}
-    current_catalog_id = session[:current_catalog_id]
-
-    session[:current_warehouse][current_catalog_id] ||= nil
-
-    warehouse_id = session[:current_warehouse][current_catalog_id]
-
-    if warehouse_id.present?
-      @current_warehouse = current_user.warehouses.find_by(id: warehouse_id)
-    else
-      @current_warehouse = nil
-    end
-  end
 
   def ensure_turbo_frame
     unless turbo_frame_request?
