@@ -11,4 +11,18 @@ class Product < ApplicationRecord
   validates :sku, uniqueness: { scope: :catalog_id }, allow_blank: true
   validates :ean, uniqueness: { scope: :catalog_id }, allow_blank: true
   validates :catalog_id, presence: true
+
+  filterrific(
+    available_filters: [
+      :with_tax_rate,
+      :with_ean,
+      :with_sku,
+      :with_name,
+    ]
+  )
+
+  scope :with_tax_rate, ->(tax_rate) { where(tax_rate: tax_rate) }
+  scope :with_ean, ->(ean) { where('ean = ?', ean) }
+  scope :with_sku, ->(sku) { where('sku = ?', sku) }
+  scope :with_name, ->(name) { where('name ILIKE ?', "%#{name}%") }
 end

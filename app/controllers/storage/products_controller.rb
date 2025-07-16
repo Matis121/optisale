@@ -5,18 +5,28 @@ class Storage::ProductsController < ApplicationController
   before_action :set_current_warehouse_in_session, only: %i[ index create update ]
   before_action :set_current_price_group_in_session, only: %i[ index create update ]
 
+
   # GET /products or /products.json
   def index
-    catalog = current_user.catalogs.find(session[:current_catalog_id])
+    @per_page = params[:per_page].to_i
+    @per_page = 20 if @per_page <= 0 || @per_page > 100
+  
+    catalog = current_user.catalogs.find_by(id: session[:current_catalog_id])
 
+    if params[:reset_filterrific]
+      redirect_to storage_products_path and return
+    end
+  
     if catalog.nil?
       @products = Product.none.page(params[:page])
     else
-      @products = catalog.products.page(params[:page]).per(params[:per_page])
+      @filterrific = initialize_filterrific(
+        catalog.products, # ograniczenie do produktów w katalogu
+        params[:filterrific]
+      ) or return
+  
+      @products = @filterrific.find.page(params[:page]).per(@per_page)
     end
-
-    @per_page = params[:per_page].to_i
-    @per_page = 20 if @per_page <= 0 || @per_page > 100 # domyślnie 20, max 100
   end
 
   # GET /products/new
