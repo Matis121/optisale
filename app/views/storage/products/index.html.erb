@@ -60,10 +60,6 @@
       <% end %>
     </div>
   </div>
-  <!-- Total count -->
-  <div class="text-xs text-base-content/60 my-8 px-2">
-    Liczba produktów:<span class="font-semibold text-base-content ml-2"><%= @products.total_count %></span>
-  </div>
   <!-- Content -->
   <div id="products" class="min-w-full">
     <%= turbo_frame_tag "products_frame" do %>
