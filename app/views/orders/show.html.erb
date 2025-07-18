@@ -1,56 +1,147 @@
-<% content_for :title, "Showing order" %>
-<div class="w-full flex flex-col gap-8 p-4">
-  <div class="flex flex-col gap-4">
-    <%= render(Ui::Order::TopComponent.new(order_id: @order.id)) %>
-    <%= render(Ui::Order::ProductTableComponent.new(order: @order)) %>
-    <button class="btn btn-circle btn-neutral btn-outline w-fit px-8" onclick="order_add_product_modal.showModal()">Dodaj produkt</button>
-    <dialog id="order_add_product_modal" class="modal">
-      <div class="modal-box max-w-11/12">
-        <h3 class="text-lg font-bold mb-4">Dodaj produkt do zamówienia</h3>
-        <ul class="menu bg-base-200 w-full rounded-box">
-          <% Product.all.each do |product| %>
-            <li>
-              <div class="flex justify-between items-center p-4">
-                <div>
-                  <div class="font-medium"><%= product.name %></div>
-                  <div class="text-sm text-gray-500">
-                    SKU: <%= product.sku %> | EAN: <%= product.ean %>
-                  </div>
-                </div>
-                <div class="flex items-center gap-4">
-                  <div class="text-right">
-                    <div class="font-medium"><%= product.gross_price %> PLN</div>
-                    <div class="text-sm text-gray-500">Dostępność: <%= product.quantity %></div>
-                  </div>
-                  <% if @order.order_products.exists?(product_id: product.id) %>
-                    <span class="badge badge-success">W zamówieniu</span>
-                  <% else %>
-                    <%= form_with model: OrderProduct.new do |f| %>
-                      <%= f.hidden_field :order_id, value: @order.id %>
-                      <%= f.hidden_field :product_id, value: product.id %>
-                      <%= f.number_field :quantity, value: 1, min: 1, max: product.quantity, class: "input input-bordered w-20" %>
-                      <%= f.submit 'Dodaj', class: "btn btn-primary btn-sm" %>
-                    <% end %>
-                  <% end %>
-                </div>
-              </div>
-            </li>
+<% content_for :title, "Zamówienie ##{@order.id}" %>
+<div class="flex w-full">
+  <!-- Sidebar -->
+  <div class="w-52 flex-shrink-0 relative mt-8 mb-2 ml-2">
+    <div class="bg-base-100/50 rounded-lg border border-base-200 p-2 fixed w-52">
+      <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-sm gap-2 w-full mb-4" do %>
+        <i class="fas fa-plus text-xs"></i>
+        Nowe zamówienie
+      <% end %>
+      <h3 class="text-sm font-medium text-base-content/60 mb-3">Statusy</h3>
+      <div>
+        <%= link_to orders_path(status: "all"), 
+              class: "flex items-center justify-between p-2 rounded-md hover:bg-base-100 transition-colors duration-150 #{params[:status] == 'all' || params[:status].blank? ? 'bg-primary/5 text-primary' : 'text-base-content/60'}" do %>
+          <span class="text-xs">Wszystkie</span>
+        <% end %>
+        <% @order_statuses.each do |order_status| %>
+          <%= link_to orders_path(status: order_status.id), 
+                class: "flex items-center justify-between p-2 rounded-md hover:bg-base-100 transition-colors duration-150 #{params[:status] == order_status.id.to_s ? 'bg-primary/5 text-primary' : 'text-base-content/70'}" do %>
+            <span class="text-xs"><%= order_status.full_name %></span>
+            <span class="text-xs bg-primary/5 text-primary px-2 py-1 rounded-full">
+              <%= @order_counts[order_status.id] %>
+            </span>
           <% end %>
-        </ul>
-        <div class="modal-action">
-          <form method="dialog">
-            <button class="btn">Zamknij</button>
-          </form>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <!-- Main content -->
+  <div class="w-full">
+    <%= render Ui::Layout::Container::DefaultComponent.new do %>
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div>
+          <h1 class="text-lg font-bold text-base-content">Zamówienie #<%= @order.id %></h1>
+          <p class="text-base-content/60 mt-1 text-xs">
+            <%= @order.addresses.find_by(kind: :delivery)&.fullname.presence || "Brak danych klienta" %> • 
+            <%= @order.created_at.strftime('%d.%m.%Y %H:%M') %>
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-2">
+              <i class="fas fa-ellipsis-v"></i>
+              Akcje
+            </div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-48 border border-base-200">
+              <li>
+                <%= button_to @order, method: :delete, data: { turbo_confirm: "Czy na pewno chcesz usunąć to zamówienie?" }, class: "w-full cursor-pointer text-error" do %>
+                  <div class="flex gap-2 items-center">
+                    <i class="fas fa-trash text-error"></i>
+                    <span>Usuń zamówienie</span>
+                  </div>
+                <% end %>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </dialog>
-    <%= render(Ui::Order::Info::Component.new(order: @order, order_statuses: @order_statuses)) %>
-  </div>
-  <div class="grid grid-cols-3 gap-4">
-    <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :delivery)) %>
-    <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :invoice)) %>
-    <%= render(Ui::Order::Address::PickupPoint::Component.new(order: @order)) %>
-  </div>
-  <div class="flex gap-2">
+      <!-- Products Table -->
+      <div class="bg-base-200 rounded-lg border border-base-200 overflow-hidden shadow-sm mb-8">
+        <div class="overflow-x-auto">
+          <%= render(Ui::Order::ProductTableComponent.new(order: @order)) %>
+        </div>
+      </div>
+      <!-- Order Information -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        <!-- Customer Data, Order Details, Extra Fields -->
+        <div class="bg-base-200 rounded-lg border border-base-200 p-6">
+          <div class="space-y-6">
+            <!-- Customer Info -->
+            <div>
+              <h4 class="font-medium text-base-content mb-3">Dane klienta</h4>
+              <%= render(Ui::Order::Info::Customer::Component.new(order: @order)) %>
+            </div>
+            <!-- Order Details -->
+            <div>
+              <h4 class="font-medium text-base-content mb-3">Szczegóły zamówienia</h4>
+              <%= render(Ui::Order::Info::OrderDetails::Component.new(order: @order)) %>
+            </div>
+            <!-- Extra Fields -->
+            <div>
+              <h4 class="font-medium text-base-content mb-3">Pola dodatkowe</h4>
+              <%= render(Ui::Order::Info::ExtraFields::Component.new(order: @order)) %>
+            </div>
+          </div>
+        </div>
+        <!-- Payment, Status, Invoices -->
+        <div class="bg-base-200 rounded-lg border border-base-200 p-6">
+          <div class="space-y-8">
+            <!-- Payment Details -->
+            <div>
+              <%= render(Ui::Order::Info::Payment::Component.new(order: @order)) %>
+            </div>
+            <div>
+              <div class="space-y-2">
+                <%= turbo_frame_tag dom_id(@order, :status) do %>
+                  <%= form_with(model: @order, class: "flex gap-2") do |form| %>
+                    <%= form.select :status_id,
+                    options_from_collection_for_select(@order_statuses, :id, :full_name, @order.status_id),
+                    { prompt: "Wybierz status" },
+                    class: "select flex-1" %>
+                    <%= form.submit "Zmień", class: "btn btn-primary" %>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            <!-- Status -->
+            <!-- Invoices & Receipts -->
+            <div>
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-base-content/60">Paragon:</span>
+                  <button class="btn btn-outline btn-sm gap-1">
+                    <i class="fas fa-receipt"></i>
+                    Wystaw paragon
+                  </button>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-base-content/60">Faktura:</span>
+                  <button class="btn btn-outline btn-sm gap-1">
+                    <i class="fas fa-file-invoice"></i>
+                    Wystaw fakturę
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Addresses -->
+      <div class="grid grid-cols-3 gap-4">
+        <div class="bg-base-200 rounded-lg border border-base-200 p-6 ">
+          <h4 class="font-medium text-base-content mb-3">Adres dostawy</h4>
+          <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :delivery)) %>
+        </div>
+        <div class="bg-base-200 rounded-lg border border-base-200 p-6">
+          <h4 class="font-medium text-base-content mb-3">Dane do faktury</h4>
+          <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :invoice)) %>
+        </div>
+        <div class="bg-base-200 rounded-lg border border-base-200 p-6">
+          <h4 class="font-medium text-base-content mb-3">Punkt odbioru</h4>
+          <%= render(Ui::Order::Address::PickupPoint::Component.new(order: @order)) %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>

@@ -1,22 +1,22 @@
 <%= turbo_frame_tag dom_id(@order, :customer) do %>
-  <table>
-    <tr>
-      <td class="w-42">Klient (login):</td>
-      <td>
-        <%= link_to @order.customer&.login.presence || "...", edit_order_customer_path(@order, @customer) %>
-      </td>
-    </tr>
-    <tr>
-      <td class="w-42">E-mail:</td>
-      <td>
-        <%= link_to @order.customer&.email.presence || "...", edit_order_customer_path(@order, @customer) %>
-      </td>
-    </tr>
-    <tr>
-      <td class="w-42">Telefon:</td>
-      <td>
-        <%= link_to @order.customer&.phone.presence || "...", edit_order_customer_path(@order, @customer) %>
-      </td>
-    </tr>
-  </table>
+  <div class="space-y-2">
+    <div class="flex justify-between items-center">
+      <span class="text-sm text-base-content/60">Login:</span>
+      <span class="text-sm font-medium text-base-content">
+        <%= link_to(@order.customer&.login.presence || "...", edit_order_customer_path(@order, @customer), class: "hover:text-primary transition-colors") %>
+      </span>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="text-sm text-base-content/60">E-mail:</span>
+      <span class="text-sm font-medium text-base-content">
+        <%= link_to(@order.customer&.email.presence || "...", edit_order_customer_path(@order, @customer), class: "hover:text-primary transition-colors") %>
+      </span>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="text-sm text-base-content/60">Telefon:</span>
+      <span class="text-sm font-medium text-base-content">
+        <%= link_to(@order.customer&.phone.presence || "...", edit_order_customer_path(@order, @customer), class: "hover:text-primary transition-colors") %>
+      </span>
+    </div>
+  </div>
 <% end %>

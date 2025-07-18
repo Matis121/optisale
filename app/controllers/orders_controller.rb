@@ -21,6 +21,8 @@ class OrdersController < ApplicationController
 
   # GET /orders/1 or /orders/1.json
   def show
+    @order_counts = current_user.orders.group(:status_id).count
+    @order_counts.default = 0
   end
 
   # GET /orders/new

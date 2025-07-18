@@ -1,36 +1,51 @@
 <%= turbo_frame_tag dom_id(pickup_point || CustomerPickupPoint.new) do %>
   <% if pickup_point.present? %>
-    <div class="flex flex-col gap-4 p-4 rounded-md bg-white drop-shadow-md border border-neutral-200">
-      <span class="font-bold">
-        Odbiór w punkcie
-      </span>
-      <table>
-        <tbody>
-          <tr>
-            <td>Nazwa:</td>
-            <td><%= pickup_point&.name.presence || "..." %></td>
-          </tr>
-          <tr>
-            <td>ID punktu:</td>
-            <td><%= pickup_point&.point_id.presence || "..." %></td>
-          </tr>
-          <tr>
-            <td>Adres:</td>
-            <td><%= pickup_point&.address.presence || "..." %></td>
-          </tr>
-          <tr>
-            <td>Kod i miasto:</td>
-            <td><%= pickup_point&.postcode.presence || "..." %><%= pickup_point&.city.presence || " ..." %></td>
-          </tr>
-          <tr>
-            <td>Kraj:</td>
-            <td><%= pickup_point&.country.presence || "..." %></td>
-          </tr>
-        </tbody>
-      </table>
-      <%= link_to "Edytuj", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "btn" %>
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Nazwa:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to(pickup_point.name.presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">ID punktu:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to(pickup_point.point_id.presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Adres:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to(pickup_point.address.presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Kod i miasto:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to([pickup_point.postcode, pickup_point.city].compact.join(' ').presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Kraj:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to(pickup_point.country.presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+      </div>
     </div>
   <% else %>
-    <p>Adres nie jest dostępny.</p>
+    <div class="text-center py-8">
+      <div class="w-12 h-12 bg-base-300 rounded-lg flex items-center justify-center mx-auto mb-3">
+        <i class="fas fa-store text-base-content/40"></i>
+      </div>
+      <p class="text-sm text-base-content/60 mb-4">Brak punktu odbioru</p>
+      <%= link_to edit_order_customer_pickup_point_path(@order, CustomerPickupPoint.new), 
+          data: { turbo_frame: dom_id(CustomerPickupPoint.new) }, 
+          class: "btn btn-primary btn-sm gap-2" do %>
+        <i class="fas fa-plus"></i>
+        Dodaj punkt
+      <% end %>
+    </div>
   <% end %>
 <% end %>

@@ -1,16 +1,22 @@
 <%= turbo_frame_tag dom_id(@order, :extra_fields) do %>
-  <table>
-    <tr>
-      <td class="w-42">Pole dodatkowe 1:</td>
-      <td><%= link_to @order.extra_field_1.presence || "...", edit_extra_fields_order_path(@order) %></td>
-    </tr>
-    <tr>
-      <td class="w-42">Pole dodatkowe 2:</td>
-      <td><%= link_to @order.extra_field_2.presence || "...", edit_extra_fields_order_path(@order) %></td>
-    </tr>
-    <tr>
-      <td class="w-42">Uwagi:</td>
-      <td><%= link_to @order.admin_comments.presence || "...", edit_extra_fields_order_path(@order) %></td>
-    </tr>
-  </table>
+  <div class="space-y-2">
+    <div class="flex justify-between items-center">
+      <span class="text-sm text-base-content/60">Pole dodatkowe 1:</span>
+      <span class="text-sm font-medium text-base-content">
+        <%= link_to(@order.extra_field_1.presence || "...", edit_extra_fields_order_path(@order), class: "hover:text-primary transition-colors") %>
+      </span>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="text-sm text-base-content/60">Pole dodatkowe 2:</span>
+      <span class="text-sm font-medium text-base-content">
+        <%= link_to(@order.extra_field_2.presence || "...", edit_extra_fields_order_path(@order), class: "hover:text-primary transition-colors") %>
+      </span>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="text-sm text-base-content/60">Uwagi:</span>
+      <span class="text-sm font-medium text-base-content">
+        <%= link_to(@order.admin_comments.presence || "...", edit_extra_fields_order_path(@order), class: "hover:text-primary transition-colors") %>
+      </span>
+    </div>
+  </div>
 <% end %>

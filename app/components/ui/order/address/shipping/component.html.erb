@@ -1,36 +1,51 @@
 <%= turbo_frame_tag dom_id(address || Address.new) do %>
   <% if address.present? %>
-    <div class="flex flex-col gap-4 p-4 rounded-md bg-white drop-shadow-md border border-neutral-200">
-      <span class="font-bold">
-        <%= @address_type == :delivery ? 'Adres dostawy' : 'Dane do faktury' %>
-      </span>
-      <table>
-        <tbody>
-          <tr>
-            <td>Imię i nazwisko:</td>
-            <td><%= address&.fullname || content_tag(:span, "...", class: "text-neutral-200") %></td>
-          </tr>
-          <tr>
-            <td>Firma:</td>
-            <td><%= address&.company_name || "..." %></td>
-          </tr>
-          <tr>
-            <td>Adres:</td>
-            <td><%= address&.street || "..." %></td>
-          </tr>
-          <tr>
-            <td>Kod i miasto:</td>
-            <td><%= address&.postcode || "..." %><%= address&.city || " ..." %></td>
-          </tr>
-          <tr>
-            <td>Kraj:</td>
-            <td><%= address&.country || "..." %></td>
-          </tr>
-        </tbody>
-      </table>
-      <%= link_to "Edytuj", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "btn" %>
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Imię i nazwisko:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to(address.fullname.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Firma:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to(address.company_name.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Adres:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to(address.street.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Kod i miasto:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to([address.postcode, address.city].compact.join(' ').presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-base-content/60">Kraj:</span>
+          <span class="text-sm font-medium text-base-content">
+            <%= link_to(address.country.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
+          </span>
+        </div>
+      </div>
     </div>
   <% else %>
-    <p>Adres nie jest dostępny.</p>
+    <div class="text-center py-8">
+      <div class="w-12 h-12 bg-base-300 rounded-lg flex items-center justify-center mx-auto mb-3">
+        <i class="fas fa-map-marker-alt text-base-content/40"></i>
+      </div>
+      <p class="text-sm text-base-content/60 mb-4">Brak danych adresowych</p>
+      <%= link_to edit_order_address_path(@order, Address.new(kind: @address_type)), 
+          data: { turbo_frame: dom_id(Address.new) }, 
+          class: "btn btn-primary btn-sm gap-2" do %>
+        <i class="fas fa-plus"></i>
+        Dodaj adres
+      <% end %>
+    </div>
   <% end %>
 <% end %>
