@@ -3,6 +3,8 @@ class User < ApplicationRecord
   has_many :catalogs, dependent: :destroy
   has_many :warehouses, dependent: :destroy
   has_many :price_groups, dependent: :destroy
+  has_many :order_statuses, dependent: :destroy
+
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
@@ -17,8 +19,19 @@ class User < ApplicationRecord
   private
 
   def create_default_data
-    default_catalog = catalogs.create!(name: "Domyślny", default: true)
-    default_catalog.warehouses.create!(name: "Domyślny", default: true)
-    default_catalog.price_groups.create!(name: "Podstawowa", default: true)
+    # Catalogs, warehouses and price groups
+    catalogs.create!(name: "Domyślny", default: true, user: self)
+    warehouses.create!(name: "Domyślny", default: true, user: self)
+    price_groups.create!(name: "Podstawowa", default: true, user: self)
+
+    # Connect default catalog with default warehouses and price groups
+    catalogs.first.warehouses << warehouses.first
+    catalogs.first.price_groups << price_groups.first
+
+    # Order statuses
+    order_statuses.create!(full_name: "Nowe", short_name: "Nowe", user: self)
+    order_statuses.create!(full_name: "W realizacji", short_name: "W realizacji", user: self)
+    order_statuses.create!(full_name: "Wysłane", short_name: "Wysłane", user: self)
+    order_statuses.create!(full_name: "Zakończone", short_name: "Zakończone", user: self)
   end
 end

@@ -151,6 +151,6 @@ class OrdersController < ApplicationController
     end
 
     def set_order_statuses
-      @order_statuses = OrderStatus.all
+      @order_statuses = current_user.order_statuses
     end
 end

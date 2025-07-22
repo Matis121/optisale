@@ -3,7 +3,7 @@ class OrderStatusesController < ApplicationController
 
   # GET /order_statuses or /order_statuses.json
   def index
-    @order_statuses = OrderStatus.all
+    @order_statuses = current_user.order_statuses
   end
 
   # GET /order_statuses/1 or /order_statuses/1.json
@@ -57,7 +57,7 @@ class OrderStatusesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order_status
-      @order_status = OrderStatus.find(params.expect(:id))
+      @order_status = current_user.order_statuses.find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.
