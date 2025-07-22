@@ -81,9 +81,10 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
     database: optisale_production
     username: optisale
-    password: <%= ENV["OPTISALE_DATABASE_PASSWORD"] %>
+    password: <%= ENV["DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: optisale_production_cache
