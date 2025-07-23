@@ -1,5 +1,6 @@
 class OrderStatusesController < ApplicationController
   before_action :set_order_status, only: %i[ show edit update destroy ]
+  before_action :ensure_turbo_frame, only: %i[ new edit ]
 
   # GET /order_statuses or /order_statuses.json
   def index
@@ -55,6 +56,12 @@ class OrderStatusesController < ApplicationController
   end
 
   private
+  def ensure_turbo_frame
+    unless turbo_frame_request?
+      redirect_to order_statuses_path
+    end
+  end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_order_status
       @order_status = current_user.order_statuses.find(params.expect(:id))

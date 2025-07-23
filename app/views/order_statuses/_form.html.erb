@@ -10,14 +10,20 @@
     </div>
   <% end %>
   <div class="my-5 flex flex-col">
-    <%= form.label :full_name %>
+    <%= form.label :full_name, "Pełna nazwa" %>
     <%= form.text_field :full_name, class: "input" %>
   </div>
   <div class="my-5 flex flex-col">
-    <%= form.label :short_name %>
+    <%= form.label :short_name, "Skrócona nazwa" %>
     <%= form.text_field :short_name, class: "input" %>
   </div>
-  <div class="inline">
-    <%= form.submit class: "btn btn-primary" %>
+  <!-- Form Actions -->
+  <div class="flex flex-col sm:flex-row gap-3 justify-end pt-4">
+    <button type="button" class="btn btn-ghost" onclick="modal.close()">Zamknij</button>
+    <% if @order_status.new_record? %>
+      <%= form.submit "Utwórz", class: "btn btn-primary" %>
+    <% else %>
+      <%= form.submit "Zapisz", class: "btn btn-primary" %>
+    <% end %>
   </div>
 <% end %>
