@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_15_210538) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_24_225114) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -80,9 +80,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_15_210538) do
     t.string "sku"
     t.string "ean"
     t.integer "quantity"
-    t.decimal "gross_price"
-    t.decimal "nett_price"
-    t.decimal "tax_rate"
+    t.decimal "gross_price", precision: 10, scale: 2, default: "0.0"
+    t.decimal "nett_price", precision: 10, scale: 2, default: "0.0"
+    t.decimal "tax_rate", precision: 3, scale: 1, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_order_products_on_order_id"

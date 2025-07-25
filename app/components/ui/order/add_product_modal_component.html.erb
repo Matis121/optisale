@@ -1,0 +1,103 @@
+<dialog id="order_add_product_modal" class="modal" data-controller="modal-cleanup product-search" data-product-search-order-id-value="<%= order.id %>">
+  <div class="modal-box w-11/12 max-w-6xl">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" data-action="click->modal-cleanup#clearSelection">✕</button>
+    </form>
+    <h3 class="font-bold text-lg mb-4">Dodaj produkty do zamówienia</h3>
+    <!-- Search and filters -->
+    <div class="mb-6">
+      <div class="flex gap-4 mb-4">
+        <div class="form-control flex-1">
+          <input type="text" 
+               id="product_search" 
+               placeholder="Wyszukaj produkty..." 
+               class="input input-bordered w-full"
+               data-product-search-target="searchInput"
+               data-action="input->product-search#search">
+        </div>
+        <div class="form-control">
+          <select id="catalog_filter" class="select select-bordered" data-product-search-target="catalogFilter" data-action="change->product-search#filter">
+            <option value="">Wszystkie katalogi</option>
+            <% current_user.catalogs.each do |catalog| %>
+              <option value="<%= catalog.id %>"><%= catalog.name %></option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+    </div>
+    <!-- Main content area -->
+    <div data-product-search-target="mainContent" class="flex gap-6">
+      <!-- Left side - Products list -->
+      <div data-product-search-target="leftPanel" class="flex-1">
+        <!-- Pagination -->
+        <div data-product-search-target="pagination" class="mb-4">
+          <!-- Pagination will be loaded here via AJAX -->
+        </div>
+        <!-- Products list -->
+        <div class="max-h-96 overflow-y-auto">
+          <div data-product-search-target="productsList" class="space-y-2">
+            <!-- Products will be loaded here via AJAX -->
+          </div>
+        </div>
+      </div>
+      <!-- Right side - Selected products (hidden by default) -->
+      <div data-product-search-target="rightPanel" class="w-80 hidden">
+        <div class="sticky top-0">
+          <h4 class="font-medium mb-4">Wybrane produkty:</h4>
+          <div data-product-search-target="selectedList" class="space-y-2 max-h-80 overflow-y-auto">
+            <!-- Selected products will be shown here -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal actions -->
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn" data-action="click->modal-cleanup#clearSelection">Anuluj</button>
+      </form>
+      <button id="add_selected_products" 
+            class="btn btn-primary" 
+            data-controller="add-products"
+            data-action="click->add-products#addProducts"
+        data-add-products-order-id-value="<%= order.id %>">
+        Dodaj wybrane produkty
+      </button>
+    </div>
+  </div>
+</dialog>
+<!-- Product item template -->
+<template id="product_item_template">
+  <div class="product-item border border-base-300 rounded-lg p-4 hover:bg-base-100 transition-colors cursor-pointer" data-product-id="">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3 flex-1">
+        <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+          <i class="fas fa-box text-primary"></i>
+        </div>
+        <div class="flex-1">
+          <div class="font-medium product-name"></div>
+          <div class="text-sm text-base-content/60">
+            SKU: <span class="product-sku"></span> • EAN: <span class="product-ean"></span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-right">
+          <div class="font-medium product-price"></div>
+          <div class="text-sm text-base-content/60">Stan: <span class="product-stock"></span></div>
+        </div>
+        <div class="form-control">
+          <input type="number" 
+                 class="input input-bordered input-sm w-20" 
+                 min="1" 
+                 value="1"
+                 data-product-quantity>
+        </div>
+        <button type="button" 
+                class="btn btn-primary btn-sm add-product-btn"
+                data-product-id="">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</template> 

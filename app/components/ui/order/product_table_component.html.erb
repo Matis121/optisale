@@ -1,4 +1,11 @@
 <div class="overflow-x-auto">
+  <div class="flex justify-between items-center p-4 border-b border-base-300">
+    <h3 class="text-lg font-semibold">Produkty w zamówieniu</h3>
+    <button class="btn btn-primary btn-sm gap-2" onclick="order_add_product_modal.showModal()">
+      <i class="fas fa-plus"></i>
+      Dodaj produkt
+    </button>
+  </div>
   <table class="table w-full">
     <thead class="bg-base-100">
       <tr>
@@ -23,8 +30,9 @@
               </div>
             </td>
             <td class="py-4 px-6">
-              <%= link_to op.product.id, product_path(op.product.id), 
-                  class: "font-medium text-primary hover:text-primary-focus transition-colors duration-150" %>
+              <span class="text-xs text-base-content/60">
+                <%= op.id %>
+              </span>
             </td>
             <td class="py-4 px-6">
               <div class="font-medium text-base-content"><%= op.product.name %></div>
@@ -36,10 +44,10 @@
               <span class="badge badge-outline badge-sm"><%= op.quantity %></span>
             </td>
             <td class="py-4 px-6 text-center">
-              <span class="font-medium text-base-content"><%= op.product.gross_price %> PLN</span>
+              <span class="font-medium text-base-content"><%= op.product.product_prices.first.gross_price || 0 %> PLN</span>
             </td>
             <td class="py-4 px-6 text-center">
-              <span class="text-sm text-base-content/80"><%= op.product.tax_rate %>%</span>
+              <span class="text-sm text-base-content/80"><%= op.product.tax_rate || 0 %>%</span>
             </td>
             <td class="py-4 px-6 text-center">
               <span class="text-sm text-base-content/80">1.3 kg</span>

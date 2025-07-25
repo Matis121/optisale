@@ -62,6 +62,8 @@
           <%= render(Ui::Order::ProductTableComponent.new(order: @order)) %>
         </div>
       </div>
+      <!-- Add Product Modal -->
+      <%= render(Ui::Order::AddProductModalComponent.new(order: @order, current_user: current_user)) %>
       <!-- Order Information -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
         <!-- Customer Data, Order Details, Extra Fields -->

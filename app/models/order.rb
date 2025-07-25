@@ -16,6 +16,6 @@ class Order < ApplicationRecord
   end
 
   def total_price
-    order_products.sum { |op| op.quantity * op.product.gross_price } + shipping_cost.to_f
+    order_products.sum { |op| op.quantity * op.gross_price } + shipping_cost.to_f
   end
 end

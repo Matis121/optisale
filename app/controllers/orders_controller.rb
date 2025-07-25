@@ -69,6 +69,66 @@ class OrdersController < ApplicationController
     end
   end
 
+  # GET /orders/:id/search_products
+  def search_products
+    @order = Order.find(params[:id])
+    query = params[:query]&.strip
+    catalog_id = params[:catalog_id]
+
+    # Get all catalogs for the current user
+    catalogs = current_user.catalogs
+
+    # Filter by catalog if specified
+    if catalog_id.present?
+      catalogs = catalogs.where(id: catalog_id)
+    end
+
+    # Get products from the catalogs
+    products = Product.joins(:catalog).where(catalog: catalogs)
+                      .includes(:product_prices, :product_stocks)
+
+    # Apply search filter
+    if query.present?
+      products = products.where("products.name ILIKE ? OR products.sku ILIKE ? OR products.ean ILIKE ?",
+                               "%#{query}%", "%#{query}%", "%#{query}%")
+    end
+
+    # Pagination
+    page = params[:page]&.to_i || 1
+    per_page = params[:per_page]&.to_i || 20
+    per_page = [ per_page, 100 ].min # Max 100 items per page
+
+    products = products.page(page).per(per_page)
+
+    result = products.map do |product|
+      default_price_group = current_user.price_groups.find_by(default: true)
+
+      product_price = product.product_prices.find { |pp| pp.price_group_id == default_price_group&.id } || product.product_prices.first
+
+      {
+        id: product.id,
+        name: product.name,
+        sku: product.sku,
+        ean: product.ean,
+        tax_rate: product.tax_rate,
+        gross_price: product_price&.gross_price || 0,
+        stock: product.product_stocks.sum(:quantity)
+      }
+    end
+
+    render json: {
+      products: result,
+      pagination: {
+        current_page: page,
+        per_page: per_page,
+        total_count: products.total_count,
+        total_pages: products.total_pages,
+        has_next: products.next_page.present?,
+        has_prev: products.prev_page.present?
+      }
+    }
+  end
+
   # PATCH/PUT /orders/1 or /orders/1.json
   def update
     if @order.update(order_params)

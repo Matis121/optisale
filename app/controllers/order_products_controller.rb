@@ -9,15 +9,27 @@ class OrderProductsController < ApplicationController
     @order_product = OrderProduct.new(order_product_params)
 
     if @order_product.save
-      redirect_to @order_product.order, notice: "Produkt został dodany"
+      respond_to do |format|
+        format.html { redirect_to @order_product.order, notice: "Produkt został dodany" }
+        format.json { render json: { success: true, order_product: @order_product }, status: :created }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @order_product.order, alert: "Błąd podczas dodawania produktu" }
+        format.json { render json: { success: false, errors: @order_product.errors }, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
-    @order_product.destroy!
-
-    respond_to do |format|
-      format.json { head :no_content }
+    if @order_product.destroy!
+      respond_to do |format|
+        format.html { redirect_to @order_product.order, notice: "Produkt został usunięty" }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @order_product.order, alert: "Błąd podczas usuwania produktu" }
+      end
     end
   end
 

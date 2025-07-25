@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       patch :update_extra_fields
       get :edit_payment
       patch :update_payment
+      get :search_products
     end
     resources :addresses
     resources :customer_pickup_points
