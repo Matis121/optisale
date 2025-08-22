@@ -23,8 +23,12 @@ class OrderProductsController < ApplicationController
   end
 
   def destroy
+    order = @order_product.order
     if @order_product.destroy!
-      render turbo_stream: turbo_stream.replace(dom_id(@order_product.order, :product_table), Ui::Order::ProductTableComponent.new(order: @order_product.order))
+      render turbo_stream: [
+        turbo_stream.replace(dom_id(order, :product_table), Ui::Order::ProductTableComponent.new(order: order)),
+        turbo_stream.replace(dom_id(order, :payment), Ui::Order::Info::Payment::Component.new(order: order))
+      ]
     end
   end
 
