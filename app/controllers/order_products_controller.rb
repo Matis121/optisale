@@ -1,4 +1,5 @@
 class OrderProductsController < ApplicationController
+  include ActionView::RecordIdentifier
   before_action :set_order_product, only: [ :destroy ]
 
   def new
@@ -23,13 +24,7 @@ class OrderProductsController < ApplicationController
 
   def destroy
     if @order_product.destroy!
-      respond_to do |format|
-        format.html { redirect_to @order_product.order, notice: "Produkt został usunięty" }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to @order_product.order, alert: "Błąd podczas usuwania produktu" }
-      end
+      render turbo_stream: turbo_stream.replace(dom_id(@order_product.order, :product_table), Ui::Order::ProductTableComponent.new(order: @order_product.order))
     end
   end
 
