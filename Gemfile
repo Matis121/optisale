@@ -70,4 +70,5 @@ gem "view_component"
 
 gem "lucide-rails", "~> 0.5.1"
 gem "kaminari"
+gem "ransack"
 gem "filterrific"

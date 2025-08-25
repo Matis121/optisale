@@ -7,6 +7,15 @@ class OrderProduct < ApplicationRecord
 
   before_save :set_product_details, if: :product_id_changed?
 
+  # Ransack configuration
+  def self.ransackable_attributes(auth_object = nil)
+    %w[name sku ean quantity gross_price nett_price tax_rate]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[order product]
+  end
+
   private
 
   def set_product_details

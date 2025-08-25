@@ -1,6 +1,9 @@
 class OrdersController < ApplicationController
   include ActionView::RecordIdentifier
 
+  DEFAULT_PER_PAGE = 20
+  MAX_PER_PAGE = 100
+
   before_action :set_order, only: [ :show, :update, :destroy, :edit, :edit_extra_fields, :update_extra_fields, :edit_payment, :update_payment ]
   before_action :set_order_statuses
 
@@ -10,13 +13,29 @@ class OrdersController < ApplicationController
     @order_counts.default = 0
 
     @per_page = params[:per_page].to_i
-    @per_page = 20 if @per_page <= 0 || @per_page > 100 # domyślnie 20, max 100
+    @per_page = DEFAULT_PER_PAGE if @per_page <= 0 || @per_page > MAX_PER_PAGE
+
+    # ALWAYS filter by status (by default, use the first status if not provided)
+    orders_scope = current_user.orders
 
     if params[:status].present? && params[:status] != "all"
-      @orders = current_user.orders.where(status_id: params[:status]).page(params[:page]).per(@per_page).order(created_at: :desc)
+      status_id = params[:status].to_i
+      orders_scope = orders_scope.where(status_id: status_id)
     else
-      @orders = current_user.orders.page(params[:page]).per(@per_page).order(created_at: :desc)
+      # If no status is provided, default to showing only orders with the first status
+      default_status_id = @order_statuses.first&.id
+      orders_scope = orders_scope.where(status_id: default_status_id) if default_status_id
     end
+
+    # Then apply filters from params[:q]
+    @q = orders_scope.ransack(params[:q])
+    @orders = @q.result
+                .includes(:order_status, :addresses, :order_products)
+                .order(created_at: :desc)
+                .page(params[:page]).per(@per_page)
+
+    # Safe params for pagination links
+    @search_params = params[:q]&.permit!
   end
 
   # GET /orders/1 or /orders/1.json

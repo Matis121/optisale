@@ -1,0 +1,48 @@
+<div class="hidden p-4" id="<%= id %>-section">
+  <%= form_tag url, method: :get, data: { turbo_frame: turbo_frame }, id: id do %>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
+      <%= content %>
+    </div>
+    <div class="flex justify-end gap-2">
+      <button type="button" onclick="clearFilters('<%= id %>')" class="btn btn-outline btn-sm">
+        Wyczyść
+      </button>
+      <button type="submit" class="btn btn-primary btn-sm">Filtruj</button>
+    </div>
+  <% end %>
+</div>
+<script>
+  function clearFilters(formId) {
+    const form = document.getElementById(formId);
+    const inputs = form.querySelectorAll('input, select');
+    inputs.forEach(input => {
+      if (input.type === 'select-one') {
+        input.selectedIndex = 0;
+      } else {
+        input.value = '';
+      }
+    });
+    <% if turbo_frame %>
+      Turbo.visit('<%= url %>', { frame: '<%= turbo_frame %>' });
+    <% else %>
+      window.location.href = '<%= url %>';
+    <% end %>
+  }
+</script>
+<script>
+  function toggleFilters() {
+    const filtersSection = document.getElementById('filters-form-section');
+    const filterIcon = document.getElementById('filter-icon');
+    const filterText = document.getElementById('filter-text');
+
+    if (filtersSection.classList.contains('hidden')) {
+      filtersSection.classList.remove('hidden');
+      filterIcon.classList.add('rotate-180');
+      filterText.textContent = 'Ukryj filtry';
+    } else {
+      filtersSection.classList.add('hidden');
+      filterIcon.classList.remove('rotate-180');
+      filterText.textContent = 'Filtry';
+    }
+  }
+</script>
