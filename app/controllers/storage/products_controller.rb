@@ -10,23 +10,21 @@ class Storage::ProductsController < ApplicationController
   def index
     @per_page = params[:per_page].to_i
     @per_page = 20 if @per_page <= 0 || @per_page > 100
-  
+
     catalog = current_user.catalogs.find_by(id: session[:current_catalog_id])
 
-    if params[:reset_filterrific]
-      redirect_to storage_products_path and return
-    end
-  
     if catalog.nil?
       @products = Product.none.page(params[:page])
     else
-      @filterrific = initialize_filterrific(
-        catalog.products, # ograniczenie do produktów w katalogu
-        params[:filterrific]
-      ) or return
-  
-      @products = @filterrific.find.page(params[:page]).per(@per_page)
+      @q = catalog.products.ransack(params[:q])
+      @products = @q.result
+                    .includes(:product_stocks, :product_prices)
+                    .order(:name)
+                    .page(params[:page]).per(@per_page)
     end
+
+    # Safe params for pagination links
+    @search_params = params[:q]&.permit!
   end
 
   # GET /products/new

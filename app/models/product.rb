@@ -12,17 +12,7 @@ class Product < ApplicationRecord
   validates :ean, uniqueness: { scope: :catalog_id }, allow_blank: true
   validates :catalog_id, presence: true
 
-  filterrific(
-    available_filters: [
-      :with_tax_rate,
-      :with_ean,
-      :with_sku,
-      :with_name,
-    ]
-  )
-
-  scope :with_tax_rate, ->(tax_rate) { where(tax_rate: tax_rate) }
-  scope :with_ean, ->(ean) { where('ean = ?', ean) }
-  scope :with_sku, ->(sku) { where('sku = ?', sku) }
-  scope :with_name, ->(name) { where('name ILIKE ?', "%#{name}%") }
+  def self.ransackable_attributes(auth_object = nil)
+    [ "catalog_id", "created_at", "ean", "id", "name", "sku", "tax_rate", "updated_at" ]
+  end
 end

@@ -19,7 +19,7 @@
             <% [20, 30, 50, 75, 100].each do |per_page| %>
               <li>
                 <%= link_to "#{per_page} na stronę", 
-                    storage_products_path(page: 1, per_page: per_page), 
+                    storage_products_path(page: 1, per_page: per_page, q: @search_params), 
                     class: @per_page == per_page ? 'active bg-primary text-primary-content' : 'hover:bg-base-200',
                     data: { turbo_frame: "products_frame" } %>
               </li>
@@ -30,7 +30,7 @@
       <%# Pagination buttons %>
       <div class="flex gap-2">
         <%# Previous page button %>
-        <%= link_to storage_products_path(page: @products.prev_page, per_page: @per_page), 
+        <%= link_to storage_products_path(page: @products.prev_page, per_page: @per_page, q: @search_params), 
             class: "btn btn-outline btn-sm #{@products.prev_page ? 'hover:bg-base-200' : 'opacity-50 cursor-not-allowed'}", 
             data: { turbo_frame: "products_frame" },
             onclick: @products.prev_page ? nil : "return false" do %>
@@ -38,7 +38,7 @@
           Poprzednia
         <% end %>
         <%# Next page button %>
-        <%= link_to storage_products_path(page: @products.next_page, per_page: @per_page), 
+        <%= link_to storage_products_path(page: @products.next_page, per_page: @per_page, q: @search_params), 
             class: "btn btn-outline btn-sm #{@products.next_page ? 'hover:bg-base-200' : 'opacity-50 cursor-not-allowed'}", 
             data: { turbo_frame: "products_frame" },
             onclick: @products.next_page ? nil : "return false" do %>
