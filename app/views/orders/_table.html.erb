@@ -69,7 +69,13 @@
     <!-- SEPARATOR -->
     <div class="border-t border-base-200"></div>
     <!-- BLOK 2: Filters - ZWYKŁY HTML -->
-    <%= render FiltersComponent.new(query: @q, url: orders_path, turbo_frame: "orders_frame", id: "filters-form") do %>
+    <%= render FiltersComponent.new(
+      query: @q, 
+      url: orders_path, 
+      turbo_frame: "orders_frame", 
+      id: "filters-form",
+      preserve_params: { status: params[:status] }
+    ) do %>
       <%= filter_text :addresses_fullname_cont, "Nazwa klienta", @q %>
       <%= filter_number :id_eq, "Numer zamówienia", @q, placeholder: "123" %>
       <%= filter_date :created_at_gteq, "Data od", @q %>
@@ -96,7 +102,7 @@
             <% [20, 30, 50, 75, 100].each do |per_page| %>
               <li>
                 <%= link_to per_page, 
-                    orders_path(page: 1, per_page: per_page, q: @search_params), 
+                    orders_path(page: 1, per_page: per_page, q: @search_params, status: params[:status]), 
                     class: @per_page == per_page ? 'active' : '',
                     data: { turbo_frame: "orders_frame" } %>
               </li>
@@ -110,13 +116,13 @@
           <span class="font-normal"><%= @orders.total_count %></span> pozycji
         </div>
         <div class="flex items-center">
-          <%= link_to orders_path(page: @orders.prev_page, per_page: @per_page, q: @search_params), 
+          <%= link_to orders_path(page: @orders.prev_page, per_page: @per_page, q: @search_params, status: params[:status]), 
             class: "btn btn-ghost btn-sm #{@orders.prev_page ? 'hover:bg-base-200' : 'opacity-50 cursor-not-allowed'}", 
             data: { turbo_frame: "orders_frame" },
             onclick: @orders.prev_page ? nil : "return false" do %>
             <i class="fas fa-chevron-left text-sm"></i>
           <% end %>
-          <%= link_to orders_path(page: @orders.next_page, per_page: @per_page, q: @search_params), 
+          <%= link_to orders_path(page: @orders.next_page, per_page: @per_page, q: @search_params, status: params[:status]), 
             class: "btn btn-ghost btn-sm #{@orders.next_page ? 'hover:bg-base-200' : 'opacity-50 cursor-not-allowed'}", 
             data: { turbo_frame: "orders_frame" },
             onclick: @orders.next_page ? nil : "return false" do %>

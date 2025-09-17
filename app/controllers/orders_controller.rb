@@ -15,12 +15,13 @@ class OrdersController < ApplicationController
     @per_page = params[:per_page].to_i
     @per_page = DEFAULT_PER_PAGE if @per_page <= 0 || @per_page > MAX_PER_PAGE
 
-    # ALWAYS filter by status (by default, use the first status if not provided)
     orders_scope = current_user.orders
 
-    if params[:status].present? && params[:status] != "all"
-      status_id = params[:status].to_i
-      orders_scope = orders_scope.where(status_id: status_id)
+    if params[:status].present?
+      unless params[:status] == "all"
+        status_id = params[:status].to_i
+        orders_scope = orders_scope.where(status_id: status_id)
+      end
     else
       # If no status is provided, default to showing only orders with the first status
       default_status_id = @order_statuses.first&.id

@@ -1,5 +1,10 @@
 <div class="hidden p-4" id="<%= id %>-section">
   <%= form_tag url, method: :get, data: { turbo_frame: turbo_frame }, id: id do %>
+    <% preserve_params.each do |param_name, param_value| %>
+      <% if param_value.present? %>
+        <%= hidden_field_tag param_name, param_value %>
+      <% end %>
+    <% end %>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
       <%= content %>
     </div>
@@ -15,17 +20,36 @@
   function clearFilters(formId) {
     const form = document.getElementById(formId);
     const inputs = form.querySelectorAll('input, select');
+    const preservedParams = [];
+
     inputs.forEach(input => {
+      // Check if this input should be preserved (hidden fields that don't start with 'q[')
+      if (input.type === 'hidden' && !input.name.startsWith('q[')) {
+        if (input.value) {
+          preservedParams.push({ name: input.name, value: input.value });
+        }
+        return; // Don't clear preserved parameters
+      }
+
+      // Clear filter inputs
       if (input.type === 'select-one') {
         input.selectedIndex = 0;
       } else {
         input.value = '';
       }
     });
+
+    // Build URL with preserved parameters
+    let clearUrl = '<%= url %>';
+    preservedParams.forEach((param, index) => {
+      const separator = (clearUrl.includes('?') || index > 0) ? '&' : '?';
+      clearUrl += separator + encodeURIComponent(param.name) + '=' + encodeURIComponent(param.value);
+    });
+
     <% if turbo_frame %>
-      Turbo.visit('<%= url %>', { frame: '<%= turbo_frame %>' });
+      Turbo.visit(clearUrl, { frame: '<%= turbo_frame %>' });
     <% else %>
-      window.location.href = '<%= url %>';
+      window.location.href = clearUrl;
     <% end %>
   }
 </script>
