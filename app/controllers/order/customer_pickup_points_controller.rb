@@ -1,4 +1,4 @@
-class CustomerPickupPointsController < ApplicationController
+class Order::CustomerPickupPointsController < ApplicationController
   include ActionView::RecordIdentifier
 
   def edit

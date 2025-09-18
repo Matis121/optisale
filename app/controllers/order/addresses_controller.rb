@@ -1,4 +1,4 @@
-class AddressesController < ApplicationController
+class Order::AddressesController < ApplicationController
   include ActionView::RecordIdentifier
   def edit
     unless request.headers["Turbo-Frame"].present?

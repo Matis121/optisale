@@ -1,4 +1,4 @@
-class CustomersController < ApplicationController
+class Order::CustomersController < ApplicationController
   include ActionView::RecordIdentifier
 
   before_action :set_customer

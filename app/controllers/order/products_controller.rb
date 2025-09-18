@@ -1,4 +1,4 @@
-class OrderProductsController < ApplicationController
+class Order::ProductsController < ApplicationController
   include ActionView::RecordIdentifier
   before_action :set_order_product, only: [ :destroy ]
 
@@ -7,7 +7,8 @@ class OrderProductsController < ApplicationController
   end
 
   def create
-    @order_product = OrderProduct.new(order_product_params)
+    @order_product = OrderProduct.new(product_params)
+    @order_product.order_id = params[:order_id]
 
     if @order_product.save
       respond_to do |format|
@@ -34,8 +35,8 @@ class OrderProductsController < ApplicationController
 
   private
 
-  def order_product_params
-    params.require(:order_product).permit(:order_id, :product_id, :quantity)
+  def product_params
+    params.require(:product).permit(:product_id, :quantity)
   end
 
 

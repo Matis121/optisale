@@ -33,14 +33,12 @@ Rails.application.routes.draw do
       patch :update_payment
       get :search_products
     end
-    resources :addresses
-    resources :customer_pickup_points
-    resources :customers
+    resources :addresses, controller: "order/addresses"
+    resources :customer_pickup_points, controller: "order/customer_pickup_points"
+    resources :customers, controller: "order/customers"
+    resources :products, controller: "order/products"
   end
 
   # Order statuses
-  resources :order_statuses
-
-  # Order products
-  resources :order_products
+  resources :order_statuses, controller: "order_statuses"
 end

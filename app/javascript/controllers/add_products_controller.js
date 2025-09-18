@@ -47,17 +47,21 @@ export default class extends Controller {
 
   async addProductToOrder(product) {
     const formData = new FormData()
-    formData.append('order_product[order_id]', this.orderIdValue)
-    formData.append('order_product[product_id]', product.id)
-    formData.append('order_product[quantity]', product.quantity)
+    formData.append('product[order_id]', this.orderIdValue)
+    formData.append('product[product_id]', product.id)
+    formData.append('product[quantity]', product.quantity)
 
-    const response = await fetch('/order_products', {
+    // Get CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+
+    const response = await fetch(`/orders/${this.orderIdValue}/products`, {
       method: 'POST',
-      body: formData,
       headers: {
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-        'Accept': 'application/json'
-      }
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-Token': csrfToken
+      },
+      body: formData
     })
 
     const result = await response.json()

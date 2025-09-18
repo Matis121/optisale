@@ -61,7 +61,7 @@
                 </div>
               </td>
               <td class="py-4 px-6 text-right">
-                <%= button_to op, method: :delete, 
+                <%= button_to order_product_path(@order, op), method: :delete, 
                   class: "btn btn-ghost btn-xs text-error hover:bg-error/10", 
                   data: { turbo_confirm: "Czy na pewno chcesz usunąć ten produkt?" } do %>
                   <i class="fas fa-trash text-error"></i>
