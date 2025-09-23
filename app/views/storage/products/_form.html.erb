@@ -69,18 +69,11 @@
               <h4 class="font-medium mb-3"><%= price.price_group.name %></h4>
               <div class="space-y-3">
                 <div class="form-control">
-                  <%= price_fields.label :gross_price, "Cena brutto", class: "label label-text-sm" %>
+                  <%= price_fields.label :gross_price, "Cena", class: "label label-text-sm" %>
                   <%= price_fields.number_field :gross_price, 
                   class: "input input-bordered input-sm w-full",
                   step: 0.01,
                   value: price.gross_price || 0 %>
-                </div>
-                <div class="form-control">
-                  <%= price_fields.label :nett_price, "Cena netto", class: "label label-text-sm" %>
-                  <%= price_fields.number_field :nett_price, 
-                  class: "input input-bordered input-sm w-full",
-                  step: 0.01,
-                  value: price.nett_price || 0 %>
                 </div>
                 <div class="form-control">
                   <%= price_fields.label :currency, "Waluta", class: "label label-text-sm" %>

@@ -15,7 +15,7 @@ class OrderProduct < ApplicationRecord
 
   # Ransack configuration
   def self.ransackable_attributes(auth_object = nil)
-    %w[name sku ean quantity gross_price nett_price tax_rate]
+    %w[name sku ean quantity gross_price tax_rate]
   end
 
   def self.ransackable_associations(auth_object = nil)
@@ -40,7 +40,6 @@ class OrderProduct < ApplicationRecord
                    product.product_prices.first
 
     self.gross_price = product_price&.gross_price || 0
-    self.nett_price = product_price&.nett_price || 0
   end
 
   def product_present_and_quantity_changed?

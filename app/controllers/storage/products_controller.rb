@@ -220,7 +220,7 @@ class Storage::ProductsController < ApplicationController
     params.require(:product).permit(
       :name, :sku, :ean, :tax_rate, :catalog_id,
       product_stocks_attributes: [ :id, :warehouse_id, :quantity ],
-      product_prices_attributes: [ :id, :price_group_id, :nett_price, :gross_price, :currency ]
+      product_prices_attributes: [ :id, :price_group_id, :gross_price, :currency ]
     )
   end
 end

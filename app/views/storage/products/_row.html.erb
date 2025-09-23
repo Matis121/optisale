@@ -14,11 +14,6 @@
   </td>
   <td class="text-center">
     <div class="font-medium text-base-content">
-      <%= product.product_prices.find { |pp| pp.price_group_id == @current_price_group.id }&.nett_price || "0.00" %> PLN
-    </div>
-  </td>
-  <td class="text-center">
-    <div class="font-medium text-base-content">
       <%= product.product_prices.find { |pp| pp.price_group_id == @current_price_group.id }&.gross_price || "0.00" %> PLN
     </div>
   </td>

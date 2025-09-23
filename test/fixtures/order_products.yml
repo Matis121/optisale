@@ -8,7 +8,6 @@ one:
   ean: 1234567890123
   quantity: 5
   gross_price: 123.00
-  nett_price: 100.00
   tax_rate: 23.0
 
 two:
@@ -19,5 +18,4 @@ two:
   ean: 1234567890456
   quantity: 3
   gross_price: 61.50
-  nett_price: 50.00
   tax_rate: 23.0

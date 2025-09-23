@@ -15,9 +15,8 @@ class ProductsTest < ApplicationSystemTestCase
     click_on "New product"
 
     fill_in "Ean", with: @product.ean
-    fill_in "Gross price", with: @product.gross_price
+    fill_in "Cena", with: @product.gross_price
     fill_in "Name", with: @product.name
-    fill_in "Nett price", with: @product.nett_price
     fill_in "Sku", with: @product.sku
     fill_in "Tax rate", with: @product.tax_rate
     click_on "Create Product"
@@ -31,9 +30,8 @@ class ProductsTest < ApplicationSystemTestCase
     click_on "Edit this product", match: :first
 
     fill_in "Ean", with: @product.ean
-    fill_in "Gross price", with: @product.gross_price
+    fill_in "Cena", with: @product.gross_price
     fill_in "Name", with: @product.name
-    fill_in "Nett price", with: @product.nett_price
     fill_in "Sku", with: @product.sku
     fill_in "Tax rate", with: @product.tax_rate
     click_on "Update Product"

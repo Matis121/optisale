@@ -89,7 +89,6 @@ class StockManagementServiceTest < ActiveSupport::TestCase
       product: @product1,
       quantity: 5,  # Reduced from 10 to avoid stock issues
       gross_price: 100,
-      nett_price: 81.30,
       tax_rate: 23
     )
     order_product1.save!(validate: false)
@@ -99,7 +98,6 @@ class StockManagementServiceTest < ActiveSupport::TestCase
       product: @product2,
       quantity: 20, # More than available (15)
       gross_price: 200,
-      nett_price: 162.60,
       tax_rate: 23
     )
     order_product2.save!(validate: false)
@@ -132,7 +130,6 @@ class StockManagementServiceTest < ActiveSupport::TestCase
       product: @product1,
       quantity: 10,
       gross_price: 100,
-      nett_price: 81.30,
       tax_rate: 23
     )
 
@@ -151,7 +148,6 @@ class StockManagementServiceTest < ActiveSupport::TestCase
       product: @product1,
       quantity: 25, # More than available (20)
       gross_price: 100,
-      nett_price: 81.30,
       tax_rate: 23
     )
     # Skip callbacks that would reduce stock

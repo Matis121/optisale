@@ -45,7 +45,6 @@ puts "Utworzono grupę cenową: #{price_group.name}"
   ProductPrice.find_or_create_by!(
     product: product,
     price_group: price_group,
-    nett_price: rand(10..100),
     gross_price: rand(10..100),
     currency: "PLN"
   )
