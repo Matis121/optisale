@@ -1,9 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: Main Catalog
   user: one
+  default: true
 
 two:
-  name: MyString
+  name: Secondary Catalog
   user: two
+  default: false

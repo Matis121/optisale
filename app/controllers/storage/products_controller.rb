@@ -76,8 +76,51 @@ class Storage::ProductsController < ApplicationController
 
   # PATCH/PUT /products/1 or /products/1.json
   def update
+    stock_updates = []
+
+    # Zbierz zmiany stanów PRZED aktualizacją produktu (żeby nested attributes ich nie zmieniły)
+    if product_params[:product_stocks_attributes]
+      product_params[:product_stocks_attributes].each do |_, stock_attrs|
+        if stock_attrs[:id].present?
+          existing_stock = @product.product_stocks.find(stock_attrs[:id])
+          new_quantity = stock_attrs[:quantity].to_i
+          old_quantity = existing_stock.quantity
+
+          if old_quantity != new_quantity
+            stock_updates << {
+              product: @product,
+              warehouse: existing_stock.warehouse,
+              quantity: new_quantity,
+              old_quantity: old_quantity
+            }
+          end
+        end
+      end
+    end
+
+    # Teraz zaktualizuj produkt (bez stock movements - robimy je ręcznie)
+    # Tymczasowo usuń product_stocks_attributes żeby je obsłużyć ręcznie
+    product_params_without_stocks = product_params.except(:product_stocks_attributes)
+
     respond_to do |format|
-      if @product.update(product_params)
+      if @product.update(product_params_without_stocks)
+
+        # Obsłuż ręczne zmiany stanów przez StockManagementService
+        if stock_updates.any?
+          stock_service = StockManagementService.new
+          stock_service.batch_update_stocks(stock_updates, current_user, movement_type: "manual_adjustment")
+        end
+
+        # Zaktualizuj pozostałe stock attributes (bez quantity - już obsłużone)
+        if product_params[:product_stocks_attributes]
+          product_params[:product_stocks_attributes].each do |_, stock_attrs|
+            if stock_attrs[:id].present?
+              stock = @product.product_stocks.find(stock_attrs[:id])
+              stock.update!(stock_attrs.except(:quantity)) if stock_attrs.keys.any? { |k| k != :quantity }
+            end
+          end
+        end
+
         format.html { redirect_to storage_products_path, notice: "Product was successfully updated." }
         format.json { render :show, status: :ok, location: @product }
       else

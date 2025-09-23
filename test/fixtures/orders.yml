@@ -2,14 +2,16 @@
 
 one:
   user: one
-  source: MyString
-  status: MyString
+  customer: one
+  source: online
+  status_id: 1
   order_date: 2025-05-03 23:05:55
-  currency: MyString
+  currency: PLN
 
 two:
   user: two
-  source: MyString
-  status: MyString
+  customer: two
+  source: store
+  status_id: 1
   order_date: 2025-05-03 23:05:55
-  currency: MyString
+  currency: PLN

@@ -15,6 +15,7 @@ Rails.application.routes.draw do
         post :update_current_warehouse_in_session
         post :update_current_price_group_in_session
       end
+      resources :stock_movements, only: [ :index ]
     end
     resources :warehouses
     resources :catalogs

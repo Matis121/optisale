@@ -3,6 +3,7 @@ class Product < ApplicationRecord
   has_many :order_products
   has_many :product_stocks, dependent: :destroy
   has_many :product_prices, dependent: :destroy
+  has_many :stock_movements, dependent: :destroy
 
   accepts_nested_attributes_for :product_stocks, :product_prices
 
@@ -14,5 +15,70 @@ class Product < ApplicationRecord
 
   def self.ransackable_attributes(auth_object = nil)
     [ "catalog_id", "created_at", "ean", "id", "name", "sku", "tax_rate", "updated_at" ]
+  end
+
+  # Metoda do aktualizacji stanu magazynowego z logowaniem
+  def update_stock!(warehouse, new_quantity, user, movement_type: "manual_adjustment", reference: nil)
+    product_stock = product_stocks.find_or_initialize_by(warehouse: warehouse)
+    old_quantity = product_stock.quantity || 0
+    quantity_change = new_quantity - old_quantity
+
+    return true if quantity_change == 0 # Brak zmian
+
+    # Walidacja, czy stan nie będzie ujemny
+    if new_quantity < 0
+      raise ArgumentError, "Stan magazynowy nie może być ujemny"
+    end
+
+    ActiveRecord::Base.transaction do
+      # Aktualizuj stan
+      product_stock.quantity = new_quantity
+      product_stock.save!
+
+      # Zapisz ruch magazynowy
+      stock_movements.create!(
+        warehouse: warehouse,
+        user: user,
+        movement_type: movement_type,
+        quantity: quantity_change,
+        stock_before: old_quantity,
+        stock_after: new_quantity,
+        reference: reference,
+        occurred_at: Time.current
+      )
+    end
+
+    true
+  end
+
+  # Metoda do redukcji stanu (np. przy składaniu zamówienia)
+  def reduce_stock!(warehouse, quantity_to_reduce, user, reference: nil)
+    product_stock = product_stocks.find_by(warehouse: warehouse)
+    current_quantity = product_stock&.quantity || 0
+
+    if current_quantity < quantity_to_reduce
+      raise ArgumentError, "Niewystarczający stan magazynowy. Dostępne: #{current_quantity}, wymagane: #{quantity_to_reduce}"
+    end
+
+    new_quantity = current_quantity - quantity_to_reduce
+    update_stock!(warehouse, new_quantity, user,
+                  movement_type: "order_placement",
+                  reference: reference)
+  end
+
+  # Metoda do sprawdzenia dostępności w magazynie
+  def available_in_warehouse?(warehouse, required_quantity)
+    stock = product_stocks.find_by(warehouse: warehouse)
+    (stock&.quantity || 0) >= required_quantity
+  end
+
+  # Całkowity stan we wszystkich magazynach
+  def total_stock
+    product_stocks.sum(:quantity)
+  end
+
+  # Stan w konkretnym magazynie
+  def stock_in_warehouse(warehouse)
+    product_stocks.find_by(warehouse: warehouse)&.quantity || 0
   end
 end

@@ -73,7 +73,7 @@
                     <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
                       <li>
                         <%= link_to edit_storage_price_group_path(price_group), class: "gap-2", data: { turbo_frame: "modal-frame" }, onclick: "document.activeElement.blur()" do %>
-                          <i class="fas fa-edit text-primary"></i> Edytuj
+                          <i class="fas fa-edit text-base-content"></i> Edytuj
                         <% end %>
                       </li>
                       <% unless price_group.default? %>

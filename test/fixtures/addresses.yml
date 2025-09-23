@@ -2,22 +2,22 @@
 
 one:
   order: one
-  kind: :delivery
-  fullname: MyString
-  company_name: MyString
-  street: MyString
-  postcode: MyString
-  city: MyString
-  country: MyString
-  country_code: MyString
+  kind: delivery
+  fullname: John Doe
+  company_name: Test Company
+  street: Test Street 123
+  postcode: 00-001
+  city: Warsaw
+  country: Poland
+  country_code: PL
 
 two:
   order: two
-  kind: :invoice
-  fullname: MyString
-  company_name: MyString
-  street: MyString
-  postcode: MyString
-  city: MyString
-  country: MyString
-  country_code: MyString
+  kind: invoice
+  fullname: Jane Smith
+  company_name: Test Company 2
+  street: Test Avenue 456
+  postcode: 30-001
+  city: Krakow
+  country: Poland
+  country_code: PL

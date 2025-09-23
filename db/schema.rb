@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_24_225114) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_23_151258) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -85,8 +85,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_225114) do
     t.decimal "tax_rate", precision: 3, scale: 1, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "warehouse_id"
     t.index ["order_id"], name: "index_order_products_on_order_id"
     t.index ["product_id"], name: "index_order_products_on_product_id"
+    t.index ["warehouse_id"], name: "index_order_products_on_warehouse_id"
   end
 
   create_table "order_statuses", force: :cascade do |t|
@@ -160,6 +162,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_225114) do
     t.index ["catalog_id"], name: "index_products_on_catalog_id"
   end
 
+  create_table "stock_movements", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "warehouse_id", null: false
+    t.bigint "user_id", null: false
+    t.string "movement_type", null: false
+    t.integer "quantity", null: false
+    t.integer "stock_before", null: false
+    t.integer "stock_after", null: false
+    t.string "reference_type"
+    t.bigint "reference_id"
+    t.datetime "occurred_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["movement_type"], name: "index_stock_movements_on_movement_type"
+    t.index ["occurred_at"], name: "index_stock_movements_on_occurred_at"
+    t.index ["product_id", "warehouse_id"], name: "index_stock_movements_on_product_id_and_warehouse_id"
+    t.index ["product_id"], name: "index_stock_movements_on_product_id"
+    t.index ["reference_type", "reference_id"], name: "index_stock_movements_on_reference"
+    t.index ["reference_type", "reference_id"], name: "index_stock_movements_on_reference_type_and_reference_id"
+    t.index ["user_id"], name: "index_stock_movements_on_user_id"
+    t.index ["warehouse_id"], name: "index_stock_movements_on_warehouse_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -186,6 +211,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_225114) do
   add_foreign_key "customer_pickup_points", "orders"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
+  add_foreign_key "order_products", "warehouses"
   add_foreign_key "order_statuses", "users"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "users"
@@ -195,5 +221,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_24_225114) do
   add_foreign_key "product_stocks", "products"
   add_foreign_key "product_stocks", "warehouses"
   add_foreign_key "products", "catalogs"
+  add_foreign_key "stock_movements", "products"
+  add_foreign_key "stock_movements", "users"
+  add_foreign_key "stock_movements", "warehouses"
   add_foreign_key "warehouses", "users"
 end

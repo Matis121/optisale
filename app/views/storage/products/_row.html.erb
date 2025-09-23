@@ -14,22 +14,19 @@
   </td>
   <td class="text-center">
     <div class="font-medium text-base-content">
-      <%= product.product_prices.find { |pp| pp.price_group_id == @current_price_group.id }&.nett_price || "0.00" %>
+      <%= product.product_prices.find { |pp| pp.price_group_id == @current_price_group.id }&.nett_price || "0.00" %> PLN
     </div>
   </td>
   <td class="text-center">
     <div class="font-medium text-base-content">
-      <%= product.product_prices.find { |pp| pp.price_group_id == @current_price_group.id }&.gross_price || "0.00" %>
+      <%= product.product_prices.find { |pp| pp.price_group_id == @current_price_group.id }&.gross_price || "0.00" %> PLN
     </div>
   </td>
   <td class="text-center">
-    <span class="badge badge-secondary badge-sm">
-      <% if @current_warehouse.present? %>
-        <%= product.product_stocks.find { |ps| ps.warehouse_id == @current_warehouse.id }&.quantity || "0" %>
-      <% else %>
-        <%= product.product_stocks.map { |ps| ps.quantity }&.sum || "0" %>
-      <% end %>
-    </span>
+    <% stock_quantity = @current_warehouse.present? ? 
+                        (product.product_stocks.find { |ps| ps.warehouse_id == @current_warehouse.id }&.quantity || 0) :
+                        (product.product_stocks.sum(&:quantity) || 0) %>
+    <span class="font-mono"><%= stock_quantity %> szt.</span>
   </td>
   <td>
     <div class="text-sm text-base-content"><%= product.created_at.strftime('%d.%m.%Y %H:%M') %></div>
@@ -41,18 +38,23 @@
         <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
           <i class="fas fa-ellipsis-v text-base-content/60"></i>
         </div>
-        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-48 border border-base-200">
           <li>
             <%= link_to edit_storage_product_path(product), data: { turbo_frame: "modal-frame" }, class: "gap-2" do %>
-              <i class="fas fa-edit text-primary"></i> Edytuj
+              <i class="fas fa-edit text-base-content"></i> Edytuj
+            <% end %>
+          </li>
+          <li>
+            <%= link_to storage_product_stock_movements_path(product), data: { turbo_frame: "modal-frame" }, class: "gap-2" do %>
+              <i class="fas fa-history text-base-content"></i> Historia stanów
             <% end %>
           </li>
           <li>
             <%= button_to storage_product_path(product), 
                 method: :delete, 
-                data: { turbo_confirm: "Czy na pewno chcesz usunąć ten produkt?" },
-                class: "text-error gap-2 w-full text-left" do %>
-              <i class="fas fa-trash"></i> Usuń
+                data: { turbo_confirm: "Czy na pewno chcesz usunąć ten produkt?" }, 
+                class: "flex items-center text-error gap-2 w-full text-left" do %>
+              <i class="fas fa-trash text-error"></i> Usuń
             <% end %>
           </li>
         </ul>

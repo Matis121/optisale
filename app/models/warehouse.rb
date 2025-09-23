@@ -2,6 +2,7 @@ class Warehouse < ApplicationRecord
   belongs_to :user
   has_and_belongs_to_many :catalogs
   has_many :product_stocks, dependent: :destroy
+  has_many :stock_movements, dependent: :destroy
 
   validates :name, presence: true, uniqueness: { scope: :user_id }
 

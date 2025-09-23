@@ -1,0 +1,133 @@
+<%= turbo_frame_tag "modal-frame" do %>
+  <%= render Ui::Layout::Modal::DefaultComponent.new(title: "Historia stanów magazynowych") do %>
+    <%= turbo_frame_tag "stock-movements-content" do %>
+      <div class="mb-4 p-3 rounded">
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <div class="text-xs uppercase tracking-wide text-base-content/60 mb-1">Aktualny stan</div>
+            <div class="text-2xl font-semibold">
+              <%= @warehouse ? @product.stock_in_warehouse(@warehouse) : @product.total_stock %>
+            </div>
+            <div class="text-sm text-base-content/70">
+              <%= @warehouse ? "w #{@warehouse.name}" : "we wszystkich magazynach" %>
+            </div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wide text-base-content/60 mb-1">Liczba ruchów</div>
+            <div class="text-2xl font-semibold"><%= @stock_movements.total_count %></div>
+            <div class="text-sm text-base-content/70">operacji w historii</div>
+          </div>
+        </div>
+      </div>
+      <% if @product.catalog.warehouses.count > 1 %>
+        <div class="mb-4">
+          <div class="flex gap-2 flex-wrap">
+            <%= link_to "Wszystkie magazyny", 
+              storage_product_stock_movements_path(@product), 
+              class: "btn btn-sm #{'btn-primary' if @warehouse.nil?}",
+              data: { turbo_frame: "stock-movements-content" } %>
+            <% @product.catalog.warehouses.each do |warehouse| %>
+              <%= link_to warehouse.name, 
+                storage_product_stock_movements_path(@product, warehouse_id: warehouse.id), 
+                class: "btn btn-sm #{'btn-primary' if @warehouse == warehouse}",
+                data: { turbo_frame: "stock-movements-content" } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Data i czas</th>
+              <th>Typ operacji</th>
+              <th>Magazyn</th>
+              <th>Zmiana</th>
+              <th>Stan przed</th>
+              <th>Stan po</th>
+              <th>Użytkownik</th>
+              <th>Powiązanie</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @stock_movements.present? %>
+              <% @stock_movements.each do |movement| %>
+                <tr>
+                  <td>
+                    <div class="text-sm">
+                      <%= movement.occurred_at.strftime('%d.%m.%Y') %>
+                    </div>
+                    <div class="text-xs text-base-content/60">
+                      <%= movement.occurred_at.strftime('%H:%M:%S') %>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="text-sm"></span>
+                    <%= movement.display_type %>
+                  </span>
+                </td>
+                <td>
+                  <span class="text-sm">
+                    <%= movement.warehouse.name %>
+                  </span>
+                </td>
+                <td>
+                  <span class="font-mono text-sm <%= movement.quantity > 0 ? 'text-success' : 'text-error' %>">
+                    <%= movement.quantity > 0 ? "+#{movement.quantity}" : movement.quantity %>
+                  </span>
+                </td>
+                <td>
+                  <span class="font-mono text-sm">
+                    <%= movement.stock_before %>
+                  </span>
+                </td>
+                <td>
+                  <span class="font-mono text-sm font-semibold">
+                    <%= movement.stock_after %>
+                  </span>
+                </td>
+                <td>
+                  <span class="text-sm">
+                    <%= movement.user.email.split('@').first %>
+                  </span>
+                </td>
+                <td>
+                  <% if movement.reference %>
+                    <span class="text-xs">
+                      <% if movement.reference.class.name == 'Order' %>
+                        <%= link_to "#{movement.reference.class.name} ##{movement.reference.id}", 
+                                      order_path(movement.reference), 
+                                      class: "text-primary hover:underline",
+                                      data: { turbo: false } %>
+                      <% else %>
+                        <%= movement.reference.class.name %>
+                        <% if movement.reference.respond_to?(:id) %>
+                          #<%= movement.reference.id %>
+                        <% end %>
+                      <% end %>
+                    </span>
+                  <% else %>
+                    <span class="text-xs text-base-content/50">-</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="9" class="text-center py-8">
+                <p class="text-base-content/60">Brak ruchów magazynowych dla tego produktu</p>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @stock_movements.respond_to?(:total_pages) && @stock_movements.total_pages > 1 %>
+      <div class="flex justify-center mt-4">
+        <%= paginate @stock_movements, 
+              params: { product_id: @product.id, warehouse_id: @warehouse&.id } %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>
+<% end %>

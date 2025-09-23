@@ -3,9 +3,9 @@
 one:
   product: one
   warehouse: one
-  quantity: 1
+  quantity: 100
 
 two:
   product: two
   warehouse: two
-  quantity: 1
+  quantity: 50
