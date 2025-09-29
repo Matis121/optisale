@@ -1,14 +1,14 @@
 # Seeds for testing stock movements system
 puts "Creating test stock movements..."
 
-# Znajdź pierwszego użytkownika i produkty
+# Find first user and products
 user = User.first
 if user.nil?
   puts "No users found. Please create a user first."
   exit
 end
 
-# Znajdź pierwszy katalog i magazyn
+# Find first catalog and warehouse
 catalog = user.catalogs.first
 warehouse = user.warehouses.first
 
@@ -18,7 +18,7 @@ if catalog.nil? || warehouse.nil?
   warehouse ||= user.warehouses.create!(name: "Main Warehouse", default: true)
 end
 
-# Znajdź produkty lub stwórz testowe
+# Find products or create test ones
 products = catalog.products.limit(3)
 
 if products.empty?
@@ -45,11 +45,11 @@ if products.empty?
   ]
 end
 
-# Stwórz przykładowe ruchy magazynowe dla każdego produktu
+# Create sample stock movements for each product
 products.each_with_index do |product, index|
   puts "Creating stock movements for #{product.name}..."
 
-  # Początkowy stan 100 sztuk
+  # Initial stock 100 pieces
   product.update_stock!(
     warehouse,
     100,
@@ -57,8 +57,8 @@ products.each_with_index do |product, index|
     movement_type: 'stock_in'
   )
 
-  # Korekta w dół
-  sleep(1) # Żeby mieć różne czasy
+  # Downward correction
+  sleep(1) # To have different timestamps
   product.update_stock!(
     warehouse,
     95,
@@ -75,7 +75,7 @@ products.each_with_index do |product, index|
     movement_type: 'damage'
   )
 
-  # Wydanie na zamówienie (symulacja)
+  # Issue for order (simulation)
   sleep(1)
   product.update_stock!(
     warehouse,
@@ -84,7 +84,7 @@ products.each_with_index do |product, index|
     movement_type: 'order_placement'
   )
 
-  # Przyjęcie towaru
+  # Goods receipt
   sleep(1)
   product.update_stock!(
     warehouse,

@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       get :edit_payment
       patch :update_payment
       get :search_products
+      post :generate_invoice
     end
     resources :addresses, controller: "order/addresses"
     resources :customer_pickup_points, controller: "order/customer_pickup_points"
@@ -42,4 +43,20 @@ Rails.application.routes.draw do
 
   # Order statuses
   resources :order_statuses, controller: "order_statuses"
+
+  # Billing integrations (Fakturownia, InFakt, etc.)
+  resources :billing_integrations, path: "integrations", as: "integrations" do
+    member do
+      post :test
+    end
+  end
+
+  # Invoices (for viewing and managing)
+  resources :invoices, only: [ :index, :show, :destroy ] do
+    member do
+      post :sync_status
+      post :cancel_invoice
+      delete :delete_from_external
+    end
+  end
 end

@@ -117,13 +117,7 @@
                     Wystaw paragon
                   </button>
                 </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-base-content/60">Faktura:</span>
-                  <button class="btn btn-outline btn-sm gap-1">
-                    <i class="fas fa-file-invoice"></i>
-                    Wystaw fakturę
-                  </button>
-                </div>
+                <%= render "invoice_section", order: @order %>
               </div>
             </div>
           </div>

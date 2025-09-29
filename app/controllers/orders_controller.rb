@@ -4,7 +4,7 @@ class OrdersController < ApplicationController
   DEFAULT_PER_PAGE = 20
   MAX_PER_PAGE = 100
 
-  before_action :set_order, only: [ :show, :update, :destroy, :edit, :edit_extra_fields, :update_extra_fields, :edit_payment, :update_payment ]
+  before_action :set_order, only: [ :show, :update, :destroy, :edit, :edit_extra_fields, :update_extra_fields, :edit_payment, :update_payment, :generate_invoice ]
   before_action :set_order_statuses
 
   # GET /orders or /orders.json
@@ -216,6 +216,87 @@ class OrdersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to orders_path, status: :see_other, notice: "Order was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def generate_invoice
+    billing_service = BillingService.new(current_user)
+
+    # Check if invoice can be generated
+    unless billing_service.can_generate_invoice_for_order?(@order)
+      error_message = billing_service.errors.any? ?
+        "Nie można wygenerować faktury: #{billing_service.errors.join(', ')}" :
+        "Nie można wygenerować faktury dla tego zamówienia."
+      redirect_to @order, alert: error_message
+      return
+    end
+
+    # Attempt to create invoice
+    begin
+      if billing_service.create_invoice_for_order(@order)
+        respond_to do |format|
+          format.html { redirect_to @order, notice: "Faktura została pomyślnie wygenerowana!" }
+          format.turbo_stream {
+            flash.now[:notice] = "Faktura została pomyślnie wygenerowana!"
+            render turbo_stream: turbo_stream.replace("invoice_section_#{@order.id}",
+              partial: "orders/invoice_section", locals: { order: @order })
+          }
+        end
+      else
+        # Format errors for user
+        formatted_errors = billing_service.errors.map do |error|
+          case error
+          when /undefined method.*name.*Customer/
+            "Brak danych klienta (imię/nazwa). Uzupełnij dane klienta w zamówieniu."
+          when /undefined method.*email.*Customer/
+            "Brak adresu email klienta. Uzupełnij email klienta w zamówieniu."
+          when /Unauthorized/
+            "Błąd autoryzacji. Sprawdź dane logowania do #{billing_service.active_integration.provider.humanize}."
+          when /Connection/i
+            "Błąd połączenia z systemem fakturowania. Sprawdź połączenie internetowe."
+          when /SSL/i, /certificate/i
+            "Błąd certyfikatu SSL. Problem z bezpiecznym połączeniem."
+          else
+            error # Show original error if no special formatting available
+          end
+        end
+
+        error_message = "Błąd podczas generowania faktury: #{formatted_errors.join(', ')}"
+
+        respond_to do |format|
+          format.html { redirect_to @order, alert: error_message }
+          format.turbo_stream {
+            flash.now[:alert] = error_message
+            render turbo_stream: turbo_stream.replace("invoice_section_#{@order.id}",
+              partial: "orders/invoice_section", locals: { order: @order })
+          }
+        end
+      end
+    rescue => e
+      # Handle unexpected exceptions
+      user_friendly_error = case e.message
+      when /undefined method.*name.*Customer/
+        "Brak wymaganych danych klienta. Uzupełnij imię/nazwę klienta w zamówieniu."
+      when /undefined method.*email.*Customer/
+        "Brak adresu email klienta. Uzupełnij email klienta w zamówieniu."
+      when /Connection refused/, /timeout/i
+        "Nie można połączyć się z systemem fakturowania. Sprawdź połączenie internetowe."
+      when /SSL/i, /certificate/i
+        "Problem z certyfikatem bezpieczeństwa. Skontaktuj się z administratorem."
+      else
+        "Nieoczekiwany błąd: #{e.message}"
+      end
+
+      error_message = "#{user_friendly_error}"
+
+      respond_to do |format|
+        format.html { redirect_to @order, alert: error_message }
+        format.turbo_stream {
+          flash.now[:alert] = error_message
+          render turbo_stream: turbo_stream.replace("invoice_section_#{@order.id}",
+            partial: "orders/invoice_section", locals: { order: @order })
+        }
+      end
     end
   end
 

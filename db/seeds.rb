@@ -10,12 +10,12 @@
 #
 #
 
-# Tworzenie przykładowego użytkownika
+# Creating sample user
 user = User.find_or_create_by!(email: "test@example.com")
 
 puts "Utworzono użytkownika: #{user.email}"
 
-# Tworzenie katalogu dla użytkownika
+# Creating catalog for user
 catalog = user.catalogs.find_or_create_by!(name: "Domyślny katalog")
 puts "Utworzono katalog: #{catalog.name}"
 
@@ -27,7 +27,7 @@ puts "Utworzono magazyn: #{warehouse.name}"
 price_group = catalog.price_groups.find_or_create_by!(name: "Domyślna grupa cenowa", default: true)
 puts "Utworzono grupę cenową: #{price_group.name}"
 
-# Tworzenie przykładowych produktów
+# Creating sample products
 40.times do |i|
   product = catalog.products.find_or_create_by!(
     name: "Produkt #{i + 1}",
@@ -35,7 +35,7 @@ puts "Utworzono grupę cenową: #{price_group.name}"
     tax_rate: 23
   )
 
-  # Tworzenie stanu magazynowego dla produktu w magazynie
+  # Creating stock for product in warehouse
   ProductStock.find_or_create_by!(
     product: product,
     warehouse: warehouse,

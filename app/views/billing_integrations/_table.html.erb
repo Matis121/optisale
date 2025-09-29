@@ -1,0 +1,153 @@
+<!-- Moje Integracje Section -->
+<% if @integrations.any? %>
+  <div class="grid gap-4 mb-12">
+    <% @integrations.each do |integration| %>
+      <div class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                <i class="fas fa-plug text-primary text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-base-content text-lg"><%= integration.name %></h3>
+                <div class="flex items-center gap-3 mt-1">
+                  <span class="badge badge-outline badge-sm"><%= integration.provider.humanize %></span>
+                  <% if integration.ready? %>
+                    <span class="badge badge-success badge-sm">
+                      <i class="fas fa-check mr-1"></i>Aktywna
+                    </span>
+                  <% elsif integration.status == 'error' %>
+                    <span class="badge badge-error badge-sm">
+                      <i class="fas fa-exclamation-triangle mr-1"></i>Błąd
+                    </span>
+                  <% else %>
+                    <span class="badge badge-warning badge-sm">
+                      <i class="fas fa-clock mr-1"></i>Wymaga testu
+                    </span>
+                  <% end %>
+                </div>
+                <% if integration.error_message.present? %>
+                  <p class="text-xs text-error mt-2">
+                    <i class="fas fa-exclamation-circle mr-1"></i>
+                    <%= integration.error_message %>
+                  </p>
+                <% end %>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <% unless integration.ready? %>
+                <%= link_to "Testuj", test_integration_path(integration), 
+                      data: { turbo_method: :post },
+                      class: "btn btn-primary btn-sm" %>
+              <% end %>
+              <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
+                  <i class="fas fa-ellipsis-v"></i>
+                </div>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-40 border border-base-200">
+                  <li>
+                    <%= link_to integration_path(integration), class: "gap-2" do %>
+                      <i class="fas fa-eye"></i> Szczegóły
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to integration_path(integration), 
+                          data: { turbo_method: :delete, 
+                                 turbo_confirm: "Czy na pewno chcesz usunąć tę integrację?" },
+                          class: "text-error gap-2" do %>
+                      <i class="fas fa-trash"></i> Usuń
+                    <% end %>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+<!-- Dostępne integracje Section -->
+<div class="bg-base-200 rounded-lg border border-base-200 overflow-y-visible shadow-sm p-4">
+  <div class="space-y-8">
+    <!-- Systemy do fakturowania -->
+    <div>
+      <h3 class="font-semibold text-base-content mb-4">Systemy do fakturowania</h3>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <% @available_providers.each do |provider| %>
+          <% has_provider = @integrations.any? { |i| i.provider == provider[:key] } %>
+          <div class="card bg-base-100 border border-base-300 hover:shadow-md hover:border-primary/20 transition-all duration-200">
+            <div class="card-body p-6">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <i class="<%= provider[:logo_class] %> text-primary text-lg"></i>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-bold text-base-content"><%= provider[:name] %></h4>
+                  <% if has_provider %>
+                    <span class="badge badge-success badge-xs mt-1">Dodane</span>
+                  <% end %>
+                </div>
+              </div>
+              <p class="text-sm text-base-content/70 mb-4">
+                <%= provider[:description] %>
+              </p>
+              <% unless has_provider %>
+                <%= link_to new_integration_path(provider: provider[:key]), 
+                            class: "btn btn-primary btn-sm w-full" do %>
+                  <i class="fas fa-plus mr-2"></i>Dodaj
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <!-- Marketplace (Future) -->
+    <div class="opacity-60">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-base-content">Marketplace</h3>
+        <span class="badge badge-ghost badge-sm">Wkrótce</span>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Allegro -->
+        <div class="card bg-base-100 border border-base-300">
+          <div class="card-body p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <i class="fas fa-shopping-cart text-orange-500 text-lg"></i>
+              </div>
+              <h4 class="font-bold text-base-content/70">Allegro</h4>
+            </div>
+            <p class="text-sm text-base-content/50">Synchronizacja zamówień i produktów</p>
+          </div>
+        </div>
+        <!-- Amazon -->
+        <div class="card bg-base-100 border border-base-300">
+          <div class="card-body p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-yellow-500/10 rounded-lg flex items-center justify-center">
+                <i class="fab fa-amazon text-yellow-600 text-lg"></i>
+              </div>
+              <h4 class="font-bold text-base-content/70">Amazon</h4>
+            </div>
+            <p class="text-sm text-base-content/50">Zarządzanie produktami i zamówieniami</p>
+          </div>
+        </div>
+        <!-- eBay -->
+        <div class="card bg-base-100 border border-base-300">
+          <div class="card-body p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                <i class="fab fa-ebay text-blue-500 text-lg"></i>
+              </div>
+              <h4 class="font-bold text-base-content/70">eBay</h4>
+            </div>
+            <p class="text-sm text-base-content/50">Automatyczna synchronizacja aukcji</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

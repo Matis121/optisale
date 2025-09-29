@@ -17,7 +17,7 @@ class Product < ApplicationRecord
     [ "catalog_id", "created_at", "ean", "id", "name", "sku", "tax_rate", "updated_at" ]
   end
 
-  # Metoda do aktualizacji stanu magazynowego z logowaniem
+  # Method to update stock with logging
   def update_stock!(warehouse, new_quantity, user, movement_type: "manual_adjustment", reference: nil)
     product_stock = product_stocks.find_or_initialize_by(warehouse: warehouse)
     old_quantity = product_stock.quantity || 0
@@ -25,7 +25,7 @@ class Product < ApplicationRecord
 
     return true if quantity_change == 0 # Brak zmian
 
-    # Walidacja, czy stan nie będzie ujemny
+    # Validation that stock won't go negative
     if new_quantity < 0
       raise ArgumentError, "Stan magazynowy nie może być ujemny"
     end
@@ -51,7 +51,7 @@ class Product < ApplicationRecord
     true
   end
 
-  # Metoda do redukcji stanu (np. przy składaniu zamówienia)
+  # Method to reduce stock (e.g., when placing order)
   def reduce_stock!(warehouse, quantity_to_reduce, user, reference: nil)
     product_stock = product_stocks.find_by(warehouse: warehouse)
     current_quantity = product_stock&.quantity || 0
@@ -66,13 +66,13 @@ class Product < ApplicationRecord
                   reference: reference)
   end
 
-  # Metoda do sprawdzenia dostępności w magazynie
+  # Method to check warehouse availability
   def available_in_warehouse?(warehouse, required_quantity)
     stock = product_stocks.find_by(warehouse: warehouse)
     (stock&.quantity || 0) >= required_quantity
   end
 
-  # Całkowity stan we wszystkich magazynach
+  # Total stock in all warehouses
   def total_stock
     product_stocks.sum(:quantity)
   end

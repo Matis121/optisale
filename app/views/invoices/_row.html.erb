@@ -1,0 +1,69 @@
+<tr class="hover:bg-base-300/50 transition-colors duration-200">
+  <td>
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+        <i class="fas fa-file-invoice text-primary text-sm"></i>
+      </div>
+      <div>
+        <div class="font-semibold text-base-content"><%= invoice.invoice_number %></div>
+        <% if invoice.external_id %>
+          <div class="text-xs text-base-content/60">ID: <%= invoice.external_id %></div>
+        <% end %>
+      </div>
+    </div>
+  </td>
+  <td>
+    <%= link_to invoice.order, class: "link link-primary font-medium" do %>
+      #<%= invoice.order.id %>
+    <% end %>
+  </td>
+  <td>
+    <span class="font-semibold text-base-content"><%= invoice.formatted_amount %></span>
+  </td>
+  <td>
+    <span class="badge badge-<%= invoice.status_color %> badge-sm">
+      <%= invoice.status_label %>
+    </span>
+  </td>
+  <td>
+    <span class="text-base-content"><%= invoice.issue_date&.strftime("%d.%m.%Y") %></span>
+  </td>
+  <td>
+    <div class="flex flex-col">
+      <span class="text-base-content"><%= invoice.due_date&.strftime("%d.%m.%Y") %></span>
+      <% if invoice.overdue? %>
+        <span class="badge badge-error badge-xs mt-1">Przeterminowana</span>
+      <% end %>
+    </div>
+  </td>
+  <td>
+    <span class="badge badge-outline badge-sm">
+      <%= invoice.billing_integration.provider.humanize %>
+    </span>
+  </td>
+  <td class="text-right">
+    <div class="flex items-center justify-end gap-2">
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+          <i class="fas fa-ellipsis-v text-base-content/60"></i>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-40 border border-base-200">
+          <li>
+            <%= link_to invoice.download_pdf_url, target: "_blank", class: "gap-2" do %>
+              <i class="fas fa-download text-primary"></i> Pobierz PDF
+            <% end %>
+          </li>
+          <li>
+            <%= link_to delete_from_external_invoice_path(invoice), 
+                data: { turbo_method: :delete, 
+                       turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę? Ta operacja jest nieodwracalna!",
+                       turbo_frame: "invoices_table" },
+                class: "text-error gap-2" do %>
+              <i class="fas fa-trash"></i> Usuń
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </td>
+</tr>

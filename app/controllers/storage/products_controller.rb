@@ -44,14 +44,14 @@ class Storage::ProductsController < ApplicationController
   def edit
     catalog = @product.catalog
 
-    # Buduj brakujące product_stocks dla wszystkich magazynów w katalogu
+    # Build missing product_stocks for all warehouses in catalog
     catalog.warehouses.each do |warehouse|
       unless @product.product_stocks.any? { |ps| ps.warehouse_id == warehouse.id }
         @product.product_stocks.build(warehouse: warehouse)
       end
     end
 
-    # Buduj brakujące product_prices dla wszystkich grup cenowych w katalogu
+    # Build missing product_prices for all price groups in catalog
     catalog.price_groups.each do |price_group|
       unless @product.product_prices.any? { |pp| pp.price_group_id == price_group.id }
         @product.product_prices.build(price_group: price_group, currency: "PLN")
@@ -78,7 +78,7 @@ class Storage::ProductsController < ApplicationController
   def update
     stock_updates = []
 
-    # Zbierz zmiany stanów PRZED aktualizacją produktu (żeby nested attributes ich nie zmieniły)
+    # Collect stock changes BEFORE product update (so nested attributes don't change them)
     if product_params[:product_stocks_attributes]
       product_params[:product_stocks_attributes].each do |_, stock_attrs|
         if stock_attrs[:id].present?
@@ -98,20 +98,20 @@ class Storage::ProductsController < ApplicationController
       end
     end
 
-    # Teraz zaktualizuj produkt (bez stock movements - robimy je ręcznie)
-    # Tymczasowo usuń product_stocks_attributes żeby je obsłużyć ręcznie
+    # Now update product (without stock movements - we do them manually)
+    # Temporarily remove product_stocks_attributes to handle them manually
     product_params_without_stocks = product_params.except(:product_stocks_attributes)
 
     respond_to do |format|
       if @product.update(product_params_without_stocks)
 
-        # Obsłuż ręczne zmiany stanów przez StockManagementService
+        # Handle manual stock changes through StockManagementService
         if stock_updates.any?
           stock_service = StockManagementService.new
           stock_service.batch_update_stocks(stock_updates, current_user, movement_type: "manual_adjustment")
         end
 
-        # Zaktualizuj pozostałe stock attributes (bez quantity - już obsłużone)
+        # Update remaining stock attributes (without quantity - already handled)
         if product_params[:product_stocks_attributes]
           product_params[:product_stocks_attributes].each do |_, stock_attrs|
             if stock_attrs[:id].present?
@@ -145,7 +145,7 @@ class Storage::ProductsController < ApplicationController
     catalog_id = params[:catalog_id]
     if current_user.catalogs.exists?(catalog_id)
       session[:current_catalog_id] = catalog_id
-      # resetuj zależności przy zmianie katalogu
+      # reset dependencies when changing catalog
       session[:current_warehouse_id] = nil
       session[:current_price_group_id] = nil
     end

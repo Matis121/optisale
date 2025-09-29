@@ -68,18 +68,13 @@ class OrderProduct < ApplicationRecord
     return unless default_warehouse
 
     begin
-      Rails.logger.info "🔄 Redukuję stan dla produktu #{product.name}, ilość: #{quantity}"
-
       product.reduce_stock!(
         default_warehouse,
         quantity,
         order.user,
         reference: order
       )
-
-      Rails.logger.info "✅ Stan zredukowany pomyślnie"
     rescue ArgumentError => e
-      Rails.logger.warn "❌ Nie udało się zredukować stanu: #{e.message}"
     end
   end
 
@@ -96,7 +91,7 @@ class OrderProduct < ApplicationRecord
 
     begin
       if quantity_difference > 0
-        # Zwiększono ilość - zredukuj dodatkowy stan
+        # Quantity increased - reduce additional stock
         product.reduce_stock!(
           default_warehouse,
           quantity_difference,
@@ -104,7 +99,7 @@ class OrderProduct < ApplicationRecord
           reference: order
         )
       else
-        # Zmniejszono ilość - przywróć stan
+        # Quantity decreased - restore stock
         quantity_to_restore = -quantity_difference
         current_stock = product.stock_in_warehouse(default_warehouse)
         new_stock = current_stock + quantity_to_restore
@@ -118,7 +113,6 @@ class OrderProduct < ApplicationRecord
         )
       end
     rescue ArgumentError => e
-      Rails.logger.warn "Nie udało się dostosować stanu: #{e.message}"
     end
   end
 
@@ -140,7 +134,6 @@ class OrderProduct < ApplicationRecord
         reference: order
       )
     rescue ArgumentError => e
-      Rails.logger.warn "Nie udało się przywrócić stanu: #{e.message}"
     end
   end
 end

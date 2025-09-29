@@ -75,6 +75,12 @@
                 <span><%= flash[:notice] %></span>
               </div>
             <% end %>
+            <% if flash[:alert].present? %>
+              <div class="alert alert-error bg-error text-error-content px-6 py-4 shadow-lg">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div><%= flash[:alert].html_safe %></div>
+              </div>
+            <% end %>
           </div>
         <% end %>
       </div>

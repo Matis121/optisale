@@ -5,7 +5,7 @@ class StockManagementService
     @errors = []
   end
 
-  # Batch update stanów dla wielu produktów (np. przy imporcie)
+  # Batch update stocks for multiple products (e.g., during import)
   def batch_update_stocks(stock_updates, user, movement_type: "manual_adjustment")
     results = []
 
@@ -25,14 +25,14 @@ class StockManagementService
         end
       end
 
-      # Rollback jeśli są błędy (opcjonalne - zależnie od wymagań)
+      # Rollback if there are errors (optional - depends on requirements)
       # raise ActiveRecord::Rollback if @errors.any?
     end
 
     results
   end
 
-  # Sprawdzenie dostępności produktów dla zamówienia
+  # Check product availability for order
   def check_availability_for_order(order_products, warehouse)
     availability_report = []
 
@@ -53,14 +53,14 @@ class StockManagementService
     availability_report
   end
 
-  # Rezerwa stanów (soft reservation)
+  # Stock reservation (soft reservation)
   def reserve_stock_for_order(order, warehouse = nil)
     warehouse ||= order.user.warehouses.find_by(default: true)
     return false unless warehouse
 
     availability = check_availability_for_order(order.order_products, warehouse)
 
-    # Sprawdź czy wszystkie produkty są dostępne
+    # Check if all products are available
     insufficient_products = availability.select { |item| !item[:sufficient] }
 
     if insufficient_products.any?
@@ -73,6 +73,6 @@ class StockManagementService
     true
   end
 
-  # Obliczenie wartości stanów magazynowych
+  # Calculate warehouse stock values
   private
 end

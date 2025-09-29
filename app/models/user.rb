@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :warehouses, dependent: :destroy
   has_many :price_groups, dependent: :destroy
   has_many :order_statuses, dependent: :destroy
+  has_many :billing_integrations, dependent: :destroy
+  has_many :invoices, dependent: :destroy
 
 
   devise :database_authenticatable, :registerable,
