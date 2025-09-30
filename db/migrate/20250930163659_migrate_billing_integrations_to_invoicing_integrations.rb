@@ -1,5 +1,8 @@
 class MigrateBillingIntegrationsToInvoicingIntegrations < ActiveRecord::Migration[8.0]
   def up
+    # Skip if source table doesn't exist
+    return unless table_exists?(:billing_integrations)
+
     # Migrate data from billing_integrations to invoicing_integrations
     execute <<-SQL
       INSERT INTO invoicing_integrations (
