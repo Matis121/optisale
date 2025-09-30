@@ -13,7 +13,7 @@
     </div>
   </td>
   <td>
-    <%= link_to invoice.order, class: "link link-primary font-medium" do %>
+    <%= link_to invoice.order, class: "link link-primary font-medium", data: { turbo_frame: "_top" } do %>
       #<%= invoice.order.id %>
     <% end %>
   </td>
