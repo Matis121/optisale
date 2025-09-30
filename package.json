@@ -3,7 +3,6 @@
     "daisyui": "^5.0.35"
   },
   "dependencies": {
-    "@stimulus-components/notification": "^3.0.0",
-     
+    "@stimulus-components/notification": "^3.0.0"
   }
 }
