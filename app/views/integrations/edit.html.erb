@@ -1,4 +1,5 @@
-<div class="container mx-auto py-8 max-w-6xl">
+<% content_for :title, "Edycja integracji #{@integration.name}" %>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Header with breadcrumb and title -->
   <div class="mb-8">
     <div class="flex items-center gap-2 text-sm breadcrumbs mb-4">
@@ -192,4 +193,4 @@
       </div>
     </div>
   </div>
-</div>
+<% end %>
