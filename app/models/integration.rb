@@ -1,12 +1,12 @@
-class BillingIntegration < ApplicationRecord
+class Integration < ApplicationRecord
+  self.abstract_class = true
+
   belongs_to :user
-  has_many :invoices, dependent: :destroy
 
-  enum :status, { inactive: "inactive", active: "active", error: "error" }
+  # enum :status, { inactive: "inactive", active: "active", error: "error" }
 
-  validates :provider, presence: true, inclusion: { in: %w[fakturownia] }
   validates :name, presence: true
-  validates :provider, uniqueness: { scope: :user_id, message: "integration already exists for this user" }
+  validates :provider, presence: true
 
   scope :active_integrations, -> { where(active: true, status: "active") }
   scope :for_provider, ->(provider) { where(provider: provider) }
@@ -70,25 +70,9 @@ class BillingIntegration < ApplicationRecord
     super(value.to_json) if value.present?
   end
 
-  # Zwraca adapter dla tego providera
-  def adapter
-    @adapter ||= case provider
-    when "fakturownia"
-                   Billing::FakturowniaAdapter.new(self)
-    else
-                   raise "Unsupported provider: #{provider}"
-    end
-  end
-
   # Test connection and automatic activation on success
   def test_connection
     adapter.test_connection
-
-    # Deactivate other integrations of the same provider for this user
-    user.billing_integrations
-        .where(provider: provider)
-        .where.not(id: id)
-        .update_all(active: false)
 
     # Activate this integration
     update!(status: "active", active: true, error_message: nil, last_sync_at: Time.current)
@@ -103,27 +87,7 @@ class BillingIntegration < ApplicationRecord
     active? && status == "active"
   end
 
-  # Returns required credentials for given provider
-  def self.required_credentials_for(provider)
-    case provider
-    when "fakturownia"
-      %w[api_token account]
-    else
-      []
-    end
-  end
-
-  # Validates that all required credentials are present
-  def validate_required_credentials
-    required = self.class.required_credentials_for(provider)
-    missing = required - credentials.keys.map(&:to_s)
-
-    if missing.any?
-      errors.add(:credentials, "missing required fields: #{missing.join(', ')}")
-    end
-  end
-
   private
 
-  # TODO: In production, consider implementing proper encryption (Rails credentials or external vault))
+  # TODO: In production, consider implementing proper encryption (Rails credentials or external vault)
 end

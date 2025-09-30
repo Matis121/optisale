@@ -1,7 +1,7 @@
 class Invoice < ApplicationRecord
   belongs_to :user
   belongs_to :order
-  belongs_to :billing_integration
+  belongs_to :invoicing_integration
 
   enum :status, {
     draft: "draft",
@@ -13,7 +13,7 @@ class Invoice < ApplicationRecord
   }
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
-  validates :external_id, presence: true, uniqueness: { scope: :billing_integration_id }
+  validates :external_id, presence: true, uniqueness: { scope: :invoicing_integration_id }
   validates :invoice_number, presence: true
   validates :order_id, uniqueness: { scope: :user_id, message: "może mieć tylko jedną fakturę" }
 
@@ -43,22 +43,22 @@ class Invoice < ApplicationRecord
 
   # Delegates to adapter
   def view_url
-    billing_integration.adapter.view_url(self)
+    invoicing_integration.adapter.view_url(self)
   rescue
     external_url
   end
 
   def download_pdf_url
-    billing_integration.adapter.download_pdf_url(self)
+    invoicing_integration.adapter.download_pdf_url(self)
   rescue
     nil
   end
 
   # Synchronizes status with external system
   def sync_status!
-    return false unless billing_integration.ready?
+    return false unless invoicing_integration.ready?
 
-    new_status = billing_integration.adapter.get_invoice_status(self)
+    new_status = invoicing_integration.adapter.get_invoice_status(self)
 
     if new_status && new_status != status
       update!(status: new_status)
@@ -73,10 +73,10 @@ class Invoice < ApplicationRecord
 
   # Cancels invoice in external system
   def cancel!
-    return false unless billing_integration.ready?
+    return false unless invoicing_integration.ready?
     return false if cancelled?
 
-    if billing_integration.adapter.cancel_invoice(self)
+    if invoicing_integration.adapter.cancel_invoice(self)
       update!(status: "cancelled")
       true
     else
@@ -88,7 +88,7 @@ class Invoice < ApplicationRecord
 
   # Checks if invoice can be cancelled
   def cancellable?
-    !cancelled? && !error? && billing_integration&.ready?
+    !cancelled? && !error? && invoicing_integration&.ready?
   end
 
   # Formats amount for display

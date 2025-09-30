@@ -23,7 +23,7 @@
     <div class="lg:col-span-2">
       <div class="card bg-base-100 shadow-sm border border-base-200">
         <div class="card-body">
-          <%= form_with(model: @integration, url: integration_path(@integration), local: true, class: "space-y-8") do |form| %>
+          <%= form_with(model: @integration, url: integration_path(@integration), method: :patch, local: true, class: "space-y-8") do |form| %>
             <!-- Integration name -->
             <div class="form-control">
               <%= form.label :name, "Nazwa integracji", class: "label label-text font-semibold" %>
@@ -47,8 +47,8 @@
               <!-- Fakturownia credentials -->
               <div class="space-y-6">
                 <div class="form-control">
-                  <%= label_tag "billing_integration[credentials][account]", "Subdomena konta", class: "label label-text font-semibold" %>
-                  <%= text_field_tag "billing_integration[credentials][account]", 
+                  <%= label_tag "invoicing_integration[credentials][account]", "Subdomena konta", class: "label label-text font-semibold" %>
+                  <%= text_field_tag "invoicing_integration[credentials][account]", 
                                      @integration.credentials['account'], 
                                      class: "input input-bordered w-full", 
                                      placeholder: "twojafirma" %>
@@ -59,8 +59,8 @@
                   </div>
                 </div>
                 <div class="form-control">
-                  <%= label_tag "billing_integration[credentials][api_token]", "Token API", class: "label label-text font-semibold" %>
-                  <%= password_field_tag "billing_integration[credentials][api_token]", 
+                  <%= label_tag "invoicing_integration[credentials][api_token]", "Token API", class: "label label-text font-semibold" %>
+                  <%= password_field_tag "invoicing_integration[credentials][api_token]", 
                                          "", 
                                          class: "input input-bordered w-full", 
                                          placeholder: "Pozostaw puste aby nie zmieniać" %>

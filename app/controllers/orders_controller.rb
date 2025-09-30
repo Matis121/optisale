@@ -220,12 +220,12 @@ class OrdersController < ApplicationController
   end
 
   def generate_invoice
-    billing_service = BillingService.new(current_user)
+    invoice_service = InvoiceService.new(current_user)
 
     # Check if invoice can be generated
-    unless billing_service.can_generate_invoice_for_order?(@order)
-      error_message = billing_service.errors.any? ?
-        "Nie można wygenerować faktury: #{billing_service.errors.join(', ')}" :
+    unless invoice_service.can_generate_invoice_for_order?(@order)
+      error_message = invoice_service.errors.any? ?
+        "Nie można wygenerować faktury: #{invoice_service.errors.join(', ')}" :
         "Nie można wygenerować faktury dla tego zamówienia."
       redirect_to @order, alert: error_message
       return
@@ -233,7 +233,7 @@ class OrdersController < ApplicationController
 
     # Attempt to create invoice
     begin
-      if billing_service.create_invoice_for_order(@order)
+      if invoice_service.create_invoice_for_order(@order)
         respond_to do |format|
           format.html { redirect_to @order, notice: "Faktura została pomyślnie wygenerowana!" }
           format.turbo_stream {
@@ -244,14 +244,14 @@ class OrdersController < ApplicationController
         end
       else
         # Format errors for user
-        formatted_errors = billing_service.errors.map do |error|
+        formatted_errors = invoice_service.errors.map do |error|
           case error
           when /undefined method.*name.*Customer/
             "Brak danych klienta (imię/nazwa). Uzupełnij dane klienta w zamówieniu."
           when /undefined method.*email.*Customer/
             "Brak adresu email klienta. Uzupełnij email klienta w zamówieniu."
           when /Unauthorized/
-            "Błąd autoryzacji. Sprawdź dane logowania do #{billing_service.active_integration.provider.humanize}."
+            "Błąd autoryzacji. Sprawdź dane logowania do #{invoice_service.active_integration.provider.humanize}."
           when /Connection/i
             "Błąd połączenia z systemem fakturowania. Sprawdź połączenie internetowe."
           when /SSL/i, /certificate/i

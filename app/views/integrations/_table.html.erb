@@ -1,7 +1,7 @@
 <!-- Moje Integracje Section -->
-<% if @integrations.any? %>
+<% if @invoicing_integrations.any? %>
   <div class="grid gap-4 mb-12">
-    <% @integrations.each do |integration| %>
+    <% @invoicing_integrations.each do |integration| %>
       <div class="card bg-base-100 border border-base-300 shadow-sm">
         <div class="card-body p-6">
           <div class="flex items-center justify-between">
@@ -75,8 +75,7 @@
     <div>
       <h3 class="font-semibold text-base-content mb-4">Systemy do fakturowania</h3>
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <% @available_providers.each do |provider| %>
-          <% has_provider = @integrations.any? { |i| i.provider == provider[:key] } %>
+        <% @available_invoicing_providers.each do |provider| %>
           <div class="card bg-base-100 border border-base-300 hover:shadow-md hover:border-primary/20 transition-all duration-200">
             <div class="card-body p-6">
               <div class="flex items-center gap-3 mb-4">
@@ -85,7 +84,7 @@
                 </div>
                 <div class="flex-1">
                   <h4 class="font-bold text-base-content"><%= provider[:name] %></h4>
-                  <% if has_provider %>
+                  <% if provider[:has_provider] %>
                     <span class="badge badge-success badge-xs mt-1">Dodane</span>
                   <% end %>
                 </div>
@@ -93,7 +92,7 @@
               <p class="text-sm text-base-content/70 mb-4">
                 <%= provider[:description] %>
               </p>
-              <% unless has_provider %>
+              <% if provider[:can_add] %>
                 <%= link_to new_integration_path(provider: provider[:key]), 
                             class: "btn btn-primary btn-sm w-full" do %>
                   <i class="fas fa-plus mr-2"></i>Dodaj

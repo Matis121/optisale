@@ -44,12 +44,29 @@ Rails.application.routes.draw do
   # Order statuses
   resources :order_statuses, controller: "order_statuses"
 
-  # Billing integrations (Fakturownia, InFakt, etc.)
-  resources :billing_integrations, path: "integrations", as: "integrations" do
+  # Main integrations index and management
+  get "integrations", to: "integrations#index"
+
+  # Invoicing integrations under /integrations path
+  resources :invoicing_integrations, path: "integrations", as: "integrations", controller: "integrations" do
     member do
       post :test
     end
   end
+
+  # Future: Marketplace integrations
+  # resources :marketplace_integrations do
+  #   member do
+  #     post :test
+  #   end
+  # end
+
+  # Future: Shipping integrations
+  # resources :shipping_integrations do
+  #   member do
+  #     post :test
+  #   end
+  # end
 
   # Invoices (for viewing and managing)
   resources :invoices, only: [ :index, :show, :destroy ] do

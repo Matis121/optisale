@@ -2,7 +2,7 @@ class InvoicesController < ApplicationController
   before_action :set_invoice, only: [ :show, :destroy, :sync_status, :cancel_invoice, :delete_from_external ]
 
   def index
-    @invoices = current_user.invoices.includes(:order, :billing_integration)
+    @invoices = current_user.invoices.includes(:order, :invoicing_integration)
                            .order(created_at: :desc)
                            .page(params[:page]).per(20)
   end
@@ -24,34 +24,34 @@ class InvoicesController < ApplicationController
   end
 
   def cancel_invoice
-    unless @invoice.billing_integration.ready?
+    unless @invoice.invoicing_integration.ready?
       redirect_back_or_to(@invoice, alert: "Integracja nie jest aktywna. Nie można anulować faktury.")
       return
     end
 
-    billing_service = BillingService.new(current_user)
+    invoice_service = InvoiceService.new(current_user)
 
-    if billing_service.cancel_invoice(@invoice)
+    if invoice_service.cancel_invoice(@invoice)
       redirect_to @invoice, notice: "Faktura została anulowana."
     else
-      error_message = billing_service.errors.any? ?
-        "#{billing_service.errors.join(', ')}" :
+      error_message = invoice_service.errors.any? ?
+        "#{invoice_service.errors.join(', ')}" :
         "Nie udało się anulować faktury."
       redirect_to @invoice, alert: error_message
     end
   end
 
   def delete_from_external
-    unless @invoice.billing_integration.ready?
+    unless @invoice.invoicing_integration.ready?
       redirect_back_or_to(@invoice.order, alert: "Integracja nie jest aktywna. Nie można usunąć faktury z zewnętrznego systemu.")
       return
     end
 
     order = @invoice.order # Remember order before deleting invoice
-    billing_service = BillingService.new(current_user)
+    invoice_service = InvoiceService.new(current_user)
 
     begin
-      if billing_service.delete_invoice(@invoice)
+      if invoice_service.delete_invoice(@invoice)
         # Also delete from local database after successful deletion from external system
         @invoice.destroy
 
@@ -61,7 +61,7 @@ class InvoicesController < ApplicationController
             flash.now[:notice] = "Faktura została usunięta."
             # Check if we're on the invoices index page
             if request.referer&.include?("invoices")
-              @invoices = current_user.invoices.includes(:order, :billing_integration)
+              @invoices = current_user.invoices.includes(:order, :invoicing_integration)
                                      .order(created_at: :desc)
                                      .page(params[:page]).per(20)
               render turbo_stream: turbo_stream.replace("invoices_table",
@@ -82,7 +82,7 @@ class InvoicesController < ApplicationController
             flash.now[:alert] = error_message
             # Check if we're on the invoices index page
             if request.referer&.include?("invoices")
-              @invoices = current_user.invoices.includes(:order, :billing_integration)
+              @invoices = current_user.invoices.includes(:order, :invoicing_integration)
                                      .order(created_at: :desc)
                                      .page(params[:page]).per(20)
               render turbo_stream: turbo_stream.replace("invoices_table",
@@ -98,7 +98,7 @@ class InvoicesController < ApplicationController
     rescue => e
       user_friendly_error = case e.message
       when /Unauthorized/
-        "Błąd autoryzacji. Sprawdź dane logowania do #{@invoice.billing_integration.provider.humanize}."
+        "Błąd autoryzacji. Sprawdź dane logowania do #{@invoice.invoicing_integration.provider.humanize}."
       when /not found/i, /404/
         "Faktura nie została znaleziona w zewnętrznym systemie. Możliwe że została już usunięta."
       when /Connection/i, /timeout/i
@@ -115,7 +115,7 @@ class InvoicesController < ApplicationController
           flash.now[:alert] = error_message
           # Check if we're on the invoices index page
           if request.referer&.include?("invoices")
-            @invoices = current_user.invoices.includes(:order, :billing_integration)
+            @invoices = current_user.invoices.includes(:order, :invoicing_integration)
                                    .order(created_at: :desc)
                                    .page(params[:page]).per(20)
             render turbo_stream: turbo_stream.replace("invoices_table",

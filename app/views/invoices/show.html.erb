@@ -9,7 +9,7 @@
       <% if @invoice.view_url %>
         <%= link_to @invoice.view_url, target: "_blank", class: "btn btn-primary" do %>
           <i class="fas fa-external-link-alt mr-2"></i>
-          Otwórz w <%= @invoice.billing_integration.provider.humanize %>
+          Otwórz w <%= @invoice.invoicing_integration.provider.humanize %>
         <% end %>
       <% end %>
     </div>
@@ -101,17 +101,17 @@
           <div class="flex justify-between">
             <span class="text-base-content/60">Provider:</span>
             <span class="badge badge-outline">
-              <%= @invoice.billing_integration.provider.humanize %>
+              <%= @invoice.invoicing_integration.provider.humanize %>
             </span>
           </div>
           <div class="flex justify-between">
             <span class="text-base-content/60">Nazwa integracji:</span>
-            <span><%= @invoice.billing_integration.name %></span>
+            <span><%= @invoice.invoicing_integration.name %></span>
           </div>
           <div class="flex justify-between">
             <span class="text-base-content/60">Status integracji:</span>
-            <span class="badge badge-<%= @invoice.billing_integration.active? ? 'success' : 'error' %>">
-              <%= @invoice.billing_integration.active? ? 'Aktywna' : 'Nieaktywna' %>
+            <span class="badge badge-<%= @invoice.invoicing_integration.active? ? 'success' : 'error' %>">
+              <%= @invoice.invoicing_integration.active? ? 'Aktywna' : 'Nieaktywna' %>
             </span>
           </div>
         </div>
@@ -142,7 +142,7 @@
           <% end %>
           <%= link_to delete_from_external_invoice_path(@invoice), 
                       data: { turbo_method: :delete, 
-                             turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę z #{@invoice.billing_integration.provider.humanize} i z lokalnej bazy? Ta operacja jest nieodwracalna!" },
+                             turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę z #{@invoice.invoicing_integration.provider.humanize} i z lokalnej bazy? Ta operacja jest nieodwracalna!" },
                       class: "btn btn-error btn-block" do %>
             <i class="fas fa-trash mr-2"></i>
             Usuń fakturę

@@ -1,4 +1,5 @@
-<div class="container mx-auto py-8 max-w-6xl">
+<% content_for :title, "Integracja #{@integration.name}" %>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Header with breadcrumb and title -->
   <div class="mb-8">
     <div class="flex items-center gap-2 text-sm breadcrumbs mb-4">
@@ -134,7 +135,7 @@
                   Testuj połączenie
                 <% end %>
               <% end %>
-              <%= link_to invoices_path(billing_integration_id: @integration.id), 
+              <%= link_to invoices_path(invoicing_integration_id: @integration.id), 
                         class: "btn btn-outline btn-block" do %>
                 <i class="fas fa-file-invoice mr-2"></i>
                 Zobacz faktury
@@ -150,7 +151,7 @@
               <div class="flex justify-between">
                 <span class="text-base-content/60">Faktury utworzone</span>
                 <span class="font-bold">
-                  <%= @integration.user.invoices.where(billing_integration_id: @integration.id).count %>
+                  <%= @integration.user.invoices.where(invoicing_integration_id: @integration.id).count %>
                 </span>
               </div>
               <div class="flex justify-between">
@@ -180,4 +181,4 @@
     </div>
   </div>
 </div>
-</div>
+<% end %>

@@ -24,9 +24,9 @@
         <% end %>
       </div>
     <% else %>
-      <% billing_service = BillingService.new(current_user) %>
-      <% if billing_service.has_active_billing_integration? %>
-        <% if billing_service.can_generate_invoice_for_order?(order) %>
+      <% invoice_service = InvoiceService.new(current_user) %>
+      <% if invoice_service.has_active_invoicing_integration? %>
+        <% if invoice_service.can_generate_invoice_for_order?(order) %>
           <%= link_to generate_invoice_order_path(order), 
                       data: { turbo_method: :post, turbo_frame: "invoice_section_#{order.id}" },
                       class: "btn btn-outline btn-sm gap-1" do %>

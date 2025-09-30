@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_28_112500) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_30_184757) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -27,21 +27,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_112500) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_addresses_on_order_id"
-  end
-
-  create_table "billing_integrations", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "provider"
-    t.string "name"
-    t.boolean "active"
-    t.text "encrypted_credentials"
-    t.text "configuration"
-    t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "last_sync_at"
-    t.text "error_message"
-    t.index ["user_id"], name: "index_billing_integrations_on_user_id"
   end
 
   create_table "catalogs", force: :cascade do |t|
@@ -105,6 +90,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_112500) do
     t.index ["billing_integration_id"], name: "index_invoices_on_billing_integration_id"
     t.index ["order_id"], name: "index_invoices_on_order_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
+  end
+
+  create_table "invoicing_integrations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "provider", null: false
+    t.string "name", null: false
+    t.boolean "active", default: false
+    t.text "encrypted_credentials"
+    t.text "configuration"
+    t.string "status", default: "inactive"
+    t.datetime "last_sync_at"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_invoicing_integrations_on_active"
+    t.index ["status"], name: "index_invoicing_integrations_on_status"
+    t.index ["user_id", "provider"], name: "index_invoicing_integrations_on_user_id_and_provider"
+    t.index ["user_id"], name: "index_invoicing_integrations_on_user_id"
   end
 
   create_table "order_products", force: :cascade do |t|
@@ -239,12 +242,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_112500) do
   end
 
   add_foreign_key "addresses", "orders"
-  add_foreign_key "billing_integrations", "users"
   add_foreign_key "catalogs", "users"
   add_foreign_key "customer_pickup_points", "orders"
-  add_foreign_key "invoices", "billing_integrations"
+  add_foreign_key "invoices", "invoicing_integrations", column: "billing_integration_id"
   add_foreign_key "invoices", "orders"
   add_foreign_key "invoices", "users"
+  add_foreign_key "invoicing_integrations", "users"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "order_products", "warehouses"
