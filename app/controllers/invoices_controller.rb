@@ -3,8 +3,14 @@ class InvoicesController < ApplicationController
 
   def index
     @invoices = current_user.invoices.includes(:order, :invoicing_integration)
-                           .order(created_at: :desc)
-                           .page(params[:page]).per(20)
+
+    # Filter by invoicing_integration_id if provided
+    if params[:invoicing_integration_id].present?
+      @invoices = @invoices.where(invoicing_integration_id: params[:invoicing_integration_id])
+    end
+
+    @invoices = @invoices.order(created_at: :desc)
+                         .page(params[:page]).per(20)
   end
 
   def show

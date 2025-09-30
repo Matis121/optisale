@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_30_184757) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_30_214657) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,7 +76,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_30_184757) do
   create_table "invoices", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "order_id", null: false
-    t.bigint "billing_integration_id", null: false
+    t.bigint "invoicing_integration_id", null: false
     t.string "invoice_number"
     t.string "external_id"
     t.string "status"
@@ -87,7 +87,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_30_184757) do
     t.text "external_data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["billing_integration_id"], name: "index_invoices_on_billing_integration_id"
+    t.index ["invoicing_integration_id"], name: "index_invoices_on_invoicing_integration_id"
     t.index ["order_id"], name: "index_invoices_on_order_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
@@ -244,7 +244,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_30_184757) do
   add_foreign_key "addresses", "orders"
   add_foreign_key "catalogs", "users"
   add_foreign_key "customer_pickup_points", "orders"
-  add_foreign_key "invoices", "invoicing_integrations", column: "billing_integration_id"
+  add_foreign_key "invoices", "invoicing_integrations"
   add_foreign_key "invoices", "orders"
   add_foreign_key "invoices", "users"
   add_foreign_key "invoicing_integrations", "users"
