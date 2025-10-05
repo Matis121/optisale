@@ -10,7 +10,7 @@
   </div>
   <div class="card bg-base-100 shadow-sm border border-base-200">
     <div class="card-body">
-      <%= form_with(model: @integration, url: integrations_path, local: true, class: "space-y-6") do |form| %>
+      <%= form_with(model: @integration, url: integrations_path, local: true, data: { turbo: false }, class: "space-y-6") do |form| %>
         <!-- Hidden provider field -->
         <%= form.hidden_field :provider %>
         <!-- Integration name -->
@@ -20,8 +20,8 @@
                               class: "input input-bordered w-full #{'input-error' if @integration.errors[:name].any?}", 
                               placeholder: "np. Moja Fakturownia" %>
           <% if @integration.errors[:name].any? %>
-            <div class="label">
-              <span class="label-text-alt text-error">
+            <div class="mt-1">
+              <span class="text-sm text-error">
                 <%= @integration.errors[:name].first %>
               </span>
             </div>
@@ -39,10 +39,17 @@
               <%= label_tag "invoicing_integration[credentials][account]", "Subdomena konta", class: "label" %>
               <%= text_field_tag "invoicing_integration[credentials][account]", 
                                  "", 
-                                 class: "input input-bordered w-full", 
+                                 class: "input input-bordered w-full #{'input-error' if @integration.errors[:credentials_account].any?}", 
                                  placeholder: "twojafirma" %>
-              <div class="label">
-                <span class="label-text-alt text-base-content/60">
+              <% if @integration.errors[:credentials_account].any? %>
+                <div class="mt-1">
+                  <span class="text-sm text-error">
+                    Subdomena konta <%= @integration.errors[:credentials_account].first %>
+                  </span>
+                </div>
+              <% end %>
+              <div class="mt-1">
+                <span class="text-xs text-base-content/60">
                   Z adresu: https://twojafirma.fakturownia.pl
                 </span>
               </div>
@@ -51,10 +58,17 @@
               <%= label_tag "invoicing_integration[credentials][api_token]", "Token API", class: "label" %>
               <%= password_field_tag "invoicing_integration[credentials][api_token]", 
                                      "", 
-                                     class: "input input-bordered w-full", 
+                                     class: "input input-bordered w-full #{'input-error' if @integration.errors[:credentials_api_token].any?}", 
                                      placeholder: "Wprowadź token API" %>
-              <div class="label">
-                <span class="label-text-alt text-base-content/60">
+              <% if @integration.errors[:credentials_api_token].any? %>
+                <div class="mt-1">
+                  <span class="text-sm text-error">
+                    Token API <%= @integration.errors[:credentials_api_token].first %>
+                  </span>
+                </div>
+              <% end %>
+              <div class="mt-1">
+                <span class="text-xs text-base-content/60">
                   Znajdziesz w: Ustawienia → Ustawienia konta → Integracja
                 </span>
               </div>
@@ -74,13 +88,6 @@
             </div>
           </div>
         <% end %>
-        <!-- Validation errors -->
-        <% if @integration.errors[:credentials].any? %>
-          <div class="alert alert-error">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span><%= @integration.errors[:credentials].first %></span>
-          </div>
-        <% end %>
         <!-- Action buttons -->
         <div class="flex justify-end gap-3 pt-6">
           <%= link_to "Anuluj", integrations_path, class: "btn btn-ghost" %>
@@ -88,12 +95,5 @@
         </div>
       <% end %>
     </div>
-  </div>
-  <!-- Help section -->
-  <div class="mt-8 text-center">
-    <p class="text-base-content/50 text-sm">
-      Potrzebujesz pomocy? 
-      <a href="#" class="link link-primary">Zobacz instrukcję</a>
-    </p>
   </div>
 <% end %>

@@ -4,6 +4,7 @@ class InvoicingIntegration < Integration
 
   # Specific validations for fakturownia
   validates :provider, inclusion: { in: %w[fakturownia] }
+  validate :validate_required_credentials
 
   # Returns required credentials for given provider (specific for fakturownia)
   def self.required_credentials_for(provider)
@@ -17,11 +18,22 @@ class InvoicingIntegration < Integration
 
   # Validates that all required credentials are present (specific for fakturownia)
   def validate_required_credentials
-    required = self.class.required_credentials_for(provider)
-    missing = required - credentials.keys.map(&:to_s)
+    return unless provider.present?
 
-    if missing.any?
-      errors.add(:credentials, "missing required fields: #{missing.join(', ')}")
+    creds = credentials || {}
+    required = self.class.required_credentials_for(provider)
+
+    required.each do |field|
+      if creds[field].blank?
+        case field
+        when "account"
+          errors.add(:credentials_account, "nie może być pusta")
+        when "api_token"
+          errors.add(:credentials_api_token, "nie może być pusty")
+        else
+          errors.add(:credentials, "#{field} jest wymagany")
+        end
+      end
     end
   end
 

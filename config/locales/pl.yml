@@ -1,0 +1,49 @@
+pl:
+  activerecord:
+    errors:
+      messages:
+        blank: "nie może być puste"
+        required: "jest wymagane"
+        taken: "zostało już zajęte"
+        invalid: "jest nieprawidłowe"
+        too_short: "jest za krótkie (minimum to %{count} znaków)"
+        too_long: "jest za długie (maksimum to %{count} znaków)"
+      models:
+        integration:
+          attributes:
+            name:
+              blank: "nie może być pusta"
+            provider:
+              blank: "jest wymagany"
+        invoicing_integration:
+          attributes:
+            name:
+              blank: "nie może być pusta"
+            provider:
+              blank: "jest wymagany"
+            user:
+              required: "jest wymagany"
+            credentials_account:
+              blank: "nie może być pusta"
+            credentials_api_token:
+              blank: "nie może być pusty"
+    models:
+      integration: "Integracja"
+      invoicing_integration: "Integracja fakturowania"
+    attributes:
+      integration:
+        name: "Nazwa"
+        provider: "Provider"
+        active: "Aktywna"
+        status: "Status"
+        created_at: "Data utworzenia"
+        updated_at: "Data aktualizacji"
+      invoicing_integration:
+        name: "Nazwa"
+        provider: "Provider"
+        active: "Aktywna"
+        status: "Status"
+        created_at: "Data utworzenia"
+        updated_at: "Data aktualizacji"
+        credentials_account: "Subdomena konta"
+        credentials_api_token: "Token API"

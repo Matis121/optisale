@@ -31,16 +31,12 @@ class IntegrationsController < ApplicationController
 
   def create
     @integration = current_user.invoicing_integrations.build(integration_params)
-
+    @provider = @integration.provider
     @required_fields = InvoicingIntegration.required_credentials_for(@integration.provider)
 
-    # Validate required credentials are present
-    @integration.validate_required_credentials
-
-    if @integration.errors.empty? && @integration.save
+    if @integration.save
       redirect_to integration_path(@integration), notice: "Integracja została utworzona. Przetestuj połączenie aby ją aktywować."
     else
-      @provider = @integration.provider
       render :new, status: :unprocessable_entity
     end
   end
@@ -59,37 +55,14 @@ class IntegrationsController < ApplicationController
   def update
     @required_fields = InvoicingIntegration.required_credentials_for(@integration.provider)
 
-    # Merge new credentials with existing ones (don't overwrite if field is empty)
-    begin
-      if params[:invoicing_integration] && params[:invoicing_integration][:credentials].present?
-        existing_credentials = @integration.credentials
-        new_credentials = integration_params[:credentials]
-
-        # Ensure both are hashes
-        existing_credentials = {} unless existing_credentials.is_a?(Hash)
-        new_credentials = {} unless new_credentials.is_a?(Hash)
-
-        # Don't overwrite with empty values
-        new_credentials.each do |key, value|
-          existing_credentials[key] = value if value.present?
-        end
-
-        # Update credentials directly
-        @integration.credentials = existing_credentials
-
-        # Update other attributes without credentials
-        update_params = integration_params.except(:credentials)
-      else
-        # No credentials to update, use all params
-        update_params = integration_params
-      end
-    rescue
+    if should_merge_credentials?
+      merge_credentials
       update_params = integration_params.except(:credentials)
+    else
+      update_params = integration_params
     end
 
-    @integration.validate_required_credentials
-
-    if @integration.errors.empty? && @integration.update(update_params)
+    if @integration.update(update_params)
       redirect_to integration_path(@integration), notice: "Integracja została zaktualizowana."
     else
       render :edit, status: :unprocessable_entity
@@ -115,6 +88,22 @@ class IntegrationsController < ApplicationController
   end
 
   private
+
+  def should_merge_credentials?
+    params.dig(:invoicing_integration, :credentials).present?
+  end
+
+  def merge_credentials
+    new_creds = integration_params[:credentials]
+    existing_creds = (@integration.credentials || {}).stringify_keys
+
+    # Only update non-blank values
+    new_creds.each do |key, value|
+      existing_creds[key.to_s] = value if value.present?
+    end
+
+    @integration.credentials = existing_creds
+  end
 
   def set_integration
     @integration = current_user.invoicing_integrations.find(params[:id])

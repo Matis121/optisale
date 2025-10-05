@@ -127,13 +127,11 @@
           <div class="card-body">
             <h3 class="card-title text-lg">Akcje</h3>
             <div class="space-y-3">
-              <% unless @integration.ready? %>
-                <%= link_to test_integration_path(@integration), 
+              <%= link_to test_integration_path(@integration), 
                           data: { turbo_method: :post }, 
                           class: "btn btn-primary btn-block" do %>
-                  <i class="fas fa-test-tube mr-2"></i>
-                  Testuj połączenie
-                <% end %>
+                <i class="fas fa-test-tube mr-2"></i>
+                Testuj połączenie
               <% end %>
               <%= link_to invoices_path(invoicing_integration_id: @integration.id), 
                         class: "btn btn-outline btn-block" do %>

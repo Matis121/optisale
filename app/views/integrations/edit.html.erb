@@ -24,7 +24,7 @@
     <div class="lg:col-span-2">
       <div class="card bg-base-100 shadow-sm border border-base-200">
         <div class="card-body">
-          <%= form_with(model: @integration, url: integration_path(@integration), method: :patch, local: true, class: "space-y-8") do |form| %>
+          <%= form_with(model: @integration, url: integration_path(@integration), method: :patch, local: true, class: "space-y-8", data: { turbo: false }) do |form| %>
             <!-- Integration name -->
             <div class="form-control">
               <%= form.label :name, "Nazwa integracji", class: "label label-text font-semibold" %>
@@ -32,8 +32,8 @@
                                   class: "input input-bordered w-full #{'input-error' if @integration.errors[:name].any?}", 
                                   placeholder: "np. Moja Fakturownia" %>
               <% if @integration.errors[:name].any? %>
-                <div class="label">
-                  <span class="label-text-alt text-error">
+                <div class="mt-1">
+                  <span class="text-sm text-error">
                     <%= @integration.errors[:name].first %>
                   </span>
                 </div>
@@ -51,10 +51,17 @@
                   <%= label_tag "invoicing_integration[credentials][account]", "Subdomena konta", class: "label label-text font-semibold" %>
                   <%= text_field_tag "invoicing_integration[credentials][account]", 
                                      @integration.credentials['account'], 
-                                     class: "input input-bordered w-full", 
+                                     class: "input input-bordered w-full #{'input-error' if @integration.errors[:credentials_account].any?}", 
                                      placeholder: "twojafirma" %>
-                  <div class="label">
-                    <span class="label-text-alt text-base-content/60">
+                  <% if @integration.errors[:credentials_account].any? %>
+                    <div class="mt-1">
+                      <span class="text-sm text-error">
+                        Subdomena konta <%= @integration.errors[:credentials_account].first %>
+                      </span>
+                    </div>
+                  <% end %>
+                  <div class="mt-1">
+                    <span class="text-xs text-base-content/60">
                       Z adresu: https://twojafirma.fakturownia.pl
                     </span>
                   </div>
@@ -62,11 +69,18 @@
                 <div class="form-control">
                   <%= label_tag "invoicing_integration[credentials][api_token]", "Token API", class: "label label-text font-semibold" %>
                   <%= password_field_tag "invoicing_integration[credentials][api_token]", 
-                                         "", 
-                                         class: "input input-bordered w-full", 
+                                         nil, 
+                                         class: "input input-bordered w-full #{'input-error' if @integration.errors[:credentials_api_token].any?}", 
                                          placeholder: "Pozostaw puste aby nie zmieniać" %>
-                  <div class="label">
-                    <span class="label-text-alt text-base-content/60">
+                  <% if @integration.errors[:credentials_api_token].any? %>
+                    <div class="mt-1">
+                      <span class="text-sm text-error">
+                        Token API <%= @integration.errors[:credentials_api_token].first %>
+                      </span>
+                    </div>
+                  <% end %>
+                  <div class="mt-1">
+                    <span class="text-xs text-base-content/60">
                       <% if @integration.credentials['api_token'].present? %>
                         Token jest ustawiony. Pozostaw puste aby nie zmieniać.
                       <% else %>
@@ -75,13 +89,6 @@
                     </span>
                   </div>
                 </div>
-              </div>
-            <% end %>
-            <!-- Validation errors -->
-            <% if @integration.errors[:credentials].any? %>
-              <div class="alert alert-error">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span><%= @integration.errors[:credentials].first %></span>
               </div>
             <% end %>
             <!-- Action buttons -->

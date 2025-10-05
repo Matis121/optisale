@@ -23,5 +23,9 @@ module Optisale
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Set default locale to Polish
+    config.i18n.default_locale = :pl
+    config.i18n.available_locales = [ :pl, :en ]
   end
 end

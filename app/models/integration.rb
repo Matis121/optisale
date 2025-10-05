@@ -7,6 +7,7 @@ class Integration < ApplicationRecord
 
   validates :name, presence: true
   validates :provider, presence: true
+  validates :credentials, presence: true
 
   scope :active_integrations, -> { where(active: true, status: "active") }
   scope :for_provider, ->(provider) { where(provider: provider) }
