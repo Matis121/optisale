@@ -1,6 +1,6 @@
 <% content_for :title, "Zamówienia" %>
 <!-- Sidebar and Content -->
-<div class="p-1">
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
   <div class="flex gap-2">
     <!-- Sidebar -->
     <div class="w-52 flex-shrink-0 relative">
@@ -34,4 +34,4 @@
       </div>
     </div>
   </div>
-</div>
+<% end %>

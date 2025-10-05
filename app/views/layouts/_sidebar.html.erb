@@ -1,41 +1,131 @@
-<div class="fixed top-0 left-0 h-full w-60 bg-base-100 text-base-content p-4 overflow-y-auto border-r border-base-300 shadow-lg">
-  <div class="text-lg font-bold mb-4 text-primary">Optisale</div>
-  <ul class="menu w-full rounded-box">
-    <li><a class="text-base hover:bg-base-200 hover:text-primary transition-colors"><i class="fas fa-globe"></i> Strona główna</a></li>
-    <li>
-      <details open>
-        <summary class="hover:bg-base-200 hover:text-primary transition-colors"><i class="fas fa-shopping-cart"></i> Zamówienia</summary>
-        <ul>
-          <li><%= link_to "Lista zamówień", orders_path, class: "hover:bg-base-300 hover:text-primary transition-colors" %></li>
-          <li><%= link_to "Faktury", invoices_path, class: "hover:bg-base-200 hover:text-primary transition-colors" %></li>
-          <li><%= link_to "Statusy zamówień", order_statuses_path, class: "hover:bg-base-300 hover:text-primary transition-colors" %></li>
-          <li><a class="hover:bg-base-300 hover:text-primary transition-colors">Automatyczne akcje</a></li>
+<div class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-base-100 to-base-200 text-base-content overflow-y-auto border-r border-base-300 shadow-2xl flex flex-col">
+  <!-- Header/Logo Section -->
+  <div class="pl-4 pr-5 py-4 border-b border-base-300/50">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center shadow-md">
+        <i class="fas fa-chart-line text-primary-content text-lg"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-primary">OptiSale</h1>
+        <p class="text-[10px] text-base-content/60">Panel zarządzania</p>
+      </div>
+    </div>
+  </div>
+  <!-- Main Navigation -->
+  <nav class="flex-1 pl-3 pr-4 py-4 space-y-1.5">
+    <!-- Zamówienia Section -->
+    <div class="mb-3">
+      <details name="sidebar-section" <%= 'open' if request.path.start_with?('/orders', '/invoices', '/order_statuses') %> class="group">
+        <summary class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 list-none group-open:bg-base-200/50">
+          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+            <i class="fas fa-shopping-cart text-sm"></i>
+          </div>
+          <span class="flex-1 font-semibold text-sm">Zamówienia</span>
+          <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-open:rotate-180"></i>
+        </summary>
+        <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
+          <li><%= link_to "Lista zamówień", orders_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(orders_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li><%= link_to "Faktury", invoices_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(invoices_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li><%= link_to "Statusy zamówień", order_statuses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(order_statuses_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li>
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
+              <span>Automatyczne akcje</span>
+              <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
+            </div>
+          </li>
         </ul>
       </details>
-    </li>
-    <li>
-      <details>
-        <summary class="hover:bg-base-200 hover:text-primary transition-colors"><i class="fas fa-box"></i> Produkty</summary>
-        <ul>
-          <li><%= link_to "Lista produktów", storage_products_path, class: "hover:bg-base-300 hover:text-primary transition-colors" %></li>
-          <li><%= link_to "Magazyny", storage_warehouses_path, class: "hover:bg-base-300 hover:text-primary transition-colors" %></li>
-          <li><%= link_to "Katalogi", storage_catalogs_path, class: "hover:bg-base-300 hover:text-primary transition-colors" %></li>
-          <li><%= link_to "Grupy cenowe", storage_price_groups_path, class: "hover:bg-base-300 hover:text-primary transition-colors" %></li>
-          <li><a class="hover:bg-base-300 hover:text-primary transition-colors">Import/Eksport</a></li>
-          <li><a class="hover:bg-base-300 hover:text-primary transition-colors">Ustawienia</a></li>
+    </div>
+    <!-- Produkty Section -->
+    <div class="mb-3">
+      <details name="sidebar-section" <%= 'open' if request.path.start_with?('/storage') %> class="group">
+        <summary class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 list-none group-open:bg-base-200/50">
+          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+            <i class="fas fa-box text-sm"></i>
+          </div>
+          <span class="flex-1 font-semibold text-sm">Produkty</span>
+          <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-open:rotate-180"></i>
+        </summary>
+        <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
+          <li><%= link_to "Lista produktów", storage_products_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_products_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li><%= link_to "Katalogi", storage_catalogs_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_catalogs_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li><%= link_to "Magazyny", storage_warehouses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_warehouses_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li><%= link_to "Grupy cenowe", storage_price_groups_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_price_groups_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li>
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
+              <span>Import/Eksport</span>
+              <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
+              <span>Ustawienia</span>
+              <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
+            </div>
+          </li>
         </ul>
       </details>
-    </li>
-    <li>
-      <%= link_to integrations_path, class: "hover:bg-base-200 hover:text-primary transition-colors" do %>
-        <i class="fas fa-plug"></i> Integracje
+    </div>
+    <!-- Single Items -->
+    <div class="space-y-1.5">
+      <%= link_to integrations_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(integrations_path) || controller_name == 'integrations' ? 'bg-primary/10' : ''}" do %>
+        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+          <i class="fas fa-plug text-sm"></i>
+        </div>
+        <span class="flex-1 font-medium text-sm <%= 'text-primary font-semibold' if controller_name == 'integrations' %>">Integracje</span>
       <% end %>
-    </li>
-    <li><a class="hover:bg-base-200 hover:text-primary transition-colors"><i class="fas fa-eye"></i> B2B Connect</a></li>
-    <li><a class="hover:bg-base-200 hover:text-primary transition-colors"><i class="fas fa-question-circle"></i> Pomoc i kontakt</a></li>
-    <li class="menu-title text-base-content/50 mt-6 mb-2 text-sm font-semibold">MARKETPLACE</li>
-    <li><a class="hover:bg-base-200 hover:text-primary transition-colors"><span class="badge badge-primary badge-sm">All</span> Allegro</a></li>
-    <li><a class="hover:bg-base-200 hover:text-primary transition-colors"><span class="badge badge-secondary badge-sm">Em</span> Empik</a></li>
-    <li><a class="hover:bg-base-200 hover:text-primary transition-colors"><span class="badge badge-accent badge-sm">Ce</span> Ceneo</a></li>
-  </ul>
+    </div>
+    <!-- Marketplace Section -->
+    <div class="mt-6 pt-4 border-t border-base-300/50 opacity-50">
+      <div class="pl-2.5 pr-3 mb-2 flex items-center gap-2 justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-store text-[10px] text-base-content/40"></i>
+          <h3 class="text-[10px] font-bold text-base-content/60 tracking-wider uppercase">Marketplace</h3>
+        </div>
+        <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
+      </div>
+      <ul class="space-y-0.5">
+        <li>
+          <div class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-not-allowed">
+            <span class="flex items-center justify-center w-7 h-7 rounded-md bg-base-300 text-base-content/50 font-bold text-[10px]">Al</span>
+            <span class="flex-1 font-medium text-sm text-base-content/50">Allegro</span>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-not-allowed">
+            <span class="flex items-center justify-center w-7 h-7 rounded-md bg-base-300 text-base-content/50 font-bold text-[10px]">Em</span>
+            <span class="flex-1 font-medium text-sm text-base-content/50">Empik</span>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-not-allowed">
+            <span class="flex items-center justify-center w-7 h-7 rounded-md bg-base-300 text-base-content/50 font-bold text-[10px]">Ce</span>
+            <span class="flex-1 font-medium text-sm text-base-content/50">Ceneo</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- Footer Section (Optional User Info) -->
+  <div class="pl-3 pr-4 py-3 border-t border-base-300/50 bg-base-200/30">
+    <div class="flex items-center gap-2.5 px-1.5 py-1.5 mb-2">
+      <div class="avatar avatar-placeholder">
+        <div class="bg-primary text-primary-content w-8 h-8 rounded-full flex items-center justify-center">
+          <p class="text-sm font-semibold w-fit">
+            <%= current_user.email.first(2).upcase %>
+          </p>
+        </div>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate"><%= current_user.email %></p>
+        <p class="text-[10px] text-base-content/60 truncate">Panel administracyjny</p>
+      </div>
+    </div>
+    <%= button_to destroy_user_session_path, method: :delete, class: "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-error/10 hover:text-error transition-all duration-200 group text-left", data: { turbo_confirm: "Czy na pewno chcesz się wylogować?" } do %>
+      <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:bg-error/10 group-hover:text-error transition-all duration-200">
+        <i class="fas fa-sign-out-alt text-xs"></i>
+      </div>
+      <span class="flex-1 font-medium text-sm">Wyloguj się</span>
+    <% end %>
+  </div>
 </div>
