@@ -21,10 +21,10 @@ export default class extends Controller {
       if (!selection.includes(checkbox.value)) {
         selection.push(checkbox.value)
       }
-      tr.classList.add("bg-blue-100")
+      tr.classList.add("bg-base-100")
     } else {
       selection = selection.filter(id => id !== checkbox.value)
-      tr.classList.remove("bg-blue-100")
+      tr.classList.remove("bg-base-100")
     }
 
     this.selection = selection
@@ -39,7 +39,7 @@ export default class extends Controller {
         selection.push(cb.value)
       }
       const tr = cb.closest("tr")
-      tr.classList.add("bg-blue-100")
+      tr.classList.add("bg-base-100")
     })
     this.selection = selection
     this.updateCounter()
@@ -49,7 +49,7 @@ export default class extends Controller {
     this.childTargets.forEach(cb => {
       cb.checked = false
       const tr = cb.closest("tr")
-      tr.classList.remove("bg-blue-100")
+      tr.classList.remove("bg-base-100")
     })
     this.selection = []
     this.updateCounter()
@@ -67,7 +67,7 @@ export default class extends Controller {
     this.childTargets.forEach(cb => {
       cb.checked = this.selection.includes(cb.value)
       const tr = cb.closest("tr")
-      tr.classList.toggle("bg-blue-100", this.selection.includes(cb.value))
+      tr.classList.toggle("bg-base-100", this.selection.includes(cb.value))
     })
     this.updateCounter()
   }
@@ -76,7 +76,7 @@ export default class extends Controller {
     this.childTargets.forEach(cb => {
       cb.checked = false
       const tr = cb.closest("tr")
-      tr.classList.remove("bg-blue-100")
+      tr.classList.remove("bg-base-100")
       tr.classList.add("opacity-40")
     })
     this.selection = []
