@@ -75,3 +75,5 @@ gem "ransack"
 
 # Billing integrations
 gem "http", "~> 5.0" # For API requests to billing providers
+
+gem "acts_as_list", "~> 1.2"

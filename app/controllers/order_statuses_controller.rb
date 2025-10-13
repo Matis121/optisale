@@ -2,12 +2,12 @@ class OrderStatusesController < ApplicationController
   before_action :set_order_status, only: %i[ show edit update destroy ]
   before_action :ensure_turbo_frame, only: %i[ new edit ]
 
-  # GET /order_statuses or /order_statuses.json
+  # GET /order_statuses
   def index
-    @order_statuses = current_user.order_statuses
+    @order_statuses = current_user.order_statuses.order(:position)
   end
 
-  # GET /order_statuses/1 or /order_statuses/1.json
+  # GET /order_statuses/1
   def show
   end
 
@@ -20,39 +20,35 @@ class OrderStatusesController < ApplicationController
   def edit
   end
 
-  # POST /order_statuses or /order_statuses.json
+  # POST /order_statuses
   def create
     @order_status = OrderStatus.new(order_status_params)
     @order_status.user = current_user
 
     respond_to do |format|
       if @order_status.save
-        format.html { redirect_to order_statuses_path, notice: "Order status was successfully created." }
+        format.html { redirect_to order_statuses_path, notice: "Status zamówienia został utworzony." }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update("order-status-form", partial: "order_statuses/form") }
       end
     end
   end
 
-  # PATCH/PUT /order_statuses/1 or /order_statuses/1.json
+  # PATCH/PUT /order_statuses/1
   def update
     respond_to do |format|
       if @order_status.update(order_status_params)
-        format.html { redirect_to order_statuses_path, notice: "Order status was successfully updated." }
+        format.html { redirect_to order_statuses_path, notice: "Status zamówienia został zaktualizowany." }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update("order-status-form", partial: "order_statuses/form") }
       end
     end
   end
 
-  # DELETE /order_statuses/1 or /order_statuses/1.json
+  # DELETE /order_statuses/1
   def destroy
     @order_status.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to order_statuses_path, status: :see_other, notice: "Order status was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    redirect_to order_statuses_path, status: :see_other, notice: "Status zamówienia został usunięty."
   end
 
   private
@@ -69,6 +65,6 @@ class OrderStatusesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_status_params
-      params.expect(order_status: [ :full_name, :short_name, :user_id ])
+      params.expect(order_status: [ :full_name, :short_name, :user_id, :position ])
     end
 end

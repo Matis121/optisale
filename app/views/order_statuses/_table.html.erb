@@ -3,19 +3,20 @@
   <table class="table w-full">
     <thead class="bg-base-100">
       <tr>
+        <th class="text-base-content font-semibold w-10"></th>
         <th class="text-base-content font-semibold">Nazwa statusu</th>
         <th class="text-base-content font-semibold">Nazwa krótka</th>
         <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody data-controller="sortable" data-sortable-resource-name-value="order_status" data-sortable-handle-value=".handle">
       <% if @order_statuses.present? %>
         <% @order_statuses.each do |status| %>
           <%= render partial: "order_statuses/row", locals: { status: status } %>
         <% end %>
       <% else %>
         <tr>
-          <td colspan="3" class="text-center py-16">
+          <td colspan="4" class="text-center py-16">
             <div class="max-w-sm mx-auto">
               <div class="w-20 h-20 bg-gradient-to-br from-secondary/10 to-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-file-question text-3xl text-secondary"></i>

@@ -26,4 +26,7 @@
       <%= form.submit "Zapisz", class: "btn btn-primary" %>
     <% end %>
   </div>
+  <% unless @order_status.new_record? %>
+    <span class="text-sm text-base-content/60">ID: <%= @order_status.id %></span>
+  <% end %>
 <% end %>

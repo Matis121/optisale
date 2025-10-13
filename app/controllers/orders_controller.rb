@@ -312,6 +312,6 @@ class OrdersController < ApplicationController
     end
 
     def set_order_statuses
-      @order_statuses = current_user.order_statuses
+      @order_statuses = current_user.order_statuses.order(:position)
     end
 end

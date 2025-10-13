@@ -1,4 +1,6 @@
 class OrderStatus < ApplicationRecord
+  acts_as_list scope: :user
+
   belongs_to :user
   has_many :orders, foreign_key: :status_id
 
