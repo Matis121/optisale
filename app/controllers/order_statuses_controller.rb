@@ -65,6 +65,6 @@ class OrderStatusesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_status_params
-      params.expect(order_status: [ :full_name, :short_name, :user_id, :position ])
+      params.expect(order_status: [ :full_name, :short_name, :user_id, :position, :color ])
     end
 end

@@ -3,6 +3,7 @@
     "daisyui": "^5.0.35"
   },
   "dependencies": {
+    "@stimulus-components/color-picker": "^2.0.0",
     "@stimulus-components/notification": "^3.0.0",
     "@stimulus-components/sortable": "^5.0.3",
     "sortablejs": "^1.15.6"

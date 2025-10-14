@@ -10,3 +10,5 @@ pin "stimulus-use" # @0.52.3
 pin "@stimulus-components/sortable", to: "@stimulus-components--sortable.js" # @5.0.3
 pin "sortablejs" # @1.15.6
 pin "@rails/request.js", to: "@rails--request.js.js" # @0.0.12
+pin "@stimulus-components/color-picker", to: "@stimulus-components--color-picker.js" # @2.0.0
+pin "@simonwep/pickr", to: "@simonwep--pickr.js" # @1.9.0

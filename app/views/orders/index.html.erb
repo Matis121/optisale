@@ -17,11 +17,11 @@
           <% end %>
           <% @order_statuses.each do |order_status| %>
             <%= link_to orders_path(status: order_status.id), 
-                class: "flex items-center justify-between p-2 rounded-md hover:bg-base-100 transition-colors duration-150 #{params[:status] == order_status.id.to_s ? 'bg-primary/5 text-primary' : 'text-base-content/70'}" do %>
-              <span class="text-xs"><%= order_status.full_name %></span>
-              <span class="text-xs bg-primary/5 text-primary px-2 py-1 rounded-full">
+                class: "flex items-center gap-2 p-2 rounded-md hover:bg-base-100 transition-colors duration-150 #{params[:status] == order_status.id.to_s ? 'bg-primary/5 text-primary' : 'text-base-content/70'}" do %>
+              <span class=" text-[11px] bg-primary/5 text-white px-2 py-0.5 rounded-md" style="background-color: <%= order_status.color %>">
                 <%= @order_counts[order_status.id] %>
               </span>
+              <span class="text-xs"><%= order_status.full_name %></span>
             <% end %>
           <% end %>
         </div>
