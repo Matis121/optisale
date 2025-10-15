@@ -43,6 +43,7 @@ Rails.application.routes.draw do
 
   # Order statuses
   resources :order_statuses, controller: "order_statuses"
+  resources :order_status_groups, controller: "order_status_groups"
 
   # Main integrations index and management
   get "integrations", to: "integrations#index"

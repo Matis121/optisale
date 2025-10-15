@@ -1,22 +1,27 @@
 <!-- Table Section -->
-<div class="bg-base-200 rounded-lg border border-base-200 overflow-y-visible shadow-sm">
+<div>
   <table class="table w-full">
     <thead class="bg-base-100">
       <tr>
-        <th class="text-base-content font-semibold w-10"></th>
+        <th class="text-base-content font-semibold w-10">
+          <button class="btn btn-ghost btn-xs p-1" onclick="toggleTableBody()">
+            <i class="fas fa-chevron-down transition-transform" id="toggle-icon"></i>
+          </button>
+        </th>
         <th class="text-base-content font-semibold">Nazwa statusu</th>
         <th class="text-base-content font-semibold">Nazwa krótka</th>
+        <th class="text-base-content font-semibold">Grupa</th>
         <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
-    <tbody data-controller="sortable" data-sortable-resource-name-value="order_status" data-sortable-handle-value=".handle">
+    <tbody id="status-table-body" data-controller="sortable" data-sortable-resource-name-value="order_status" data-sortable-handle-value=".handle">
       <% if @order_statuses.present? %>
         <% @order_statuses.each do |status| %>
           <%= render partial: "order_statuses/row", locals: { status: status } %>
         <% end %>
       <% else %>
         <tr>
-          <td colspan="4" class="text-center py-16">
+          <td colspan="5" class="text-center py-16">
             <div class="max-w-sm mx-auto">
               <div class="w-20 h-20 bg-gradient-to-br from-secondary/10 to-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-file-question text-3xl text-secondary"></i>
@@ -36,3 +41,17 @@
     </tbody>
   </table>
 </div>
+<script>
+  function toggleTableBody() {
+    const tbody = document.getElementById('status-table-body');
+    const icon = document.getElementById('toggle-icon');
+
+    if (tbody.style.display === 'none') {
+      tbody.style.display = '';
+      icon.classList.remove('rotate-180');
+    } else {
+      tbody.style.display = 'none';
+      icon.classList.add('rotate-180');
+    }
+  }
+</script>

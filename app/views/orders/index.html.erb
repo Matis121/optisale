@@ -9,29 +9,7 @@
           <i class="fas fa-plus text-xs"></i>
           Nowe zamówienie
         <% end %>
-        <div class="bg-base-100/50 rounded-lg border border-base-200 p-2 w-52 max-h-[calc(100vh-150px)] overflow-y-auto">
-          <h3 class="text-sm font-medium text-base-content/60 mb-3">Statusy</h3>
-          <div>
-            <%= link_to orders_path(status: "all"), 
-              class: "flex items-center p-2 gap-2 rounded-md hover:bg-base-100 transition-colors duration-150 #{params[:status] == 'all' || params[:status].blank? ? 'bg-primary/5 text-primary' : 'text-base-content/60'}" do %>
-              <i class="fas fa-box text-xl"></i>
-              <span class="text-xs">Wszystkie</span>
-            <% end %>
-            <% @order_statuses.each do |order_status| %>
-              <%= link_to orders_path(status: order_status.id), 
-                class: "flex items-center gap-2 p-2 rounded-md hover:bg-base-100 transition-colors duration-150 #{params[:status] == order_status.id.to_s ? 'bg-primary/5 text-primary' : 'text-base-content/70'}" do %>
-                <span class="text-[11px] bg-primary/5 text-white px-1.5 rounded-md min-w-[18.5px] min-h-[18.5px] flex items-center justify-center" style="background-color: <%= order_status.color %>">
-                  <% if @order_counts[order_status.id] > 0 %>
-                    <%= @order_counts[order_status.id] %>
-                  <% else %>
-                    -
-                  <% end %>
-                </span>
-                <span class="text-xs"><%= order_status.full_name %></span>
-              <% end %>
-            <% end %>
-          </div>
-        </div>
+        <%= render "status_sidebar" %>
         <%= link_to order_statuses_path, class: "btn btn-dash btn-sm gap-2 w-fit" do %>
           <i class="fas fa-plus text-xs"></i>
           Dodaj status

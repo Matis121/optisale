@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_14_145631) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_15_144040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -127,6 +127,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_145631) do
     t.index ["warehouse_id"], name: "index_order_products_on_warehouse_id"
   end
 
+  create_table "order_status_groups", force: :cascade do |t|
+    t.string "name"
+    t.integer "position"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_order_status_groups_on_user_id"
+  end
+
   create_table "order_statuses", force: :cascade do |t|
     t.string "full_name"
     t.string "short_name"
@@ -135,6 +144,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_145631) do
     t.datetime "updated_at", null: false
     t.integer "position", default: 0
     t.string "color", default: "#667EEA", null: false
+    t.bigint "order_status_group_id"
+    t.index ["order_status_group_id"], name: "index_order_statuses_on_order_status_group_id"
     t.index ["user_id", "position"], name: "index_order_statuses_on_user_id_and_position"
     t.index ["user_id"], name: "index_order_statuses_on_user_id"
   end
@@ -254,6 +265,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_145631) do
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "order_products", "warehouses"
+  add_foreign_key "order_status_groups", "users"
+  add_foreign_key "order_statuses", "order_status_groups"
   add_foreign_key "order_statuses", "users"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "users"

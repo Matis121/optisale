@@ -1,4 +1,4 @@
-<tr class="hover:bg-base-300/50 transition-colors duration-200" data-sortable-update-url="<%= order_status_path(status) %>">
+<tr class="hover:bg-base-300/50 transition-colors duration-200" data-sortable-update-url="<%= order_status_group_path(group) %>">
   <td class="handle cursor-move">
     <div class="flex items-center justify-center w-8 h-8 text-base-content/40 hover:text-base-content/70 transition-colors">
       <i class="fas fa-grip-vertical"></i>
@@ -6,22 +6,13 @@
   </td>
   <td>
     <div class="flex items-center gap-3">
-      <div class="w-6 h-6 rounded-lg flex items-center justify-center" style="background-color: <%= status.color %>">
+      <div class="w-6 h-6 rounded-lg flex items-center justify-center bg-primary/10 text-primary">
+        <i class="fas fa-layer-group text-xs"></i>
       </div>
       <div>
-        <div class="font-semibold text-base-content"><%= status.full_name %></div>
+        <div class="font-semibold text-base-content"><%= group.name %></div>
       </div>
     </div>
-  </td>
-  <td>
-    <span class="badge badge-outline badge-sm"><%= status.short_name %></span>
-  </td>
-  <td>
-    <% if status.order_status_group.present? %>
-      <span class="badge badge-sm">
-        <%= status.order_status_group.name %>
-      </span>
-    <% end %>
   </td>
   <td class="text-right">
     <div class="flex items-center justify-end gap-2">
@@ -31,17 +22,17 @@
         </div>
         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
           <li>
-            <%= link_to edit_order_status_path(status), 
+            <%= link_to edit_order_status_group_path(group), 
                 class: "gap-2",
                 data: { turbo_frame: "modal-frame" } do %>
               <i class="fas fa-edit text-base-content"></i> Edytuj
             <% end %>
           </li>
           <li>
-            <%= button_to status, 
+            <%= button_to group, 
                 method: :delete, 
                 class: "text-error gap-2",
-                data: { turbo_confirm: "Czy na pewno chcesz usunąć ten status?" } do %>
+                data: { turbo_confirm: "Czy na pewno chcesz usunąć tę grupę? Statusy w tej grupie zostaną przeniesione do 'Brak grupy'." } do %>
               <i class="fas fa-trash"></i> Usuń
             <% end %>
           </li>

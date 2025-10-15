@@ -1,18 +1,47 @@
 <% content_for :title, "Statusy zamówień" %>
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-    <div>
-      <h1 class="text-2xl font-bold text-base-content">Statusy zamówień</h1>
-      <p class="text-base-content/60 mt-1">Zarządzaj statusami zamówień w systemie</p>
-    </div>
-    <%= link_to new_order_status_path, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
-      <i class="fas fa-plus text-xs"></i>
-      Nowy status
-    <% end %>
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-base-content">Zarządzanie statusami</h1>
   </div>
-  <!-- Content -->
+  <!-- Statuses Section -->
   <div class="bg-base-100 rounded-lg border border-base-300 shadow-sm">
-    <%= render "table" %>
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 bg-base-100 rounded-lg">
+      <div>
+        <h2 class="text-xl font-bold text-base-content">Statusy zamówień</h2>
+      </div>
+      <div class="flex items-center gap-2">
+        <%= link_to new_order_status_path, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
+          <i class="fas fa-plus text-xs"></i>
+          Nowy status
+        <% end %>
+      </div>
+    </div>
+    <!-- Table -->
+    <div class="bg-base-200 rounded-lg border border-base-200 border-t-0 rounded-t-none">
+      <%= render "table" %>
+    </div>
+  </div>
+  <!-- Groups Section -->
+  <div class="mt-6">
+    <div class="bg-base-100 rounded-lg border border-base-300 shadow-sm">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-4 bg-base-100 rounded-lg">
+        <div>
+          <h2 class="text-xl font-bold text-base-content">Grupy statusów</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <%= link_to new_order_status_group_path, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
+            <i class="fas fa-plus text-xs"></i>
+            Nowa grupa
+          <% end %>
+        </div>
+      </div>
+      <!-- Table -->
+      <div class="bg-base-200 rounded-lg border border-base-200 border-t-0 rounded-t-none">
+        <%= render "order_status_groups/table" %>
+      </div>
+    </div>
   </div>
 <% end %>

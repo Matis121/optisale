@@ -313,5 +313,7 @@ class OrdersController < ApplicationController
 
     def set_order_statuses
       @order_statuses = current_user.order_statuses.order(:position)
+      @order_status_groups = current_user.order_status_groups.joins(:order_statuses).includes(:order_statuses).order(:position).distinct
+      @ungrouped_statuses = current_user.order_statuses.where(order_status_group_id: nil).order(:position)
     end
 end

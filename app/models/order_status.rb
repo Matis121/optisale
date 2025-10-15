@@ -2,6 +2,7 @@ class OrderStatus < ApplicationRecord
   acts_as_list scope: :user
 
   belongs_to :user
+  belongs_to :order_status_group, optional: true
   has_many :orders, foreign_key: :status_id
 
   validates :full_name, presence: true
@@ -13,6 +14,6 @@ class OrderStatus < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    %w[orders user]
+    %w[orders user order_status_group]
   end
 end

@@ -1,0 +1,35 @@
+<%= form_with(model: @order_status_group, data: { turbo_frame: "_top" }, id: "order-status-group-form") do |form| %>
+  <% if @order_status_group.errors.any? %>
+    <div class="alert alert-error mb-6">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div>
+        <h3 class="font-bold">Błąd podczas zapisywania:</h3>
+        <ul class="list-disc list-inside">
+          <% @order_status_group.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+  <div class="space-y-8">
+    <div class="form-control w-full">
+      <%= form.label :name, "Nazwa grupy", class: "label" %>
+      <%= form.text_field :name, class: "input input-bordered w-full focus:input-primary", placeholder: "np. Płatności" %>
+    </div>
+  </div>
+  <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-base-300">
+    <% if @order_status_group.new_record? %>
+      <%= form.submit "Utwórz grupę", class: "btn btn-primary" %>
+    <% else %>
+      <%= form.submit "Zapisz zmiany", class: "btn btn-primary" %>
+    <% end %>
+    <button type="button" class="btn btn-ghost" onclick="modal.close()">Zamknij</button>
+  </div>
+  <% unless @order_status_group.new_record? %>
+    <div class="mt-4 text-start">
+      <span class="text-sm text-base-content/60">ID: <%= @order_status_group.id %></span>
+      <span class="text-sm text-base-content/60">Pozycja: <%= @order_status_group.position %></span>
+    </div>
+  <% end %>
+<% end %>

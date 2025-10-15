@@ -5,6 +5,7 @@ class OrderStatusesController < ApplicationController
   # GET /order_statuses
   def index
     @order_statuses = current_user.order_statuses.order(:position)
+    @order_status_groups = current_user.order_status_groups.order(:position)
   end
 
   # GET /order_statuses/1
@@ -14,16 +15,19 @@ class OrderStatusesController < ApplicationController
   # GET /order_statuses/new
   def new
     @order_status = OrderStatus.new
+    @groups = current_user.order_status_groups.order(:position)
   end
 
   # GET /order_statuses/1/edit
   def edit
+    @groups = current_user.order_status_groups.order(:position)
   end
 
   # POST /order_statuses
   def create
     @order_status = OrderStatus.new(order_status_params)
     @order_status.user = current_user
+    @groups = current_user.order_status_groups.order(:position)
 
     respond_to do |format|
       if @order_status.save
@@ -36,6 +40,7 @@ class OrderStatusesController < ApplicationController
 
   # PATCH/PUT /order_statuses/1
   def update
+    @groups = current_user.order_status_groups.order(:position)
     respond_to do |format|
       if @order_status.update(order_status_params)
         format.html { redirect_to order_statuses_path, notice: "Status zamówienia został zaktualizowany." }
@@ -65,6 +70,6 @@ class OrderStatusesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_status_params
-      params.expect(order_status: [ :full_name, :short_name, :user_id, :position, :color ])
+      params.expect(order_status: [ :full_name, :short_name, :user_id, :position, :color, :order_status_group_id ])
     end
 end
