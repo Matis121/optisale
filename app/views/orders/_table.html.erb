@@ -132,42 +132,40 @@
       </div>
     </div>
     <!-- Table Section -->
-    <div class="bg-base-100/50 rounded-lg border border-base-200">
-      <div class="overflow-x-auto overflow-y-visible">
-        <table class="w-full">
-          <thead>
-            <tr class="bg-base-100">
-              <th class="text-left py-4 px-6 text-sm font-medium text-base-content/60">Numer</th>
-              <th class="text-left py-4 px-6 text-sm font-medium text-base-content/60">Klient</th>
-              <th class="text-left py-4 px-6 text-sm font-medium text-base-content/60">Przedmioty</th>
-              <th class="text-left py-4 px-6 text-sm font-medium text-base-content/60">Kwota</th>
-              <th class="text-left py-4 px-6 text-sm font-medium text-base-content/60">Status</th>
-              <th class="text-left py-4 px-6 text-sm font-medium text-base-content/60">Data</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% if @orders.present? %>
-              <% @orders.each do |order| %>
-                <%= render partial: "orders/row", locals: { order: order } %>
-              <% end %>
-            <% else %>
-              <tr>
-                <td colspan="6" class="text-center py-20">
-                  <div class="max-w-sm mx-auto">
-                    <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <i class="fas fa-shopping-cart text-2xl text-primary"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-base-content mb-2">Brak zamówień</h3>
-                    <p class="text-base-content/60 text-sm">
-                      Nie znaleziono zamówień do wyświetlenia.
-                    </p>
-                  </div>
-                </td>
-              </tr>
+    <div class="bg-base-200 rounded-lg border border-base-200 overflow-y-visible shadow-sm">
+      <table class="table w-full">
+        <thead class="bg-base-100">
+          <tr>
+            <th class="text-base-content font-semibold">Numer</th>
+            <th class="text-base-content font-semibold">Klient</th>
+            <th class="text-base-content font-semibold">Przedmioty</th>
+            <th class="text-base-content font-semibold">Kwota</th>
+            <th class="text-base-content font-semibold">Status</th>
+            <th class="text-base-content font-semibold">Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @orders.present? %>
+            <% @orders.each do |order| %>
+              <%= render partial: "orders/row", locals: { order: order } %>
             <% end %>
-          </tbody>
-        </table>
-      </div>
+          <% else %>
+            <tr>
+              <td colspan="6" class="text-center py-16">
+                <div class="max-w-sm mx-auto">
+                  <div class="w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-shopping-cart text-3xl text-primary"></i>
+                  </div>
+                  <h3 class="text-xl font-semibold text-base-content mb-3">Brak zamówień</h3>
+                  <p class="text-base-content/60 mb-6">
+                    Nie znaleziono zamówień do wyświetlenia.
+                  </p>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   <% end %>
 </div>
