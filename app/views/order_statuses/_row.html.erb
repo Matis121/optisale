@@ -6,6 +6,13 @@
   </td>
   <td>
     <div class="flex items-center gap-3">
+      <div>
+        <% if status.default? %>
+          <div class="w-6 h-6 flex items-center justify-center text-primary tooltip tooltip-top" data-tip="Domyślny status - nie jest możliwy do usunięcia.">
+            <i class="fas fa-star text-xs text-yellow-500"></i>
+          </div>
+        <% end %>
+      </div>
       <div class="w-6 h-6 rounded-lg flex items-center justify-center" style="background-color: <%= status.color %>">
       </div>
       <div>
@@ -37,14 +44,16 @@
               <i class="fas fa-edit text-base-content"></i> Edytuj
             <% end %>
           </li>
-          <li>
-            <%= button_to status, 
-                method: :delete, 
-                class: "text-error gap-2",
-                data: { turbo_confirm: "Czy na pewno chcesz usunąć ten status?" } do %>
-              <i class="fas fa-trash"></i> Usuń
-            <% end %>
-          </li>
+          <% unless status.default? %>
+            <li>
+              <%= button_to status, 
+                  method: :delete, 
+                  class: "text-error gap-2",
+                  data: { turbo_confirm: "Czy na pewno chcesz usunąć ten status?" } do %>
+                <i class="fas fa-trash"></i> Usuń
+              <% end %>
+            </li>
+          <% end %>
         </ul>
       </div>
     </div>

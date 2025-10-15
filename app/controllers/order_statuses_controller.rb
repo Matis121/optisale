@@ -52,8 +52,12 @@ class OrderStatusesController < ApplicationController
 
   # DELETE /order_statuses/1
   def destroy
-    @order_status.destroy!
-    redirect_to order_statuses_path, status: :see_other, notice: "Status zamówienia został usunięty."
+    if @order_status.default?
+      redirect_to order_statuses_path, status: :see_other, alert: "Nie można usunąć domyślnego statusu."
+    else
+      @order_status.destroy!
+      redirect_to order_statuses_path, status: :see_other, notice: "Status zamówienia został usunięty."
+    end
   end
 
   private

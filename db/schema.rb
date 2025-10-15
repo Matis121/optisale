@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_15_144040) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -145,6 +145,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_144040) do
     t.integer "position", default: 0
     t.string "color", default: "#667EEA", null: false
     t.bigint "order_status_group_id"
+    t.boolean "default"
     t.index ["order_status_group_id"], name: "index_order_statuses_on_order_status_group_id"
     t.index ["user_id", "position"], name: "index_order_statuses_on_user_id_and_position"
     t.index ["user_id"], name: "index_order_statuses_on_user_id"

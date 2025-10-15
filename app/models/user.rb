@@ -32,7 +32,7 @@ class User < ApplicationRecord
     catalogs.first.price_groups << price_groups.first
 
     # Order statuses
-    order_statuses.create!(full_name: "Nowe", short_name: "Nowe", user: self)
+    order_statuses.create!(full_name: "Nowe", short_name: "Nowe", user: self, default: true)
     order_statuses.create!(full_name: "W realizacji", short_name: "W realizacji", user: self)
     order_statuses.create!(full_name: "Wysłane", short_name: "Wysłane", user: self)
     order_statuses.create!(full_name: "Zakończone", short_name: "Zakończone", user: self)
