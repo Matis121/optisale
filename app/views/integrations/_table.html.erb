@@ -77,27 +77,31 @@
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <% @available_invoicing_providers.each do |provider| %>
           <div class="card bg-base-100 border border-base-300 hover:shadow-md hover:border-primary/20 transition-all duration-200">
-            <div class="card-body p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <i class="<%= provider[:logo_class] %> text-primary text-lg"></i>
+            <div class="card-body p-5">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-30 h-30 p-2 bg-white rounded-lg flex items-center justify-center">
+                  <% if provider[:logo_image].present? %>
+                    <%= image_tag provider[:logo_image], class: "w-full" %>
+                  <% else %>
+                    <i class="<%= provider[:logo_class] %> text-primary text-lg"></i>
+                  <% end %>
                 </div>
-                <div class="flex-1">
+                <div class="flex flex-col gap-2">
                   <h4 class="font-bold text-base-content"><%= provider[:name] %></h4>
                   <% if provider[:has_provider] %>
                     <span class="badge badge-success badge-xs mt-1">Dodane</span>
                   <% end %>
+                  <p class="text-sm text-base-content/70 mb-2">
+                    <%= provider[:description] %>
+                  </p>
+                  <% if provider[:can_add] %>
+                    <%= link_to new_integration_path(provider: provider[:key]), 
+                            class: "btn btn-primary btn-sm w-fit ml-auto" do %>
+                      <i class="fas fa-plus mr-2"></i>Dodaj
+                    <% end %>
+                  <% end %>
                 </div>
               </div>
-              <p class="text-sm text-base-content/70 mb-4">
-                <%= provider[:description] %>
-              </p>
-              <% if provider[:can_add] %>
-                <%= link_to new_integration_path(provider: provider[:key]), 
-                            class: "btn btn-primary btn-sm w-full" do %>
-                  <i class="fas fa-plus mr-2"></i>Dodaj
-                <% end %>
-              <% end %>
             </div>
           </div>
         <% end %>

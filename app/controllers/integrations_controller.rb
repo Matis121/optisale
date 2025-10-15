@@ -129,6 +129,7 @@ class IntegrationsController < ApplicationController
         name: "Fakturownia",
         description: "Popularna platforma do wystawiania faktur",
         logo_class: "fas fa-file-invoice",
+        logo_image: "fakturownia.png",
         required_fields: InvoicingIntegration.required_credentials_for("fakturownia"),
         multiple_allowed: false
       }
