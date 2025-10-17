@@ -29,10 +29,9 @@
             <% end %>
           </li>
           <li>
-            <%= button_to group, 
-                method: :delete, 
-                class: "text-error gap-2",
-                data: { turbo_confirm: "Czy na pewno chcesz usunąć tę grupę? Statusy w tej grupie zostaną przeniesione do 'Brak grupy'." } do %>
+            <%= link_to order_status_group_path(group), 
+                data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć tę grupę? Statusy w tej grupie zostaną przeniesione do 'Brak grupy'." },
+                class: "text-error gap-2" do %>
               <i class="fas fa-trash"></i> Usuń
             <% end %>
           </li>

@@ -3,11 +3,8 @@
     <div tabindex="0" role="button" class="btn btn-sm btn-outline m-1"><span>Akcje</span><%= lucide_icon("chevron-down", class: "w-3") %></div>
     <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm">
       <li>
-        <%= button_to @order, method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "w-36 cursor-pointer" do %>
-          <div class="flex gap-2 items-center">
-            <%= lucide_icon("trash-2", class: "w-4") %>
-            <span>Usuń zamówienie</span>
-          </div>
+        <%= link_to order_path(@order), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "text-error gap-2 bg-red-500" do %>
+          <i class="fas fa-trash"></i> Usuń zamówienie
         <% end %>
       </li>
     </ul>

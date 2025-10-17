@@ -34,11 +34,8 @@
             </div>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-48 border border-base-200">
               <li>
-                <%= button_to @order, method: :delete, data: { turbo_confirm: "Czy na pewno chcesz usunąć to zamówienie?" }, class: "w-full cursor-pointer text-error" do %>
-                  <div class="flex gap-2 items-center">
-                    <i class="fas fa-trash text-error"></i>
-                    <span>Usuń zamówienie</span>
-                  </div>
+                <%= link_to order_path(@order), data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć to zamówienie?" }, class: "w-full cursor-pointer text-error" do %>
+                  <i class="fas fa-trash text-error"></i> Usuń zamówienie
                 <% end %>
               </li>
             </ul>

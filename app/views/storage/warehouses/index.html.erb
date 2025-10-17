@@ -75,11 +75,7 @@
                       <% unless warehouse.default? %>
                         <li>
                           <%= link_to storage_warehouse_path(warehouse), 
-                              method: :delete,
-                              data: { 
-                                confirm: "Czy na pewno chcesz usunąć magazyn '#{warehouse.name}'?",
-                                turbo_method: :delete
-                              },
+                              data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć magazyn '#{warehouse.name}'?" },
                               class: "text-error gap-2" do %>
                             <i class="fas fa-trash"></i> Usuń
                           <% end %>

@@ -36,7 +36,7 @@
         <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
           <i class="fas fa-ellipsis-v text-base-content/60"></i>
         </div>
-        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200 overflow-hidden">
           <li>
             <%= link_to edit_order_status_path(status), 
                 class: "gap-2",
@@ -46,10 +46,9 @@
           </li>
           <% unless status.default? %>
             <li>
-              <%= button_to status, 
-                  method: :delete, 
-                  class: "text-error gap-2",
-                  data: { turbo_confirm: "Czy na pewno chcesz usunąć ten status?" } do %>
+              <%= link_to order_status_path(status), 
+                  data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć ten status?" },
+                  class: "text-error gap-2" do %>
                 <i class="fas fa-trash"></i> Usuń
               <% end %>
             </li>

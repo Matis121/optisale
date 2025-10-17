@@ -74,11 +74,7 @@
                       <% unless catalog.default %>
                         <li>
                           <%= link_to storage_catalog_path(catalog), 
-                                method: :delete,
-                                data: { 
-                                  confirm: "Czy na pewno chcesz usunąć katalog '#{catalog.name}'?",
-                                  turbo_method: :delete
-                                },
+                                data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć katalog '#{catalog.name}'?" },
                                 class: "text-error gap-2" do %>
                             <i class="fas fa-trash"></i> Usuń
                           <% end %>

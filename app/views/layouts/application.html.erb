@@ -42,5 +42,13 @@
         <% end %>
       </div>
     </main>
+    <script>
+      // Auto-blur dropdown links when clicked
+      document.addEventListener('click', function(e) {
+        if (e.target.closest('.dropdown-content a, .dropdown-content button')) {
+          document.activeElement.blur();
+        }
+      });
+    </script>
   </body>
 </html>
