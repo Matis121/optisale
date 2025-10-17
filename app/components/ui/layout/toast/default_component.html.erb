@@ -1,0 +1,39 @@
+<div class="toast-container fixed bottom-5 right-5 z-50 max-w-[350px] w-full">
+  <div class="toast-notification transform transition-all duration-300 ease-in-out translate-x-0 opacity-100">
+    <div class="<%= type_classes %> border rounded-lg shadow-lg p-4 flex items-center space-x-4">
+      <!-- Icon Circle -->
+      <div class="flex-shrink-0">
+        <div class="<%= icon_bg_class %> rounded-full w-8 h-8 flex items-center justify-center">
+          <i class="<%= icon_class %> text-white text-sm"></i>
+        </div>
+      </div>
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <p class="text-sm text-gray-800 leading-5">
+          <%= @message %>
+        </p>
+      </div>
+      <!-- Close button -->
+      <div class="flex-shrink-0 self-start">
+        <button type="button" 
+                class="cursor-pointer inline-flex text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition ease-in-out duration-150"
+                onclick="this.closest('.toast-container').style.display='none'">
+          <i class="fas fa-times text-md"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // Auto-hide toast after 5 seconds
+  setTimeout(function() {
+    const toast = document.querySelector('.toast-container');
+    if (toast) {
+      toast.querySelector('.toast-notification').style.transform = 'translateX(100%)';
+      toast.querySelector('.toast-notification').style.opacity = '0';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 300);
+    }
+  }, 5000);
+</script>
