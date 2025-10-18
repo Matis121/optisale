@@ -27,9 +27,10 @@
         <summary class="flex items-center gap-2 p-2 rounded-md hover:bg-base-100 transition-colors duration-150 cursor-pointer list-none">
           <i class="fas fa-chevron-right text-xs transition-transform group-open:rotate-90"></i>
           <span class="text-xs font-medium flex-1"><%= group.name %></span>
-          <span class="text-[11px] bg-base-200 text-base-content px-1 rounded min-w-[16px] h-4 flex items-center justify-center">
+          <%= link_to orders_path(status_group: group.id), 
+            class: "text-[11px] bg-base-200 text-base-content px-1 rounded min-w-[16px] h-4 flex items-center justify-center hover:bg-primary/20 transition-colors #{params[:status_group] == group.id.to_s ? 'bg-primary/30' : ''}" do %>
             <%= group_order_count > 0 ? group_order_count : '-' %>
-          </span>
+          <% end %>
         </summary>
         <div>
           <% group.order_statuses.order(:position).each do |order_status| %>

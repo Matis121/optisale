@@ -74,7 +74,7 @@
       url: orders_path, 
       turbo_frame: "orders_frame", 
       id: "filters-form",
-      preserve_params: { status: params[:status] }
+      preserve_params: { status: params[:status], status_group: params[:status_group] }
     ) do %>
       <%= filter_text :addresses_fullname_cont, "Nazwa klienta", @q %>
       <%= filter_number :id_eq, "Numer zamówienia", @q, placeholder: "123" %>
@@ -102,7 +102,7 @@
             <% [20, 30, 50, 75, 100].each do |per_page| %>
               <li>
                 <%= link_to per_page, 
-                    orders_path(page: 1, per_page: per_page, q: @search_params, status: params[:status]), 
+                    orders_path(page: 1, per_page: per_page, q: @search_params, status: params[:status], status_group: params[:status_group]), 
                     class: @per_page == per_page ? 'active' : '',
                     data: { turbo_frame: "orders_frame" } %>
               </li>
@@ -116,13 +116,13 @@
           <span class="font-normal"><%= @orders.total_count %></span> pozycji
         </div>
         <div class="flex items-center">
-          <%= link_to orders_path(page: @orders.prev_page, per_page: @per_page, q: @search_params, status: params[:status]), 
+          <%= link_to orders_path(page: @orders.prev_page, per_page: @per_page, q: @search_params, status: params[:status], status_group: params[:status_group]), 
             class: "btn btn-ghost btn-sm #{@orders.prev_page ? 'hover:bg-base-200' : 'opacity-50 cursor-not-allowed'}", 
             data: { turbo_frame: "orders_frame" },
             onclick: @orders.prev_page ? nil : "return false" do %>
             <i class="fas fa-chevron-left text-sm"></i>
           <% end %>
-          <%= link_to orders_path(page: @orders.next_page, per_page: @per_page, q: @search_params, status: params[:status]), 
+          <%= link_to orders_path(page: @orders.next_page, per_page: @per_page, q: @search_params, status: params[:status], status_group: params[:status_group]), 
             class: "btn btn-ghost btn-sm #{@orders.next_page ? 'hover:bg-base-200' : 'opacity-50 cursor-not-allowed'}", 
             data: { turbo_frame: "orders_frame" },
             onclick: @orders.next_page ? nil : "return false" do %>

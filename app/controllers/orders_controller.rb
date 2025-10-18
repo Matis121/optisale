@@ -17,7 +17,15 @@ class OrdersController < ApplicationController
 
     orders_scope = current_user.orders
 
-    if params[:status].present?
+    # Handle status group filtering
+    if params[:status_group].present?
+      status_group = current_user.order_status_groups.find_by(id: params[:status_group])
+      if status_group
+        status_ids = status_group.order_statuses.pluck(:id)
+        orders_scope = orders_scope.where(status_id: status_ids)
+      end
+    # Handle status filtering
+    elsif params[:status].present?
       unless params[:status] == "all"
         status_id = params[:status].to_i
         orders_scope = orders_scope.where(status_id: status_id)
