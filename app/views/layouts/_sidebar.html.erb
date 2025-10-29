@@ -5,14 +5,23 @@
       <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center shadow-md">
         <i class="fas fa-chart-line text-primary-content text-lg"></i>
       </div>
-      <div>
+      <%= link_to root_path do %>
         <h1 class="text-lg font-bold text-primary">OptiSale</h1>
         <p class="text-[10px] text-base-content/60">Panel zarządzania</p>
-      </div>
+      <% end %>
     </div>
   </div>
   <!-- Main Navigation -->
   <nav class="flex-1 pl-3 pr-4 py-4 space-y-1.5">
+    <!-- Home Link -->
+    <div class="mb-3">
+      <%= link_to root_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(root_path) ? 'bg-primary/10' : ''}" do %>
+        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+          <i class="fas fa-home text-sm"></i>
+        </div>
+        <span class="flex-1 font-medium text-sm <%= 'text-primary font-semibold' if current_page?(root_path) %>">Strona główna</span>
+      <% end %>
+    </div>
     <!-- Zamówienia Section -->
     <div class="mb-3">
       <details name="sidebar-section" <%= 'open' if request.path.start_with?('/orders', '/invoices', '/order_statuses') %> class="group">

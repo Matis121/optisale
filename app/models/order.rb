@@ -23,6 +23,8 @@ class Order < ApplicationRecord
     Arel.sql("(SELECT SUM(order_products.quantity * order_products.gross_price) + COALESCE(orders.shipping_cost, 0) FROM order_products WHERE order_products.order_id = orders.id)")
   end
 
+  # Scopes
+  scope :created_today, -> { where("created_at >= ?", Time.current.beginning_of_day) }
 
   def build_blank_addresses
     addresses.build(kind: :delivery)

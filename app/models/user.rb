@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_many :orders, dependent: :destroy
   has_many :catalogs, dependent: :destroy
+  has_many :products, through: :catalogs
   has_many :warehouses, dependent: :destroy
   has_many :price_groups, dependent: :destroy
   has_many :order_statuses, dependent: :destroy

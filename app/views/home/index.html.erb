@@ -1,0 +1,217 @@
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
+  <!-- Top Cards -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+    <!-- Welcome Card -->
+    <div class="lg:col-span-2">
+      <div class="card bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 shadow-sm h-full">
+        <div class="card-body p-6 flex justify-center">
+          <h1 class="text-2xl font-bold text-base-content">
+            Witaj z powrotem, <%= current_user.email.split('@').first.capitalize %>! 👋
+          </h1>
+        </div>
+      </div>
+    </div>
+    <!-- What's New Banner -->
+    <div class="lg:col-span-1">
+      <div class="h-full">
+        <div class="card bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 shadow-sm h-full blur-[1px] opacity-50 pointer-events-none">
+          <div class="card-body p-6">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary/20">
+                <i class="fas fa-rocket text-xl text-primary"></i>
+              </div>
+              <div class="flex-1">
+                <div class="font-semibold text-base text-base-content">Nowości w systemie</div>
+                <div class="text-sm text-base-content/60">Sprawdź aktualizacje</div>
+              </div>
+              <i class="fas fa-arrow-right text-base-content/40"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Wszystkie zamówienia -->
+    <div class="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all p-5">
+      <div class="flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-base-content/60 uppercase tracking-wide">Zamówienia</span>
+          <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary/10">
+            <i class="fas fa-shopping-cart text-sm text-primary"></i>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-base-content mb-1"><%= @orders_count %></div>
+        <div class="text-xs text-base-content/60">Wszystkie zamówienia</div>
+      </div>
+    </div>
+    <!-- Produkty -->
+    <div class="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all p-5">
+      <div class="flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-base-content/60 uppercase tracking-wide">Produkty</span>
+          <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary/10">
+            <i class="fas fa-box text-sm text-primary"></i>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-base-content mb-1"><%= @products_count %></div>
+        <div class="text-xs text-base-content/60">W katalogach</div>
+      </div>
+    </div>
+    <!-- Faktury -->
+    <div class="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all p-5">
+      <div class="flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-base-content/60 uppercase tracking-wide">Faktury</span>
+          <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary/10">
+            <i class="fas fa-file-invoice text-sm text-primary"></i>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-base-content mb-1"><%= @invoices_count %></div>
+        <div class="text-xs text-base-content/60">Wygenerowanych</div>
+      </div>
+    </div>
+    <!-- Dzisiaj -->
+    <div class="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all p-5">
+      <div class="flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-base-content/60 uppercase tracking-wide">Dzisiaj</span>
+          <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary/10">
+            <i class="fas fa-calendar-day text-sm text-primary"></i>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-base-content mb-1"><%= @today_orders_count %></div>
+        <div class="text-xs text-base-content/60">Dzisiejsze zamówienia</div>
+      </div>
+    </div>
+  </div>
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Ostatnie zamówienia -->
+    <div class="lg:col-span-2">
+      <div class="card bg-base-100 border border-base-300 shadow-sm min-h-full">
+        <div class="card-body p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold flex items-center gap-2">
+              <i class="fas fa-history text-primary"></i>
+              Ostatnie zamówienia
+            </h2>
+            <%= link_to orders_path, class: "btn btn-sm btn-ghost gap-2" do %>
+              Zobacz wszystkie
+              <i class="fas fa-arrow-right"></i>
+            <% end %>
+          </div>
+          <% if @recent_orders.any? %>
+            <div class="overflow-x-auto">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Numer</th>
+                    <th>Klient</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @recent_orders.each do |order| %>
+                    <tr>
+                      <td class="text-sm py-4">
+                        <%= link_to "##{order.id}", order_path(order), class: "link link-primary font-semibold" %>
+                      </td>
+                      <td>
+                        <div class="flex items-center gap-2">
+                          <span class="text-sm"><%= order.customer&.login || order.customer&.email || "Brak danych" %></span>
+                        </div>
+                      </td>
+                      <td>
+                        <% if order.order_status.present? %>
+                          <span class="badge badge-sm" style="background-color: <%= order.order_status.color %>; color: white;">
+                            <%= order.order_status.short_name %>
+                          </span>
+                        <% else %>
+                          <span class="badge badge-sm badge-ghost">Brak statusu</span>
+                        <% end %>
+                      </td>
+                      <td class="text-sm text-base-content/60">
+                        <%= order.created_at.strftime("%d.%m.%Y %H:%M") %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-12">
+              <div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center rounded-full bg-base-200">
+                <i class="fas fa-inbox text-4xl text-base-content/20"></i>
+              </div>
+              <p class="text-base-content/60 mb-4">Brak zamówień w systemie</p>
+              <%= link_to new_order_path, class: "btn btn-primary btn-sm gap-2" do %>
+                <i class="fas fa-plus"></i>
+                Utwórz pierwsze zamówienie
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- Sidebar -->
+    <div class="space-y-4">
+      <!-- Quick Actions Card -->
+      <div class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body p-6">
+          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            <i class="fas fa-bolt text-warning"></i>
+            Szybkie akcje
+          </h2>
+          <div class="space-y-2">
+            <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-block justify-start gap-2" do %>
+              <i class="fas fa-plus text-xs"></i>
+              Nowe zamówienie
+            <% end %>
+            <%= link_to storage_products_path, class: "btn btn-outline btn-block justify-start gap-2" do %>
+              <i class="fas fa-box"></i>
+              Przeglądaj produkty
+            <% end %>
+            <%= link_to invoices_path, class: "btn btn-outline btn-block justify-start gap-2" do %>
+              <i class="fas fa-file-invoice"></i>
+              Lista faktur
+            <% end %>
+            <%= link_to integrations_path, class: "btn btn-outline btn-block justify-start gap-2" do %>
+              <i class="fas fa-plug"></i>
+              Integracje
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <!-- System Status Card -->
+      <div class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body p-6">
+          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            <i class="fas fa-chart-line text-success"></i>
+            Status systemu
+          </h2>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between py-2">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+                <span class="text-sm text-base-content/70">System</span>
+              </div>
+              <span class="badge badge-success badge-sm">Aktywny</span>
+            </div>
+            <div class="divider my-0"></div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm text-base-content/70">Wersja</span>
+              <span class="font-mono text-sm font-semibold">2.0</span>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm text-base-content/70">Środowisko</span>
+              <span class="badge badge-sm badge-outline font-mono"><%= Rails.env %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
