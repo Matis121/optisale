@@ -9,7 +9,7 @@ class OrderStatus < ApplicationRecord
   validates :short_name, presence: true
   validate :only_one_default_per_user
 
-  before_destroy :prevent_destroy_if_default
+  before_destroy :prevent_destroy_if_default, :prevent_destroy_if_order_exists
 
   scope :default, -> { where(default: true) }
 
@@ -23,6 +23,13 @@ class OrderStatus < ApplicationRecord
   end
 
   private
+
+  def prevent_destroy_if_order_exists
+    if orders.any?
+      errors.add(:base, "Nie można usunąć statusu, jeśli znajdują się w nim zamówienia")
+      throw :abort
+    end
+  end
 
   def only_one_default_per_user
     return unless default?
