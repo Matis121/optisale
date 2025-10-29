@@ -1,18 +1,26 @@
 <%= turbo_frame_tag dom_id(order, :extra_fields) do %>
   <%= form_with model: order, url: update_extra_fields_order_path(order), method: :patch do |f| %>
-    <div class="mb-2">
-      <%= f.label :extra_field_1, "Pole dodatkowe 1:", class: "label text-sm" %>
-      <%= f.text_field :extra_field_1, class: "input w-full input-sm" %>
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <%= f.label :extra_field_1, "Pole dodatkowe 1:", class: "label text-sm" %>
+      </div>
+      <div>
+        <%= f.text_field :extra_field_1, class: "input w-full input-sm" %>
+      </div>
+      <div>
+        <%= f.label :extra_field_2, "Pole dodatkowe 2:", class: "label text-sm" %>
+      </div>
+      <div>
+        <%= f.text_field :extra_field_2, class: "input w-full input-sm" %>
+      </div>
+      <div>
+        <%= f.label :admin_comments, "Uwagi:", class: "label text-sm" %>
+      </div>
+      <div>
+        <%= f.text_field :admin_comments, class: "input w-full input-sm" %>
+      </div>
     </div>
-    <div class="mb-2">
-      <%= f.label :extra_field_1, "Pole dodatkowe 2:", class: "label text-sm" %>
-      <%= f.text_field :extra_field_2, class: "input w-full input-sm" %>
-    </div>
-    <div class="mb-2">
-      <%= f.label :admin_comments, "Uwagi:", class: "label text-sm" %>
-      <%= f.text_field :admin_comments, class: "input w-full input-sm" %>
-    </div>
-    <div class="flex gap-2">
+    <div class="flex items-center justify-end gap-2 mt-4">
       <%= f.submit "Zapisz", class: "btn btn-primary btn-sm" %>
       <%= link_to "Anuluj", order_path(order), class: "btn btn-sm" %>
     </div>

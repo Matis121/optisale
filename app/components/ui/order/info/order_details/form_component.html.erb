@@ -1,22 +1,32 @@
 <%= turbo_frame_tag dom_id(order, :info) do %>
   <%= form_with model: order, url: order_path(order), method: :patch do |f| %>
-    <div class="mb-2">
-      <%= f.label :source, "Źródło", class: "label text-sm" %>
-      <%= f.text_field :source, class: "input w-full input-sm" %>
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <%= f.label :source, "Źródło", class: "label text-sm" %>
+      </div>
+      <div>
+        <%= f.text_field :source, class: "input w-full input-sm" %>
+      </div>
+      <div>
+        <%= f.label :shipping_method, "Sposób wysyłki", class: "label text-sm" %>
+      </div>
+      <div>
+        <%= f.text_field :shipping_method, class: "input w-full input-sm" %>
+      </div>
+      <div>
+        <%= f.label :shipping_cost, "Koszt wysyłki", class: "label text-sm" %>
+      </div>
+      <div>
+        <%= f.text_field :shipping_cost, class: "input w-full input-sm" %>
+      </div>
+      <div>
+        <%= f.label :payment_method, "Sposób płatności", class: "label text-sm" %>
+      </div>
+      <div>
+        <%= f.text_field :payment_method, class: "input w-full input-sm" %>
+      </div>
     </div>
-    <div class="mb-2">
-      <%= f.label :shipping_method, "Sposób wysyłki", class: "label text-sm" %>
-      <%= f.text_field :shipping_method, class: "input w-full input-sm" %>
-    </div>
-    <div class="mb-2">
-      <%= f.label :shipping_cost, "Koszt wysyłki", class: "label text-sm" %>
-      <%= f.text_field :shipping_cost, class: "input w-full input-sm" %>
-    </div>
-    <div class="mb-2">
-      <%= f.label :payment_method, "Sposób płatności", class: "label text-sm" %>
-      <%= f.text_field :payment_method, class: "input w-full input-sm" %>
-    </div>
-    <div class="flex gap-2">
+    <div class="flex items-center justify-end gap-2 mt-4">
       <%= f.submit "Zapisz", class: "btn btn-primary btn-sm" %>
       <%= link_to "Anuluj", order_path(order), class: "btn btn-sm" %>
     </div>
