@@ -64,7 +64,7 @@ class OrdersController < ApplicationController
   def create
     @order = Order.new
     @order.user = current_user
-    @order.status_id = OrderStatus.first&.id
+    @order.status_id = current_user.default_order_status&.id
 
     if @order.save
       redirect_to @order, notice: "Zamówienie zostało utworzone."

@@ -18,6 +18,10 @@ class User < ApplicationRecord
 
   after_create :create_default_data
 
+  def default_order_status
+    order_statuses.default.first || order_statuses.first
+  end
+
 
   private
 
