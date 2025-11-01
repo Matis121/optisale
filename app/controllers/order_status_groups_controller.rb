@@ -27,7 +27,7 @@ class OrderStatusGroupsController < ApplicationController
 
     respond_to do |format|
       if @order_status_group.save
-        format.html { redirect_to order_statuses_path, notice: "Grupa statusów została utworzona." }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("groups_frame", partial: "order_status_groups/table") }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update("order-status-group-form", partial: "order_status_groups/form") }
       end
@@ -38,7 +38,7 @@ class OrderStatusGroupsController < ApplicationController
   def update
     respond_to do |format|
       if @order_status_group.update(order_status_group_params)
-        format.html { redirect_to order_statuses_path, notice: "Grupa statusów została zaktualizowana." }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("groups_frame", partial: "order_status_groups/table") }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update("order-status-group-form", partial: "order_status_groups/form") }
       end

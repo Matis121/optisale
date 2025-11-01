@@ -42,7 +42,9 @@
       </div>
       <!-- Table -->
       <div class="bg-base-200 rounded-lg border border-base-200 border-t-0 rounded-t-none">
-        <%= render "order_status_groups/table" %>
+        <%= turbo_frame_tag "groups_frame" do %>
+          <%= render "order_status_groups/table" %>
+        <% end %>
       </div>
     </div>
   </div>
