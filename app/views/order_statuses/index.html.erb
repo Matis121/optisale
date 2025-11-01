@@ -20,7 +20,9 @@
     </div>
     <!-- Table -->
     <div class="bg-base-200 rounded-lg border border-base-200 border-t-0 rounded-t-none">
-      <%= render "table" %>
+      <%= turbo_frame_tag "statuses_frame" do %>
+        <%= render "table" %>
+      <% end %>
     </div>
   </div>
   <!-- Groups Section -->
