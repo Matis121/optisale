@@ -37,7 +37,10 @@ class OrderStatusesController < ApplicationController
   # PATCH/PUT /order_statuses/1
   def update
     if @order_status.update(order_status_params)
-      render turbo_stream: turbo_stream.update("statuses_frame", partial: "order_statuses/table")
+      render turbo_stream: [
+        turbo_stream.update("statuses_frame", partial: "order_statuses/table"),
+        turbo_stream.update("flash-messages", partial: "shared/flash_messages")
+      ]
     else
       render turbo_stream: turbo_stream.replace("order-status-form", partial: "order_statuses/form")
     end
@@ -47,19 +50,16 @@ class OrderStatusesController < ApplicationController
   def destroy
     if @order_status.default?
       flash[:error] = "Nie można usunąć domyślnego statusu."
-      redirect_to order_statuses_path, status: :see_other
     elsif @order_status.orders.any?
       flash[:error] = "Nie można usunąć statusu, jeśli znajdują się w nim zamówienia."
-      redirect_to order_statuses_path, status: :see_other
     else
       if @order_status.destroy
         flash[:success] = "Status zamówienia został usunięty."
-        redirect_to order_statuses_path, status: :see_other
       else
         flash[:error] = @order_status.errors.full_messages.join(", ")
-        redirect_to order_statuses_path, status: :see_other
       end
     end
+    render turbo_stream: turbo_stream.update("flash-messages", partial: "shared/flash_messages")
   end
 
   private

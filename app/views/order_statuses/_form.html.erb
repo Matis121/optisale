@@ -38,9 +38,9 @@
   </div>
   <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-base-300">
     <% if @order_status.new_record? %>
-      <%= form.submit "Utwórz status", class: "btn btn-primary", onclick: "modal.close()" %>
+      <%= form.submit "Utwórz status", class: "btn btn-primary" %>
     <% else %>
-      <%= form.submit "Zapisz zmiany", class: "btn btn-primary", onclick: "modal.close()" %>
+      <%= form.submit "Zapisz zmiany", class: "btn btn-primary" %>
     <% end %>
     <button type="button" class="btn btn-ghost" onclick="modal.close()">Zamknij</button>
   </div>

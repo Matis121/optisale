@@ -1,0 +1,14 @@
+<% if flash.any? %>
+  <% if flash[:error].present? %>
+    <%= render Ui::Layout::Toast::DefaultComponent.new(message: flash[:error], type: :error) %>
+  <% end %>
+  <% if flash[:success].present? %>
+    <%= render Ui::Layout::Toast::DefaultComponent.new(message: flash[:success], type: :success) %>
+  <% end %>
+  <% if flash[:notice].present? %>
+    <%= render Ui::Layout::Toast::DefaultComponent.new(message: flash[:notice], type: :notice) %>
+  <% end %>
+  <% if flash[:alert].present? %>
+    <%= render Ui::Layout::Toast::DefaultComponent.new(message: flash[:alert], type: :alert) %>
+  <% end %>
+<% end %>
