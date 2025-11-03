@@ -1,9 +1,10 @@
 class Storage::WarehousesController < ApplicationController
   before_action :set_warehouse, only: %i[ show edit update destroy ]
+  before_action :set_warehouses, only: %i[ index create update destroy ]
+  before_action :set_catalogs, only: %i[ new edit create update destroy ]
   before_action :ensure_turbo_frame, only: %i[ edit new ]
 
   def index
-    @warehouses = current_user.warehouses
   end
 
   def show
@@ -11,11 +12,9 @@ class Storage::WarehousesController < ApplicationController
 
   def new
     @warehouse = Warehouse.new
-    @catalogs = current_user.catalogs
   end
 
   def edit
-    @catalogs = current_user.catalogs
   end
 
   def create
@@ -23,38 +22,30 @@ class Storage::WarehousesController < ApplicationController
     @warehouse.user = current_user
     @warehouse.catalogs = current_user.catalogs.where(id: warehouse_params[:catalog_ids])
 
-    respond_to do |format|
       if @warehouse.save
-        format.html { redirect_to storage_warehouses_path, notice: "Magazyn został utworzony." }
-        format.json { render :show, status: :created, location: @warehouse }
+        flash.now[:success] = "Magazyn został utworzony."
+        update_warehouses_frame_with_flash
       else
-        @catalogs = current_user.catalogs
-        format.turbo_stream { render turbo_stream: turbo_stream.update("warehouse-form", partial: "storage/warehouses/form") }
-        format.json { render json: @warehouse.errors, status: :unprocessable_entity }
+        set_catalogs
+        render_warehouses_form
       end
-    end
   end
 
   def update
-    respond_to do |format|
       if @warehouse.update(warehouse_params)
-        format.html { redirect_to storage_warehouses_path, notice: "Magazyn został zaktualizowany." }
-        format.json { render :show, status: :ok, location: @warehouse }
+        flash.now[:success] = "Magazyn został zaktualizowany."
+        update_warehouses_frame_with_flash
       else
-        @catalogs = current_user.catalogs
-        format.turbo_stream { render turbo_stream: turbo_stream.update("warehouse-form", partial: "storage/warehouses/form") }
-        format.json { render json: @warehouse.errors, status: :unprocessable_entity }
+        set_catalogs
+        render_warehouses_form
       end
-    end
   end
 
   def destroy
     @warehouse.destroy!
 
-    respond_to do |format|
-      format.html { redirect_to storage_warehouses_path, status: :see_other, notice: "Magazyn został usunięty." }
-      format.json { head :no_content }
-    end
+      flash.now[:success] = "Magazyn został usunięty."
+      update_warehouses_frame_with_flash
   end
 
   private
@@ -65,8 +56,28 @@ class Storage::WarehousesController < ApplicationController
       end
     end
 
+    def render_warehouses_form
+      render turbo_stream: turbo_stream.replace("warehouse-form", partial: "storage/warehouses/form")
+    end
+
+    def set_warehouses
+      @warehouses = current_user.warehouses
+    end
+
     def set_warehouse
       @warehouse = current_user.warehouses.find(params[:id])
+    end
+
+    def set_catalogs
+      @catalogs = current_user.catalogs
+    end
+
+    def update_warehouses_frame_with_flash
+      streams = []
+      streams << turbo_stream.update("modal-frame", "")
+      streams << turbo_stream.update("warehouses_frame", partial: "storage/warehouses/table")
+      streams << turbo_stream.update("flash-messages", partial: "shared/flash_messages")
+      render turbo_stream: streams
     end
 
     def warehouse_params
