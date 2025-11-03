@@ -25,30 +25,29 @@ class OrderStatusGroupsController < ApplicationController
     @order_status_group = OrderStatusGroup.new(order_status_group_params)
     @order_status_group.user = current_user
 
-    respond_to do |format|
       if @order_status_group.save
-        format.turbo_stream { render turbo_stream: turbo_stream.update("groups_frame", partial: "order_status_groups/table") }
+        flash.now[:success] = "Grupa statusów została utworzona."
+        update_groups_frame_with_flash
       else
-        format.turbo_stream { render turbo_stream: turbo_stream.update("order-status-group-form", partial: "order_status_groups/form") }
+        render_order_status_groups_form
       end
-    end
   end
 
   # PATCH/PUT /order_status_groups/1
   def update
-    respond_to do |format|
       if @order_status_group.update(order_status_group_params)
-        format.turbo_stream { render turbo_stream: turbo_stream.update("groups_frame", partial: "order_status_groups/table") }
+        flash.now[:success] = "Grupa statusów została zaktualizowana."
+        update_groups_frame_with_flash
       else
-        format.turbo_stream { render turbo_stream: turbo_stream.update("order-status-group-form", partial: "order_status_groups/form") }
+        render_order_status_groups_form
       end
-    end
   end
 
   # DELETE /order_status_groups/1
   def destroy
     @order_status_group.destroy!
-    redirect_to order_statuses_path, status: :see_other, notice: "Grupa statusów została usunięta."
+    flash.now[:success] = "Grupa statusów została usunięta."
+    update_groups_frame_with_flash
   end
 
   private
@@ -56,6 +55,26 @@ class OrderStatusGroupsController < ApplicationController
     unless turbo_frame_request?
       redirect_to order_statuses_path
     end
+  end
+
+  def render_order_status_groups_form
+    render turbo_stream: turbo_stream.replace("order-status-group-form", partial: "order_status_groups/form")
+  end
+
+
+  def render_flash_messages
+    render turbo_stream: turbo_stream.update("flash-messages", partial: "shared/flash_messages")
+  end
+
+
+  def update_groups_frame_with_flash
+    streams = []
+
+    streams << turbo_stream.update("modal-frame", "")
+    streams << turbo_stream.update("groups_frame", partial: "order_status_groups/table")
+    streams << turbo_stream.update("flash-messages", partial: "shared/flash_messages")
+
+    render turbo_stream: streams
   end
 
   # Use callbacks to share common setup or constraints between actions.

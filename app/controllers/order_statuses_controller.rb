@@ -1,6 +1,6 @@
 class OrderStatusesController < ApplicationController
   before_action :set_order_status, only: %i[ show edit update destroy ]
-  before_action :set_order_statuses, only: %i[ index update create ]
+  before_action :set_order_statuses, only: %i[ index update create destroy ]
   before_action :set_groups, only: %i[ new edit create update ]
   before_action :ensure_turbo_frame, only: %i[ new edit ]
 
@@ -28,38 +28,40 @@ class OrderStatusesController < ApplicationController
     @order_status.user = current_user
 
     if @order_status.save
-      render turbo_stream: turbo_stream.update("statuses_frame", partial: "order_statuses/table")
+      flash.now[:success] = "Status zamówienia został utworzony."
+     update_statuses_frame_with_flash
     else
-      render turbo_stream: turbo_stream.replace("order-status-form", partial: "order_statuses/form")
+      render_statuses_form
     end
   end
 
   # PATCH/PUT /order_statuses/1
   def update
     if @order_status.update(order_status_params)
-      render turbo_stream: [
-        turbo_stream.update("statuses_frame", partial: "order_statuses/table"),
-        turbo_stream.update("flash-messages", partial: "shared/flash_messages")
-      ]
+      flash.now[:success] = "Status zamówienia został zaktualizowany."
+      update_statuses_frame_with_flash
     else
-      render turbo_stream: turbo_stream.replace("order-status-form", partial: "order_statuses/form")
+      render_statuses_form
     end
   end
 
   # DELETE /order_statuses/1
   def destroy
     if @order_status.default?
-      flash[:error] = "Nie można usunąć domyślnego statusu."
+      flash.now[:error] = "Nie można usunąć domyślnego statusu."
+      render_flash_messages
     elsif @order_status.orders.any?
-      flash[:error] = "Nie można usunąć statusu, jeśli znajdują się w nim zamówienia."
+      flash.now[:error] = "Nie można usunąć statusu, jeśli znajdują się w nim zamówienia."
+      render_flash_messages
     else
       if @order_status.destroy
-        flash[:success] = "Status zamówienia został usunięty."
+        flash.now[:success] = "Status zamówienia został usunięty."
+        update_statuses_frame_with_flash
       else
-        flash[:error] = @order_status.errors.full_messages.join(", ")
+        flash.now[:error] = @order_status.errors.full_messages.join(", ")
+        render_flash_messages
       end
     end
-    render turbo_stream: turbo_stream.update("flash-messages", partial: "shared/flash_messages")
   end
 
   private
@@ -76,6 +78,24 @@ class OrderStatusesController < ApplicationController
     unless turbo_frame_request?
       redirect_to order_statuses_path
     end
+  end
+
+  def render_flash_messages
+    render turbo_stream: turbo_stream.update("flash-messages", partial: "shared/flash_messages")
+  end
+
+  def render_statuses_form
+    render turbo_stream: turbo_stream.replace("order-status-form", partial: "order_statuses/form")
+  end
+
+  def update_statuses_frame_with_flash
+    streams = []
+
+    streams << turbo_stream.update("modal-frame", "")
+    streams << turbo_stream.update("statuses_frame", partial: "order_statuses/table")
+    streams << turbo_stream.update("flash-messages", partial: "shared/flash_messages")
+
+    render turbo_stream: streams
   end
 
   # Use callbacks to share common setup or constraints between actions.
