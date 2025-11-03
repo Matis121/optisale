@@ -60,6 +60,8 @@ class InvoicesController < ApplicationController
       if invoice_service.delete_invoice(@invoice)
         # Also delete from local database after successful deletion from external system
         @invoice.destroy
+        order.reload
+
 
         respond_to do |format|
           format.html { redirect_to invoices_path, notice: "Faktura została usunięta." }
@@ -127,7 +129,7 @@ class InvoicesController < ApplicationController
             render turbo_stream: turbo_stream.replace("invoices_table",
               partial: "invoices/table")
           else
-            # Original behavior for order page
+            order.reload
             render turbo_stream: turbo_stream.replace("invoice_section_#{order.id}",
               partial: "orders/invoice_section", locals: { order: order })
           end

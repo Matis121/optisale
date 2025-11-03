@@ -1,27 +1,25 @@
 <%= turbo_frame_tag "invoice_section_#{order.id}" do %>
   <div class="flex justify-between items-center">
     <span class="text-sm text-base-content/60">Faktura:</span>
-    <% if order.invoices.any? %>
+    <% if order.invoice.present? %>
       <div class="flex flex-col gap-1">
-        <% order.invoices.each do |invoice| %>
-          <div class="flex items-center justify-between p-2 bg-base-200 rounded mb-2">
-            <div class="flex items-center gap-1">
-              <%= link_to invoice.download_pdf_url, target: "_blank", 
+        <div class="flex items-center justify-between p-2 bg-base-200 rounded mb-2">
+          <div class="flex items-center gap-1">
+            <%= link_to order.invoice.download_pdf_url, target: "_blank", 
                           class: "btn btn-outline btn-sm gap-1", 
                           title: "Pobierz PDF" do %>
-                <span class="text-sm font-medium"><%= invoice.invoice_number %></span>
-              <% end %>
-              <%= link_to delete_from_external_invoice_path(invoice), 
+              <span class="text-sm font-medium"><%= order.invoice.invoice_number %></span>
+            <% end %>
+            <%= link_to delete_from_external_invoice_path(order.invoice), 
                           data: { turbo_method: :delete, 
                                  turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę? Ta operacja jest nieodwracalna!",
                                  turbo_frame: "invoice_section_#{order.id}" },
                           class: "btn btn-ghost btn-xs text-base-content/40 hover:text-error hover:bg-error/10 transition-colors", 
                           title: "Usuń fakturę" do %>
-                <i class="fas fa-trash text-xs"></i>
-              <% end %>
-            </div>
+              <i class="fas fa-trash text-xs"></i>
+            <% end %>
           </div>
-        <% end %>
+        </div>
       </div>
     <% else %>
       <% invoice_service = InvoiceService.new(current_user) %>
@@ -42,7 +40,7 @@
             <div class="text-xs text-base-content/60 mt-1">
               <% if order.order_products.empty? %>
                 Dodaj produkty do zamówienia
-              <% elsif order.invoices.exists? %>
+              <% elsif order.invoice.present? %>
                 Faktura już istnieje
               <% else %>
                 Nie można wygenerować faktury

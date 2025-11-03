@@ -89,7 +89,7 @@ class InvoiceService
       return false
     end
 
-    if order.invoices.exists?
+    if order.invoice.present?
       @errors << "Zamówienie już ma fakturę"
       return false
     end
@@ -103,8 +103,8 @@ class InvoiceService
   end
 
   # Returns invoices for order
-  def invoices_for_order(order)
-    order.invoices.includes(:invoicing_integration)
+  def invoice_for_order(order)
+    order.invoice.includes(:invoicing_integration)
   end
 
   private

@@ -12,7 +12,7 @@ class Invoice < ApplicationRecord
     error: "error"
   }
 
-  validates :amount, presence: true, numericality: { greater_than: 0 }
+  validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :external_id, presence: true, uniqueness: { scope: :invoicing_integration_id }
   validates :invoice_number, presence: true
   validates :order_id, uniqueness: { scope: :user_id, message: "może mieć tylko jedną fakturę" }
