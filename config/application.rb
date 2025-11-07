@@ -27,5 +27,13 @@ module Optisale
     # Set default locale to Polish
     config.i18n.default_locale = :pl
     config.i18n.available_locales = [ :pl, :en ]
+
+    config.generators do |g|
+      g.test_framework :rspec,
+                       fixtures: false,
+                       view_specs: false,
+                       helper_specs: false,
+                       routing_specs: false
+    end
   end
 end

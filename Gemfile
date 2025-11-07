@@ -51,6 +51,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  gem "factory_bot_rails", "~> 6.4"
+  gem "faker", "~> 3.5"
 end
 
 group :development do
@@ -63,6 +65,10 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "webmock" # For mocking HTTP requests in tests
+  gem "simplecov", require: false
+  gem "database_cleaner-active_record"
+  gem "rspec-rails", "~> 8.0"
+  gem "shoulda-matchers", "~> 7.0"
 end
 
 gem "devise", "~> 4.9"
