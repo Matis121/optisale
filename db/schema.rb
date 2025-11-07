@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_07_200325) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_07_224630) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -159,7 +159,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_07_200325) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.string "source"
     t.datetime "order_date"
     t.string "currency"
@@ -174,10 +173,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_07_200325) do
     t.string "extra_field_2", limit: 50
     t.string "admin_comments", limit: 150
     t.decimal "amount_paid", precision: 10, scale: 2, default: "0.0", null: false
-    t.bigint "account_id"
+    t.bigint "account_id", null: false
     t.index ["account_id"], name: "index_orders_on_account_id"
     t.index ["customer_id"], name: "index_orders_on_customer_id"
-    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "price_groups", force: :cascade do |t|
@@ -286,7 +284,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_07_200325) do
   add_foreign_key "order_statuses", "order_status_groups"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "customers"
-  add_foreign_key "orders", "users"
   add_foreign_key "price_groups", "accounts"
   add_foreign_key "product_prices", "price_groups"
   add_foreign_key "product_prices", "products"
