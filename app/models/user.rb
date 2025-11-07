@@ -7,8 +7,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :email, presence: true, uniqueness: true
-  validates :password, presence: true, length: { minimum: 2 }, on: :create
-  validates :password_confirmation, presence: true, length: { minimum: 2 }, on: :create
+  validates :password, presence: true, length: { minimum: 12 }, on: :create
+  validates :password_confirmation, presence: true, length: { minimum: 12 }, on: :create
   validates :role, presence: true, inclusion: { in: %w[owner employee] }
   validates :account_id, presence: true, unless: -> { new_record? && owner? }
 

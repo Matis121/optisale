@@ -8,7 +8,7 @@ RSpec.describe User, type: :model do
 
   # Testy walidacji
   describe 'validations' do
-    subject { FactoryBot.create(:user) }
+    subject { FactoryBot.create(:user, :owner) }
 
     it { should validate_presence_of(:role) }
     it { should validate_inclusion_of(:role).in_array(%w[owner employee]) }
@@ -67,7 +67,7 @@ RSpec.describe User, type: :model do
   # Testy metody delegującej
   describe '#default_order_status' do
     it 'delegates to account' do
-      user = FactoryBot.create(:user)
+      user = FactoryBot.create(:user, :owner)
       expect(user.default_order_status).to eq(user.account.default_order_status)
     end
 
@@ -79,8 +79,13 @@ RSpec.describe User, type: :model do
 
   # Test factory
   describe 'factory' do
-    it 'has a valid factory' do
-      user = FactoryBot.build(:user)
+    it 'has a valid owner factory' do
+      user = FactoryBot.build(:user, :owner)
+      expect(user).to be_valid
+    end
+
+    it 'has a valid employee factory' do
+      user = FactoryBot.create(:user, :employee)
       expect(user).to be_valid
     end
   end
