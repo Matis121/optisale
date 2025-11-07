@@ -18,7 +18,7 @@ class Storage::CatalogsController < ApplicationController
 
   def create
     @catalog = Catalog.new(catalog_params)
-    @catalog.user = current_user
+    @catalog.account = current_account
 
     if @catalog.save
       flash.now[:success] = "Katalog został utworzony."
@@ -46,7 +46,7 @@ class Storage::CatalogsController < ApplicationController
   private
 
   def set_catalogs
-    @catalogs = current_user.catalogs
+    @catalogs = current_account.catalogs
   end
 
   def update_catalogs_frame_with_flash
@@ -68,7 +68,7 @@ class Storage::CatalogsController < ApplicationController
   end
 
   def set_catalog
-    @catalog = current_user.catalogs.find(params[:id])
+    @catalog = current_account.catalogs.find(params[:id])
   end
 
   def catalog_params

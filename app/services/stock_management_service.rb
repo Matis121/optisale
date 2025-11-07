@@ -55,7 +55,7 @@ class StockManagementService
 
   # Stock reservation (soft reservation)
   def reserve_stock_for_order(order, warehouse = nil)
-    warehouse ||= order.user.warehouses.find_by(default: true)
+    warehouse ||= order.account.warehouses.find_by(default: true)
     return false unless warehouse
 
     availability = check_availability_for_order(order.order_products, warehouse)

@@ -1,5 +1,5 @@
 <%= form_with(model: [:storage, @product], class: "space-y-6", id: "product-form", data: { turbo_frame: "_top" }) do |form| %>
-  <%= form.hidden_field :catalog_id, value: @product.catalog&.id || current_user.catalogs.first&.id %>
+  <%= form.hidden_field :catalog_id, value: @product.catalog&.id || current_account.catalogs.first&.id %>
   <!-- Basic Information -->
   <div class="space-y-4">
     <h3 class="text-lg font-semibold">Informacje podstawowe</h3>

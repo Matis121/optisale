@@ -10,9 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_07_200325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "nip"
+  end
 
   create_table "addresses", force: :cascade do |t|
     t.bigint "order_id", null: false
@@ -31,11 +38,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
 
   create_table "catalogs", force: :cascade do |t|
     t.string "name"
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "default"
-    t.index ["user_id"], name: "index_catalogs_on_user_id"
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_catalogs_on_account_id"
   end
 
   create_table "catalogs_price_groups", id: false, force: :cascade do |t|
@@ -87,13 +94,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
     t.text "external_data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_invoices_on_account_id"
     t.index ["invoicing_integration_id"], name: "index_invoices_on_invoicing_integration_id"
     t.index ["order_id"], name: "index_invoices_on_order_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
   create_table "invoicing_integrations", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.string "provider", null: false
     t.string "name", null: false
     t.boolean "active", default: false
@@ -104,10 +112,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
     t.text "error_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_invoicing_integrations_on_account_id"
     t.index ["active"], name: "index_invoicing_integrations_on_active"
     t.index ["status"], name: "index_invoicing_integrations_on_status"
-    t.index ["user_id", "provider"], name: "index_invoicing_integrations_on_user_id_and_provider"
-    t.index ["user_id"], name: "index_invoicing_integrations_on_user_id"
   end
 
   create_table "order_products", force: :cascade do |t|
@@ -130,25 +138,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
   create_table "order_status_groups", force: :cascade do |t|
     t.string "name"
     t.integer "position"
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_order_status_groups_on_user_id"
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_order_status_groups_on_account_id"
   end
 
   create_table "order_statuses", force: :cascade do |t|
     t.string "full_name"
     t.string "short_name"
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "position", default: 0
     t.string "color", default: "#667EEA", null: false
     t.bigint "order_status_group_id"
     t.boolean "default"
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_order_statuses_on_account_id"
     t.index ["order_status_group_id"], name: "index_order_statuses_on_order_status_group_id"
-    t.index ["user_id", "position"], name: "index_order_statuses_on_user_id_and_position"
-    t.index ["user_id"], name: "index_order_statuses_on_user_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -167,6 +174,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
     t.string "extra_field_2", limit: 50
     t.string "admin_comments", limit: 150
     t.decimal "amount_paid", precision: 10, scale: 2, default: "0.0", null: false
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_orders_on_account_id"
     t.index ["customer_id"], name: "index_orders_on_customer_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
@@ -176,8 +185,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "default"
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_price_groups_on_user_id"
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_price_groups_on_account_id"
   end
 
   create_table "product_prices", force: :cascade do |t|
@@ -225,6 +234,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
     t.datetime "occurred_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_stock_movements_on_account_id"
     t.index ["movement_type"], name: "index_stock_movements_on_movement_type"
     t.index ["occurred_at"], name: "index_stock_movements_on_occurred_at"
     t.index ["product_id", "warehouse_id"], name: "index_stock_movements_on_product_id_and_warehouse_id"
@@ -243,6 +254,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.string "role", default: "owner", null: false
+    t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -252,33 +266,37 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_195139) do
     t.boolean "default"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_warehouses_on_user_id"
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_warehouses_on_account_id"
   end
 
   add_foreign_key "addresses", "orders"
-  add_foreign_key "catalogs", "users"
+  add_foreign_key "catalogs", "accounts"
   add_foreign_key "customer_pickup_points", "orders"
+  add_foreign_key "invoices", "accounts"
   add_foreign_key "invoices", "invoicing_integrations"
   add_foreign_key "invoices", "orders"
   add_foreign_key "invoices", "users"
-  add_foreign_key "invoicing_integrations", "users"
+  add_foreign_key "invoicing_integrations", "accounts"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "order_products", "warehouses"
-  add_foreign_key "order_status_groups", "users"
+  add_foreign_key "order_status_groups", "accounts"
+  add_foreign_key "order_statuses", "accounts"
   add_foreign_key "order_statuses", "order_status_groups"
-  add_foreign_key "order_statuses", "users"
+  add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "users"
-  add_foreign_key "price_groups", "users"
+  add_foreign_key "price_groups", "accounts"
   add_foreign_key "product_prices", "price_groups"
   add_foreign_key "product_prices", "products"
   add_foreign_key "product_stocks", "products"
   add_foreign_key "product_stocks", "warehouses"
   add_foreign_key "products", "catalogs"
+  add_foreign_key "stock_movements", "accounts"
   add_foreign_key "stock_movements", "products"
   add_foreign_key "stock_movements", "users"
   add_foreign_key "stock_movements", "warehouses"
-  add_foreign_key "warehouses", "users"
+  add_foreign_key "users", "accounts"
+  add_foreign_key "warehouses", "accounts"
 end

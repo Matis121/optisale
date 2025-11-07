@@ -2,7 +2,7 @@ class IntegrationsController < ApplicationController
   before_action :set_integration, only: [ :show, :edit, :update, :destroy, :test ]
 
   def index
-    @invoicing_integrations = current_user.invoicing_integrations.order(:created_at)
+    @invoicing_integrations = current_account.invoicing_integrations.order(:created_at)
     @available_invoicing_providers = available_invoicing_providers.map do |provider|
       has_provider = @invoicing_integrations.any? { |i| i.provider == provider[:key] }
       can_add = provider[:multiple_allowed] || !has_provider
@@ -16,7 +16,7 @@ class IntegrationsController < ApplicationController
   end
 
   def new
-    @integration = current_user.invoicing_integrations.build
+    @integration = current_account.invoicing_integrations.build
     @provider = params[:provider]
 
     unless valid_provider?(@provider)
@@ -30,7 +30,7 @@ class IntegrationsController < ApplicationController
   end
 
   def create
-    @integration = current_user.invoicing_integrations.build(integration_params)
+    @integration = current_account.invoicing_integrations.build(integration_params)
     @provider = @integration.provider
     @required_fields = InvoicingIntegration.required_credentials_for(@integration.provider)
 
@@ -106,7 +106,7 @@ class IntegrationsController < ApplicationController
   end
 
   def set_integration
-    @integration = current_user.invoicing_integrations.find(params[:id])
+    @integration = current_account.invoicing_integrations.find(params[:id])
   end
 
   def integration_params

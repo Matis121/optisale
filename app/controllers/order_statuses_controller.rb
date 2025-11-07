@@ -6,7 +6,7 @@ class OrderStatusesController < ApplicationController
 
   # GET /order_statuses
   def index
-    @order_status_groups = current_user.order_status_groups.order(:position)
+    @order_status_groups = current_account.order_status_groups.order(:position)
   end
 
   # GET /order_statuses/1
@@ -25,7 +25,7 @@ class OrderStatusesController < ApplicationController
   # POST /order_statuses
   def create
     @order_status = OrderStatus.new(order_status_params)
-    @order_status.user = current_user
+    @order_status.account = current_account
 
     if @order_status.save
       flash.now[:success] = "Status zamówienia został utworzony."
@@ -67,11 +67,11 @@ class OrderStatusesController < ApplicationController
   private
 
   def set_order_statuses
-    @order_statuses = current_user.order_statuses.order(:position)
+    @order_statuses = current_account.order_statuses.order(:position)
   end
 
   def set_groups
-    @groups = current_user.order_status_groups.order(:position)
+    @groups = current_account.order_status_groups.order(:position)
   end
 
   def ensure_turbo_frame
@@ -100,7 +100,7 @@ class OrderStatusesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_order_status
-    @order_status = current_user.order_statuses.find(params.expect(:id))
+    @order_status = current_account.order_statuses.find(params.expect(:id))
   end
 
   # Only allow a list of trusted parameters through.

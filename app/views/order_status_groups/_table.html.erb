@@ -13,7 +13,7 @@
       </tr>
     </thead>
     <tbody id="groups-table-body" data-controller="sortable" data-sortable-resource-name-value="order_status_group" data-sortable-handle-value=".handle">
-      <% groups = defined?(@order_status_groups) ? @order_status_groups : current_user.order_status_groups.order(:position) %>
+      <% groups = defined?(@order_status_groups) ? @order_status_groups : current_account.order_status_groups.order(:position) %>
       <% if groups.present? %>
         <% groups.each do |group| %>
           <%= render partial: "order_status_groups/row", locals: { group: group } %>

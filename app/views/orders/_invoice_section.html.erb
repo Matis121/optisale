@@ -22,7 +22,7 @@
         </div>
       </div>
     <% else %>
-      <% invoice_service = InvoiceService.new(current_user) %>
+      <% invoice_service = InvoiceService.new(current_account) %>
       <% if invoice_service.has_active_invoicing_integration? %>
         <% if invoice_service.can_generate_invoice_for_order?(order) %>
           <%= link_to generate_invoice_order_path(order), 

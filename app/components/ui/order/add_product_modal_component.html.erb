@@ -18,7 +18,7 @@
         <div class="form-control">
           <select id="catalog_filter" class="select select-bordered" data-product-search-target="catalogFilter" data-action="change->product-search#filter">
             <option value="">Wszystkie katalogi</option>
-            <% current_user.catalogs.each do |catalog| %>
+            <% current_account.catalogs.each do |catalog| %>
               <option value="<%= catalog.id %>"><%= catalog.name %></option>
             <% end %>
           </select>

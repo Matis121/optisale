@@ -1,12 +1,12 @@
 class Catalog < ApplicationRecord
-  belongs_to :user
+  belongs_to :account
 
   has_and_belongs_to_many :warehouses
   has_and_belongs_to_many :price_groups
   has_many :products, dependent: :destroy
 
   validates :name, presence: true
-  validates :user_id, presence: true
+  validates :account_id, presence: true
 
   before_save :ensure_default_catalog
   before_destroy :prevent_destroy_if_default

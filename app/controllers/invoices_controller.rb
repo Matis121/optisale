@@ -2,7 +2,7 @@ class InvoicesController < ApplicationController
   before_action :set_invoice, only: [ :show, :destroy, :sync_status, :cancel_invoice, :delete_from_external ]
 
   def index
-    @invoices = current_user.invoices.includes(:order, :invoicing_integration)
+    @invoices = current_account.invoices.includes(:order, :invoicing_integration)
 
     # Filter by invoicing_integration_id if provided
     if params[:invoicing_integration_id].present?
@@ -35,7 +35,7 @@ class InvoicesController < ApplicationController
       return
     end
 
-    invoice_service = InvoiceService.new(current_user)
+    invoice_service = InvoiceService.new(current_account)
 
     if invoice_service.cancel_invoice(@invoice)
       redirect_to @invoice, notice: "Faktura została anulowana."
@@ -54,7 +54,7 @@ class InvoicesController < ApplicationController
     end
 
     order = @invoice.order # Remember order before deleting invoice
-    invoice_service = InvoiceService.new(current_user)
+    invoice_service = InvoiceService.new(current_account)
 
     begin
       if invoice_service.delete_invoice(@invoice)
@@ -69,7 +69,7 @@ class InvoicesController < ApplicationController
             flash.now[:notice] = "Faktura została usunięta."
             # Check if we're on the invoices index page
             if request.referer&.include?("invoices")
-              @invoices = current_user.invoices.includes(:order, :invoicing_integration)
+              @invoices = current_account.invoices.includes(:order, :invoicing_integration)
                                      .order(created_at: :desc)
                                      .page(params[:page]).per(20)
               render turbo_stream: turbo_stream.replace("invoices_table",
@@ -90,7 +90,7 @@ class InvoicesController < ApplicationController
             flash.now[:alert] = error_message
             # Check if we're on the invoices index page
             if request.referer&.include?("invoices")
-              @invoices = current_user.invoices.includes(:order, :invoicing_integration)
+              @invoices = current_account.invoices.includes(:order, :invoicing_integration)
                                      .order(created_at: :desc)
                                      .page(params[:page]).per(20)
               render turbo_stream: turbo_stream.replace("invoices_table",
@@ -123,7 +123,7 @@ class InvoicesController < ApplicationController
           flash.now[:alert] = error_message
           # Check if we're on the invoices index page
           if request.referer&.include?("invoices")
-            @invoices = current_user.invoices.includes(:order, :invoicing_integration)
+            @invoices = current_account.invoices.includes(:order, :invoicing_integration)
                                    .order(created_at: :desc)
                                    .page(params[:page]).per(20)
             render turbo_stream: turbo_stream.replace("invoices_table",
@@ -141,6 +141,6 @@ class InvoicesController < ApplicationController
   private
 
   def set_invoice
-    @invoice = current_user.invoices.find(params[:id])
+    @invoice = current_account.invoices.find(params[:id])
   end
 end

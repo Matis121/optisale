@@ -1,9 +1,9 @@
 class PriceGroup < ApplicationRecord
-  belongs_to :user
+  belongs_to :account
   has_and_belongs_to_many :catalogs
   has_many :product_prices, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: { scope: :user_id }
+  validates :name, presence: true, uniqueness: { scope: :account_id }
 
 
   before_save :ensure_default_price_group

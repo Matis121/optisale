@@ -20,8 +20,8 @@ class Storage::PriceGroupsController < ApplicationController
 
   def create
     @price_group = PriceGroup.new(price_group_params)
-    @price_group.user = current_user
-    @price_group.catalogs = current_user.catalogs.where(id: price_group_params[:catalog_ids])
+    @price_group.account = current_account
+    @price_group.catalogs = current_account.catalogs.where(id: price_group_params[:catalog_ids])
 
       if @price_group.save
         flash.now[:success] = "Grupa cenowa została utworzona."
@@ -52,7 +52,7 @@ class Storage::PriceGroupsController < ApplicationController
   private
 
   def set_catalogs
-    @catalogs = current_user.catalogs
+    @catalogs = current_account.catalogs
   end
 
   def update_price_groups_frame_with_flash
@@ -74,11 +74,11 @@ class Storage::PriceGroupsController < ApplicationController
   end
 
   def set_price_group
-    @price_group = current_user.price_groups.find(params[:id])
+    @price_group = current_account.price_groups.find(params[:id])
   end
 
   def set_price_groups
-    @price_groups = current_user.price_groups
+    @price_groups = current_account.price_groups
   end
 
   def price_group_params

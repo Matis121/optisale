@@ -19,8 +19,8 @@ class Storage::WarehousesController < ApplicationController
 
   def create
     @warehouse = Warehouse.new(warehouse_params)
-    @warehouse.user = current_user
-    @warehouse.catalogs = current_user.catalogs.where(id: warehouse_params[:catalog_ids])
+    @warehouse.account = current_account
+    @warehouse.catalogs = current_account.catalogs.where(id: warehouse_params[:catalog_ids])
 
       if @warehouse.save
         flash.now[:success] = "Magazyn został utworzony."
@@ -61,15 +61,15 @@ class Storage::WarehousesController < ApplicationController
     end
 
     def set_warehouses
-      @warehouses = current_user.warehouses
+      @warehouses = current_account.warehouses
     end
 
     def set_warehouse
-      @warehouse = current_user.warehouses.find(params[:id])
+      @warehouse = current_account.warehouses.find(params[:id])
     end
 
     def set_catalogs
-      @catalogs = current_user.catalogs
+      @catalogs = current_account.catalogs
     end
 
     def update_warehouses_frame_with_flash

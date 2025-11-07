@@ -7,10 +7,10 @@
       <!-- Quick filters -->
       <div class="flex flex-wrap items-center gap-3">
         <!-- Katalog (tylko jeśli więcej niż jeden) -->
-        <% if current_user.catalogs.count > 1 %>
+        <% if current_account.catalogs.count > 1 %>
           <%= form_with url: update_current_catalog_in_session_storage_products_path, method: :post, class: "form-control" do |f| %>
             <%= f.label :catalog_id, "Katalog", class: "label" %>
-            <%= f.select :catalog_id, options_from_collection_for_select(current_user.catalogs, :id, :name, @current_catalog.id), {}, { class: "input", onchange: 'this.form.submit()' } %>
+            <%= f.select :catalog_id, options_from_collection_for_select(current_account.catalogs, :id, :name, @current_catalog.id), {}, { class: "input", onchange: 'this.form.submit()' } %>
           <% end %>
         <% end %>
         <!-- Magazyn (tylko jeśli więcej niż jeden) -->

@@ -1,4 +1,5 @@
 class Invoice < ApplicationRecord
+  belongs_to :account
   belongs_to :user
   belongs_to :order
   belongs_to :invoicing_integration
@@ -15,7 +16,7 @@ class Invoice < ApplicationRecord
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :external_id, presence: true, uniqueness: { scope: :invoicing_integration_id }
   validates :invoice_number, presence: true
-  validates :order_id, uniqueness: { scope: :user_id, message: "może mieć tylko jedną fakturę" }
+  validates :order_id, uniqueness: { scope: :account_id, message: "może mieć tylko jedną fakturę" }
 
   scope :recent, -> { order(created_at: :desc) }
   scope :for_user, ->(user) { where(user: user) }

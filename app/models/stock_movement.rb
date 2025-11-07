@@ -1,4 +1,5 @@
 class StockMovement < ApplicationRecord
+  belongs_to :account
   belongs_to :product
   belongs_to :warehouse
   belongs_to :user

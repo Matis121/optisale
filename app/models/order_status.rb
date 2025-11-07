@@ -1,7 +1,7 @@
 class OrderStatus < ApplicationRecord
-  acts_as_list scope: :user
+  acts_as_list scope: :account
 
-  belongs_to :user
+  belongs_to :account
   belongs_to :order_status_group, optional: true
   has_many :orders, foreign_key: :status_id
 
@@ -34,11 +34,11 @@ class OrderStatus < ApplicationRecord
   def only_one_default_per_user
     return unless default?
 
-    existing_default = user.order_statuses.where(default: true)
+    existing_default = account.order_statuses.where(default: true)
     existing_default = existing_default.where.not(id: id) if persisted?
 
     if existing_default.exists?
-      errors.add(:default, "może być tylko jeden domyślny status na użytkownika")
+      errors.add(:default, "może być tylko jeden domyślny status na konto")
     end
   end
 

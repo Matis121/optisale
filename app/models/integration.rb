@@ -1,7 +1,7 @@
 class Integration < ApplicationRecord
   self.abstract_class = true
 
-  belongs_to :user
+  belongs_to :account
 
   # enum :status, { inactive: "inactive", active: "active", error: "error" }
 

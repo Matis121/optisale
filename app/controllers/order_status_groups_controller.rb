@@ -4,7 +4,7 @@ class OrderStatusGroupsController < ApplicationController
 
   # GET /order_status_groups
   def index
-    @order_status_groups = current_user.order_status_groups.order(:position)
+    @order_status_groups = current_account.order_status_groups.order(:position)
   end
 
   # GET /order_status_groups/1
@@ -23,7 +23,7 @@ class OrderStatusGroupsController < ApplicationController
   # POST /order_status_groups
   def create
     @order_status_group = OrderStatusGroup.new(order_status_group_params)
-    @order_status_group.user = current_user
+    @order_status_group.account = current_account
 
       if @order_status_group.save
         flash.now[:success] = "Grupa statusów została utworzona."
@@ -79,7 +79,7 @@ class OrderStatusGroupsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_order_status_group
-    @order_status_group = current_user.order_status_groups.find(params.expect(:id))
+    @order_status_group = current_account.order_status_groups.find(params.expect(:id))
   end
 
   # Only allow a list of trusted parameters through.

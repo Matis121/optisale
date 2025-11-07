@@ -1,7 +1,7 @@
 class OrderStatusGroup < ApplicationRecord
-  acts_as_list scope: :user
+  acts_as_list scope: :account
 
-  belongs_to :user
+  belongs_to :account
   has_many :order_statuses, dependent: :nullify
 
   validates :name, presence: true

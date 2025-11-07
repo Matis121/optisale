@@ -1,8 +1,8 @@
 class InvoiceService
-  attr_reader :user, :errors
+  attr_reader :account, :errors
 
-  def initialize(user)
-    @user = user
+  def initialize(account)
+    @account = account
     @errors = []
   end
 
@@ -26,9 +26,9 @@ class InvoiceService
     end
   end
 
-  # Synchronizes all user invoices
+  # Synchronizes all account invoices
   def sync_all_invoices
-    user.invoices.joins(:invoicing_integration)
+    account.invoices.joins(:invoicing_integration)
         .where(invoicing_integrations: { active: true })
         .find_each do |invoice|
       invoice.sync_status!
@@ -67,14 +67,14 @@ class InvoiceService
     end
   end
 
-  # Checks if user has active integration
+  # Checks if account has active integration
   def has_active_invoicing_integration?
-    user.invoicing_integrations.active_integrations.exists?
+    account.invoicing_integrations.active_integrations.exists?
   end
 
-  # Returns user's active integration
+  # Returns account's active integration
   def active_invoicing_integration
-    user.invoicing_integrations.active_integrations.first
+    account.invoicing_integrations.active_integrations.first
   end
 
   # Checks if order can have invoice generated
@@ -84,8 +84,8 @@ class InvoiceService
       return false
     end
 
-    if order.user != user
-      @errors << "Zamówienie należy do innego użytkownika"
+    if order.account != account
+      @errors << "Zamówienie należy do innego konta"
       return false
     end
 
@@ -111,7 +111,7 @@ class InvoiceService
 
   def find_invoicing_integration(invoicing_integration_id = nil)
     if invoicing_integration_id
-      invoicing_integration = user.invoicing_integrations.active_integrations.find_by(id: invoicing_integration_id)
+      invoicing_integration = account.invoicing_integrations.active_integrations.find_by(id: invoicing_integration_id)
       @errors << "Nie znaleziono aktywnej integracji o ID #{invoicing_integration_id}" unless invoicing_integration
     else
       invoicing_integration = active_invoicing_integration

@@ -1,45 +1,34 @@
 class User < ApplicationRecord
-  has_many :orders, dependent: :destroy
-  has_many :catalogs, dependent: :delete_all
-  has_many :products, through: :catalogs
-  has_many :warehouses, dependent: :delete_all
-  has_many :price_groups, dependent: :delete_all
-  has_many :order_statuses, dependent: :delete_all
-  has_many :order_status_groups, dependent: :destroy
-  has_many :invoicing_integrations, dependent: :destroy
-  has_many :invoices, dependent: :destroy
+  belongs_to :account, optional: true
 
+  attr_accessor :account_name, :account_nip
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
   validates :email, presence: true, uniqueness: true
-  validates :password, presence: true, length: { minimum: 2 }
-  validates :password_confirmation, presence: true, length: { minimum: 2 }
+  validates :password, presence: true, length: { minimum: 2 }, on: :create
+  validates :password_confirmation, presence: true, length: { minimum: 2 }, on: :create
+  validates :role, presence: true, inclusion: { in: %w[owner employee] }
+  validates :account_id, presence: true, unless: -> { new_record? && owner? }
 
-  after_create :create_default_data
+  before_validation :build_account_from_attributes, on: :create, if: :owner?
 
-  def default_order_status
-    order_statuses.default.first || order_statuses.first
+  def owner?
+    role == 'owner'
   end
 
+  def employee?
+    role == 'employee'
+  end
+
+  def default_order_status
+    account&.default_order_status
+  end
 
   private
 
-  def create_default_data
-    # Catalogs, warehouses and price groups
-    catalogs.create!(name: "Domyślny", default: true, user: self)
-    warehouses.create!(name: "Domyślny", default: true, user: self)
-    price_groups.create!(name: "Podstawowa", default: true, user: self)
-
-    # Connect default catalog with default warehouses and price groups
-    catalogs.first.warehouses << warehouses.first
-    catalogs.first.price_groups << price_groups.first
-
-    # Order statuses
-    order_statuses.create!(full_name: "Nowe", short_name: "Nowe", user: self, default: true)
-    order_statuses.create!(full_name: "W realizacji", short_name: "W realizacji", user: self)
-    order_statuses.create!(full_name: "Wysłane", short_name: "Wysłane", user: self)
-    order_statuses.create!(full_name: "Zakończone", short_name: "Zakończone", user: self)
+  def build_account_from_attributes
+    self.account = Account.new(name: account_name, nip: account_nip)
   end
 end

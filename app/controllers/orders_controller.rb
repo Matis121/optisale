@@ -9,17 +9,17 @@ class OrdersController < ApplicationController
 
   # GET /orders or /orders.json
   def index
-    @order_counts = current_user.orders.group(:status_id).count
+    @order_counts = current_account.orders.group(:status_id).count
     @order_counts.default = 0
 
     @per_page = params[:per_page].to_i
     @per_page = DEFAULT_PER_PAGE if @per_page <= 0 || @per_page > MAX_PER_PAGE
 
-    orders_scope = current_user.orders
+    orders_scope = current_account.orders
 
     # Handle status group filtering
     if params[:status_group].present?
-      status_group = current_user.order_status_groups.find_by(id: params[:status_group])
+      status_group = current_account.order_status_groups.find_by(id: params[:status_group])
       if status_group
         status_ids = status_group.order_statuses.pluck(:id)
         orders_scope = orders_scope.where(status_id: status_ids)
@@ -49,7 +49,7 @@ class OrdersController < ApplicationController
 
   # GET /orders/1 or /orders/1.json
   def show
-    @order_counts = current_user.orders.group(:status_id).count
+    @order_counts = current_account.orders.group(:status_id).count
     @order_counts.default = 0
   end
 
@@ -63,8 +63,8 @@ class OrdersController < ApplicationController
   # POST /orders or /orders.json
   def create
     @order = Order.new
-    @order.user = current_user
-    @order.status_id = current_user.default_order_status&.id
+    @order.account = current_account
+    @order.status_id = current_account.default_order_status&.id
 
     if @order.save
       redirect_to @order, notice: "Zamówienie zostało utworzone."
@@ -103,8 +103,8 @@ class OrdersController < ApplicationController
     query = params[:query]&.strip
     catalog_id = params[:catalog_id]
 
-    # Get all catalogs for the current user
-    catalogs = current_user.catalogs
+    # Get all catalogs for the current account
+    catalogs = current_account.catalogs
 
     # Filter by catalog if specified
     if catalog_id.present?
@@ -129,7 +129,7 @@ class OrdersController < ApplicationController
     products = products.page(page).per(per_page)
 
     result = products.map do |product|
-      default_price_group = current_user.price_groups.find_by(default: true)
+      default_price_group = current_account.price_groups.find_by(default: true)
 
       product_price = product.product_prices.find { |pp| pp.price_group_id == default_price_group&.id } || product.product_prices.first
 
@@ -228,7 +228,7 @@ class OrdersController < ApplicationController
   end
 
   def generate_invoice
-    invoice_service = InvoiceService.new(current_user)
+    invoice_service = InvoiceService.new(current_account)
 
     # Check if invoice can be generated
     unless invoice_service.can_generate_invoice_for_order?(@order)
@@ -316,12 +316,12 @@ class OrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_params
-      params.require(:order).permit(:user_id, :status_id, :source, :shipping_cost, :shipping_method, :payment_method, :extra_field_1, :extra_field_2, :admin_comments, :amount_paid)
+      params.require(:order).permit(:account_id, :status_id, :source, :shipping_cost, :shipping_method, :payment_method, :extra_field_1, :extra_field_2, :admin_comments, :amount_paid)
     end
 
     def set_order_statuses
-      @order_statuses = current_user.order_statuses.order(:position)
-      @order_status_groups = current_user.order_status_groups.joins(:order_statuses).includes(:order_statuses).order(:position).distinct
-      @ungrouped_statuses = current_user.order_statuses.where(order_status_group_id: nil).order(:position)
+      @order_statuses = current_account.order_statuses.order(:position)
+      @order_status_groups = current_account.order_status_groups.joins(:order_statuses).includes(:order_statuses).order(:position).distinct
+      @ungrouped_statuses = current_account.order_statuses.where(order_status_group_id: nil).order(:position)
     end
 end
