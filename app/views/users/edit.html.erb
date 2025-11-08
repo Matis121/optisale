@@ -1,0 +1,5 @@
+<%= turbo_frame_tag "modal-frame" do %>
+  <%= render Ui::Layout::Modal::DefaultComponent.new(title: "Użytkownik") do %>
+    <%= render "form", user: @user %>
+  <% end %>
+<% end %>

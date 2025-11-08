@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   root "home#index"
 
+  # Users management
+  resources :users, except: [ :show ], path: "manage_users", as: "manage_users"
 
   # Storage
   namespace :storage do

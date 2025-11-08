@@ -1,0 +1,43 @@
+          
+<tr>
+  <td class="flex items-center gap-2"><% if user.owner? %>
+      <div class="w-6 h-6 flex items-center justify-center text-primary tooltip tooltip-top" data-tip="Właściciel - nie jest możliwy do usunięcia.">
+        <i class="fas fa-star text-xs text-yellow-500"></i>
+      </div>
+    <% end %>
+    <%= user.email %>
+  </td>
+  <td>
+    <span class="badge <%= user.owner? ? 'badge-primary' : 'badge-secondary' %>">
+      <%= user.role == 'owner' ? 'Właściciel' : 'Pracownik' %>
+    </span>
+  </td>
+  <td><%= user.created_at.strftime("%d.%m.%Y %H:%M") %></td>
+  <td class="text-right">
+    <div class="flex items-center justify-end gap-2">
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+          <i class="fas fa-ellipsis-v text-base-content/60"></i>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200 overflow-hidden">
+          <li>
+            <%= link_to edit_manage_user_path(user), 
+                class: "gap-2",
+                data: { turbo_frame: "modal-frame" } do %>
+              <i class="fas fa-edit text-base-content"></i> Edytuj
+            <% end %>
+          </li>
+          <% unless user.owner? %>
+            <li>
+              <%= link_to manage_user_path(user), 
+                  data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć ten status?" },
+                  class: "text-error gap-2" do %>
+                <i class="fas fa-trash"></i> Usuń
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </td>
+</tr>

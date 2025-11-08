@@ -1,0 +1,26 @@
+<% content_for :title, "Użytkownicy" %>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-base-content">Zarządzanie użytkownikami</h1>
+    <p class="text-base-content/60 mt-1">Zarządzaj użytkownikami systemu</p>
+  </div>
+  <!-- Users Section -->
+  <div class="bg-base-100 rounded-lg border border-base-300 shadow-sm">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 bg-base-100 rounded-lg">
+      <div>
+        <h2 class="text-xl font-bold text-base-content">Użytkownicy</h2>
+      </div>
+      <div class="flex items-center gap-2">
+        <%= link_to new_manage_user_path, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
+          <i class="fas fa-plus text-xs"></i>
+          Nowy użytkownik
+        <% end %>
+      </div>
+    </div>
+    <%= turbo_frame_tag "users_frame" do %>
+      <%= render "table" %>
+    <% end %>
+  </div>
+<% end %>

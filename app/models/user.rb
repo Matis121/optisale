@@ -13,13 +13,14 @@ class User < ApplicationRecord
   validates :account_id, presence: true, unless: -> { new_record? && owner? }
 
   before_validation :build_account_from_attributes, on: :create, if: :owner?
+  before_destroy :prevent_destroy_if_owner
 
   def owner?
-    role == 'owner'
+    role == "owner"
   end
 
   def employee?
-    role == 'employee'
+    role == "employee"
   end
 
   def default_order_status
@@ -27,6 +28,13 @@ class User < ApplicationRecord
   end
 
   private
+
+  def prevent_destroy_if_owner
+    if owner?
+      errors.add(:base, "Nie można usunąć właściciela.")
+      throw :abort
+    end
+  end
 
   def build_account_from_attributes
     self.account = Account.new(name: account_name, nip: account_nip)
