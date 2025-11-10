@@ -2,9 +2,9 @@
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <div class="flex gap-4">
     <!-- Sidebar -->
-    <div class="w-52 flex-shrink-0 relative">
-      <div class="fixed flex flex-col gap-4 items-center">
-        <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-sm gap-2 w-52" do %>
+    <div class="w-50">
+      <div class="fixed flex flex-col gap-4 items-center w-50">
+        <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-sm gap-2 w-44" do %>
           <i class="fas fa-plus text-xs"></i>
           Nowe zamówienie
         <% end %>
@@ -43,7 +43,7 @@
         </div>
       </div>
       <!-- Products Table -->
-      <div class="bg-base-200 rounded-lg border border-base-200 overflow-hidden shadow-sm mb-8">
+      <div class="bg-base-300 rounded-lg border border-base-200 overflow-hidden shadow-sm mb-8">
         <div class="overflow-x-auto">
           <%= render(Ui::Order::ProductTableComponent.new(order: @order)) %>
         </div>
@@ -53,7 +53,7 @@
       <!-- Order Information -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
         <!-- Customer Data, Order Details, Extra Fields -->
-        <div class="bg-base-200 rounded-lg border border-base-200 p-6">
+        <div class="bg-base-300 rounded-lg border border-base-200 p-6">
           <div class="space-y-6">
             <!-- Customer Info -->
             <div>
@@ -73,7 +73,7 @@
           </div>
         </div>
         <!-- Payment, Status, Invoices -->
-        <div class="bg-base-200 rounded-lg border border-base-200 p-6">
+        <div class="bg-base-300 rounded-lg border border-base-200 p-6">
           <div class="space-y-8">
             <!-- Payment Details -->
             <div>
@@ -111,15 +111,15 @@
       </div>
       <!-- Addresses -->
       <div class="grid grid-cols-3 gap-4">
-        <div class="bg-base-200 rounded-lg border border-base-200 p-6 ">
+        <div class="bg-base-300 rounded-lg border border-base-200 p-6 ">
           <h4 class="font-medium text-base-content mb-3">Adres dostawy</h4>
           <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :delivery)) %>
         </div>
-        <div class="bg-base-200 rounded-lg border border-base-200 p-6">
+        <div class="bg-base-300 rounded-lg border border-base-200 p-6">
           <h4 class="font-medium text-base-content mb-3">Dane do faktury</h4>
           <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :invoice)) %>
         </div>
-        <div class="bg-base-200 rounded-lg border border-base-200 p-6">
+        <div class="bg-base-300 rounded-lg border border-base-200 p-6">
           <h4 class="font-medium text-base-content mb-3">Punkt odbioru</h4>
           <%= render(Ui::Order::Address::PickupPoint::Component.new(order: @order)) %>
         </div>

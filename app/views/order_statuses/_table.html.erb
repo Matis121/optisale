@@ -1,7 +1,7 @@
-<!-- Table Section -->
-<div>
-  <table class="table w-full">
-    <thead class="bg-base-100">
+<%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
+  <% component.with_header(title: "Status zamówień", href: "order_statuses/new") %>
+  <% component.with_table_header do %>
+    <thead>
       <tr>
         <th class="text-base-content font-semibold w-10">
           <button class="btn btn-ghost btn-xs p-1" onclick="toggleTableBody()">
@@ -14,44 +14,16 @@
         <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
+  <%end %>
+  <% component.with_table_body do %>
     <tbody id="status-table-body" data-controller="sortable" data-sortable-resource-name-value="order_status" data-sortable-handle-value=".handle">
       <% if @order_statuses.present? %>
         <% @order_statuses.each do |status| %>
           <%= render partial: "order_statuses/row", locals: { status: status } %>
         <% end %>
       <% else %>
-        <tr>
-          <td colspan="5" class="text-center py-16">
-            <div class="max-w-sm mx-auto">
-              <div class="w-20 h-20 bg-gradient-to-br from-secondary/10 to-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-file-question text-3xl text-secondary"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-base-content mb-3">Brak statusów</h3>
-              <p class="text-base-content/60 mb-6">
-                Utwórz swój pierwszy status zamówienia.
-              </p>
-              <%= link_to new_order_status_path, class: "btn btn-primary gap-2", data: { turbo_frame: "modal-frame" } do %>
-                <i class="fas fa-plus"></i>
-                Utwórz status
-              <% end %>
-            </div>
-          </td>
-        </tr>
+        <%= render Ui::Layout::Table::EmptyStateComponent.new(icon: "fa-file-question", title: "Brak statusów", paragraph: "Utwórz swój pierwszy status zamówienia.", href: "order_statuses/new", text_button: "Utwórz status" ) %>
       <% end %>
     </tbody>
-  </table>
-</div>
-<script>
-  function toggleTableBody() {
-    const tbody = document.getElementById('status-table-body');
-    const icon = document.getElementById('toggle-icon');
-
-    if (tbody.style.display === 'none') {
-      tbody.style.display = '';
-      icon.classList.remove('rotate-180');
-    } else {
-      tbody.style.display = 'none';
-      icon.classList.add('rotate-180');
-    }
-  }
-</script>
+  <% end %>
+<% end %>

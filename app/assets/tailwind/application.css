@@ -8,36 +8,51 @@
 @plugin "daisyui/theme" {
   name: "dark-custom-5";
   default: false;
-  prefersdark: false;
+  prefersdark: true;
   color-scheme: "dark";
-  --color-base-100: oklch(22% 0.004 49.25);
-  --color-base-200: oklch(28% 0.006 56.043);
-  --color-base-300: oklch(32% 0.007 34.298);
-  --color-base-content: oklch(97% 0.001 106.424);
-  --color-primary: oklch(58% 0.158 241.966);
-  --color-primary-content: oklch(97% 0.013 236.62);
-  --color-secondary: oklch(0% 0 0);
-  --color-secondary-content: oklch(100% 0 0);
-  --color-accent: oklch(64% 0.2 131.684);
-  --color-accent-content: oklch(98% 0.031 120.757);
-  --color-neutral: oklch(26% 0.007 34.298);
-  --color-neutral-content: oklch(98% 0.001 106.423);
-  --color-info: oklch(58% 0.158 241.966);
-  --color-info-content: oklch(97% 0.013 236.62);
-  --color-success: oklch(59% 0.145 163.225);
-  --color-success-content: oklch(97% 0.021 166.113);
-  --color-warning: oklch(64% 0.222 41.116);
-  --color-warning-content: oklch(98% 0.016 73.684);
-  --color-error: oklch(58% 0.253 17.585);
-  --color-error-content: oklch(96% 0.015 12.422);
+  --color-base-100: lch(10.236% 0.213 272.695);
+  --color-base-200: lch(12.236% 2.213 272.695);
+  --color-base-300: lch(17.236% 4.213 272.695);
+  --color-base-content: lch(100% 0 272.695);
+  --color-primary: lch(47.918% 59.303 288.421);
+  --color-primary-content: lch(100% 0 272.695);
+  --color-secondary: lch(13.736% 3.213 272.695);
+  --color-secondary-content: lch(91.224% 2.106 272.695);
+  --color-accent: lch(47.918% 59.303 288.421);
+  --color-accent-content: lch(100% 0 272.695);
+  --color-neutral: lch(13.736% 3.213 272.695);
+  --color-neutral-content: lch(91.224% 2.106 272.695);
+  --color-info: lch(47.918% 59.303 288.421);
+  --color-info-content: lch(100% 0 272.695);
+  --color-success: lch(59 44.1 163.225);
+  --color-success-content: lch(100% 0 272.695);
+  --color-warning: lch(64 71.64 41.116);
+  --color-warning-content: lch(100% 0 272.695);
+  --color-error: lch(58 73.36 17.585);
+  --color-error-content: lch(100% 0 272.695);
   --radius-selector: 2rem;
-  --radius-field: 1rem;
-  --radius-box: 0rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.25rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
   --border: 1px;
   --depth: 0;
-  --noise: 1;
+  --noise: 0;
+  --focus-ring-color: transparent;
+  --focus-ring-width: 0px;
+  --focus-ring-offset: 0px;
+  --color-bg-primary: lch(12.236% 2.213 272.695);
+  --color-bg-secondary: lch(17.236% 4.213 272.695);
+  --color-bg-tertiary: lch(19.736% 5.213 272.695);
+  --color-bg-quaternary: lch(13.736% 3.213 272.695);
+  --color-bg-quinary: 0;
+  --color-text-primary: lch(100% 0 272.695);
+  --color-text-secondary: lch(91.224% 2.106 272.695);
+  --color-text-tertiary: lch(64.894% 2.106 272.695);
+  --color-text-quaternary: lch(42.076% 2.106 272.695);
+  --color-border-primary: lch(16.436% 4.613 272.695);
+  --color-border-secondary: lch(20.636% 4.613 272.695);
+  --color-border-tertiary: lch(24.236% 4.613 272.695);
 }
 
 
@@ -79,6 +94,11 @@
 
 html {
   scrollbar-gutter: auto !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .pcr-app[data-theme=nano] {

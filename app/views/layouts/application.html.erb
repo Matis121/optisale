@@ -18,16 +18,16 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-  <body class="bg-base-300">
+  <body>
     <%= turbo_frame_tag "modal-frame" %>
     <main class="flex">
       <%= render partial: "layouts/sidebar" %>
-      <div class="ml-59 min-h-screen h-full w-full relative bg-base-300">
-        <div>
+      <div class="ml-58 h-dvh p-2 w-full">
+        <div class="w-full h-full relative bg-base-200 border border-gray-500/50 rounded-sm overflow-y-auto pb-14">
           <%= yield %>
-        </div>
-        <div id="flash-messages">
-          <%= render "shared/flash_messages" %>
+          <div id="flash-messages">
+            <%= render "shared/flash_messages" %>
+          </div>
         </div>
       </div>
     </main>

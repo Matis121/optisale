@@ -1,18 +1,20 @@
-    <!-- Table -->
-<div class="bg-base-200 rounded-lg border border-base-200 border-t-0 rounded-t-none">
-  <table class="table table-zebra w-full">
+<%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
+  <% component.with_header(title: "Użytkownicy", href: "users/new") %>
+  <% component.with_table_header do %>
     <thead>
       <tr>
-        <th>Email</th>
-        <th>Rola</th>
-        <th>Data utworzenia</th>
-        <th class="text-right">Akcje</th>
+        <th class="text-base-content font-semibold">Email</th>
+        <th class="text-base-content font-semibold">Rola</th>
+        <th class="text-base-content font-semibold">Data utworzenia</th>
+        <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
+  <%end %>
+  <% component.with_table_body do %>
     <tbody>
       <% @users.each do |user| %>
         <%= render "row", user: user %>
       <% end %>
     </tbody>
-  </table>
-</div>
+  <% end %>
+<% end %>

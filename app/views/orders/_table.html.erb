@@ -1,6 +1,6 @@
 <!-- Top section -->
 <div class="flex flex-col gap-6" data-controller="checkbox-selection" data-checkbox-selection-target="parent" data-status="<%= params[:status] || 'all' %>" data-checkbox-selection-total-orders-value="<%= @orders.total_count %>">
-  <div class="bg-base-100/50 rounded-lg border border-base-200">
+  <div class="rounded-lg border border-base-300 bg-base-300">
     <!-- BLOK 1: Bulk Actions -->
     <%= form_with url: bulk_update_orders_path, method: :patch, data: { checkbox_selection_target: "form", action: "turbo:submit-end->checkbox-selection#clearCheckboxes" } do |f|  %>
       <div class="flex items-center gap-3 p-4">
@@ -150,9 +150,9 @@
       </div>
     </div>
     <!-- Table Section -->
-    <div class="bg-base-200 rounded-lg border border-base-200 overflow-y-visible shadow-sm">
+    <div class="rounded-lg border border-base-300 overflow-y-visible shadow-sm">
       <table class="table w-full">
-        <thead class="bg-base-100">
+        <thead class="bg-base-300">
           <tr>
             <th class="text-base-content font-semibold">Numer</th>
             <th class="text-base-content font-semibold">Klient</th>

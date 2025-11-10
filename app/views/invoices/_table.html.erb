@@ -1,7 +1,6 @@
-<!-- Table Section -->
-<div class="bg-base-200 rounded-lg border border-base-200 overflow-y-visible shadow-sm">
-  <table class="table w-full">
-    <thead class="bg-base-100">
+<%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
+  <% component.with_table_header do %>
+    <thead class="bg-base-300">
       <tr>
         <th class="text-base-content font-semibold">Faktura</th>
         <th class="text-base-content font-semibold">Zamówienie</th>
@@ -13,30 +12,16 @@
         <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
-    <tbody>
-      <% if @invoices.present? %>
-        <% @invoices.each do |invoice| %>
-          <%= render partial: "invoices/row", locals: { invoice: invoice } %>
+  <%end %>
+  <% component.with_table_body do %>
+    <tbody id="status-table-body" data-controller="sortable" data-sortable-resource-name-value="order_status" data-sortable-handle-value=".handle">
+      <% if @order_statuses.present? %>
+        <% @order_statuses.each do |status| %>
+          <%= render partial: "order_statuses/row", locals: { status: status } %>
         <% end %>
       <% else %>
-        <tr>
-          <td colspan="8" class="text-center py-16">
-            <div class="max-w-sm mx-auto">
-              <div class="w-20 h-20 bg-gradient-to-br from-secondary/10 to-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-file-invoice text-3xl text-secondary"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-base-content mb-3">Brak faktur</h3>
-              <p class="text-base-content/60 mb-6">
-                Nie masz jeszcze żadnych faktur. Przejdź do zamówień i wygeneruj pierwszą fakturę.
-              </p>
-              <%= link_to orders_path, class: "btn btn-primary gap-2", data: { turbo: false } do %>
-                <i class="fas fa-shopping-cart"></i>
-                Przejdź do zamówień
-              <% end %>
-            </div>
-          </td>
-        </tr>
+        <%= render Ui::Layout::Table::EmptyStateComponent.new(icon: "fa-file-invoice", title: "Brak faktur", paragraph: "Nie masz jeszcze żadnych faktur. Przejdź do zamówień i wygeneruj pierwszą fakturę.", href: "orders", text_button: "Przejdź do zamówień", href_turbo: false ) %>
       <% end %>
     </tbody>
-  </table>
-</div>
+  <% end %>
+<% end %>

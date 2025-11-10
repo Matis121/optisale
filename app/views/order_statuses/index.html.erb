@@ -1,51 +1,16 @@
 <% content_for :title, "Statusy zamówień" %>
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Header -->
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-base-content">Zarządzanie statusami</h1>
-  </div>
-  <!-- Statuses Section -->
-  <div class="bg-base-100 rounded-lg border border-base-300 shadow-sm">
-    <!-- Header -->
-    <div class="flex items-center justify-between p-4 bg-base-100 rounded-lg">
-      <div>
-        <h2 class="text-xl font-bold text-base-content">Statusy zamówień</h2>
-      </div>
-      <div class="flex items-center gap-2">
-        <%= link_to new_order_status_path, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
-          <i class="fas fa-plus text-xs"></i>
-          Nowy status
-        <% end %>
-      </div>
-    </div>
-    <!-- Table -->
-    <div class="bg-base-200 rounded-lg border border-base-200 border-t-0 rounded-t-none">
-      <%= turbo_frame_tag "statuses_frame" do %>
-        <%= render "table" %>
-      <% end %>
-    </div>
-  </div>
-  <!-- Groups Section -->
-  <div class="mt-6">
-    <div class="bg-base-100 rounded-lg border border-base-300 shadow-sm">
-      <!-- Header -->
-      <div class="flex items-center justify-between p-4 bg-base-100 rounded-lg">
-        <div>
-          <h2 class="text-xl font-bold text-base-content">Grupy statusów</h2>
-        </div>
-        <div class="flex items-center gap-2">
-          <%= link_to new_order_status_group_path, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
-            <i class="fas fa-plus text-xs"></i>
-            Nowa grupa
-          <% end %>
-        </div>
-      </div>
-      <!-- Table -->
-      <div class="bg-base-200 rounded-lg border border-base-200 border-t-0 rounded-t-none">
-        <%= turbo_frame_tag "groups_frame" do %>
-          <%= render "order_status_groups/table" %>
-        <% end %>
-      </div>
-    </div>
+  <%= render Ui::Layout::Header::DefaultComponent.new(title: "Zarządzanie statusami") %>
+  <!-- Content -->
+  <div class="flex flex-col gap-10">
+    <!-- Statuses Section -->
+    <%= turbo_frame_tag "statuses_frame" do %>
+      <%= render partial: "order_statuses/table" %>
+    <% end %>
+    <!-- Groups Section -->
+    <%= turbo_frame_tag "groups_frame" do %>
+      <%= render partial: "order_status_groups/table" %>
+    <% end %>
   </div>
 <% end %>

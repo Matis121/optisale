@@ -1,0 +1,11 @@
+<div class="flex items-center justify-between p-4 bg-base-300">
+  <h2 class="text-md font-semibold text-base-content"><%= title %></h2>
+  <div class="flex items-center gap-2">
+    <% if href.present? %>
+      <%= link_to href, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
+        <i class="fas fa-plus text-xs"></i>
+        Nowy status
+      <% end %>
+    <%end %>
+  </div>
+</div>

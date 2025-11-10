@@ -1,8 +1,8 @@
-<div class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-base-100 to-base-200 text-base-content overflow-y-auto border-r border-base-300 shadow-2xl flex flex-col">
+<div class="fixed top-0 left-0 h-full w-62 text-base-content overflow-y-auto flex flex-col">
   <!-- Header/Logo Section -->
   <div class="pl-4 pr-5 py-4 border-b border-base-300/50">
     <div class="flex items-center gap-2.5">
-      <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center shadow-md">
+      <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
         <i class="fas fa-chart-line text-primary-content text-lg"></i>
       </div>
       <%= link_to root_path do %>
@@ -16,7 +16,7 @@
     <!-- Home Link -->
     <div class="mb-3">
       <%= link_to root_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(root_path) ? 'bg-primary/10' : ''}" do %>
-        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
           <i class="fas fa-home text-sm"></i>
         </div>
         <span class="flex-1 font-medium text-sm <%= 'text-primary font-semibold' if current_page?(root_path) %>">Strona główna</span>
@@ -26,7 +26,7 @@
     <div class="mb-3">
       <details name="sidebar-section" <%= 'open' if request.path.start_with?('/orders', '/invoices', '/order_statuses') %> class="group">
         <summary class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 list-none group-open:bg-base-200/50">
-          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
             <i class="fas fa-shopping-cart text-sm"></i>
           </div>
           <span class="flex-1 font-semibold text-sm">Zamówienia</span>
@@ -49,7 +49,7 @@
     <div class="mb-3">
       <details name="sidebar-section" <%= 'open' if request.path.start_with?('/storage') %> class="group">
         <summary class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 list-none group-open:bg-base-200/50">
-          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
             <i class="fas fa-box text-sm"></i>
           </div>
           <span class="flex-1 font-semibold text-sm">Produkty</span>
@@ -78,13 +78,13 @@
     <!-- Single Items -->
     <div class="space-y-1.5">
       <%= link_to integrations_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(integrations_path) || controller_name == 'integrations' ? 'bg-primary/10' : ''}" do %>
-        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
           <i class="fas fa-plug text-sm"></i>
         </div>
         <span class="flex-1 font-medium text-sm <%= 'text-primary font-semibold' if controller_name == 'integrations' %>">Integracje</span>
       <% end %>
       <%= link_to manage_users_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(manage_users_path) || controller_name == 'users' ? 'bg-primary/10' : ''}" do %>
-        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:scale-110 transition-transform">
+        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
           <i class="fas fa-users text-sm"></i>
         </div>
         <span class="flex-1 font-medium text-sm <%= 'text-primary font-semibold' if controller_name == 'users' %>">Użytkownicy</span>
@@ -122,7 +122,7 @@
     </div>
   </nav>
   <!-- Footer Section (Optional User Info) -->
-  <div class="pl-3 pr-4 py-3 border-t border-base-300/50 bg-base-200/30">
+  <div class="pl-3 pr-4 py-3 border-t border-base-300/50">
     <div class="flex items-center gap-2.5 px-1.5 py-1.5 mb-2">
       <div class="avatar avatar-placeholder">
         <div class="bg-primary text-primary-content w-8 h-8 rounded-full flex items-center justify-center">
@@ -137,7 +137,7 @@
       </div>
     </div>
     <%= button_to destroy_user_session_path, method: :delete, class: "w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-error/10 hover:text-error transition-all duration-200 group text-left", data: { turbo_confirm: "Czy na pewno chcesz się wylogować?" } do %>
-      <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-200 text-base-content group-hover:bg-error/10 group-hover:text-error transition-all duration-200">
+      <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:bg-error/10 group-hover:text-error transition-all duration-200">
         <i class="fas fa-sign-out-alt text-xs"></i>
       </div>
       <span class="flex-1 font-medium text-sm">Wyloguj się</span>
