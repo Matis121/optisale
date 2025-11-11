@@ -50,9 +50,9 @@
   </div>
 <% end %>
 <!-- Table -->
-<div class="bg-base-300 rounded-lg border border-base-200 overflow-y-visible shadow-sm">
-  <table class="table w-full">
-    <thead class="bg-base-100">
+<%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
+  <% component.with_table_header do %>
+    <thead class="bg-base-300">
       <tr>
         <th class="text-base-content font-semibold">Nazwa produktu</th>
         <th class="text-base-content font-semibold text-center">Cena</th>
@@ -61,6 +61,8 @@
         <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
+  <%end %>
+  <% component.with_table_body do %>
     <tbody>
       <% if @products.present? %>
         <% @products.each do |product| %>
@@ -86,5 +88,5 @@
         </tr>
       <% end %>
     </tbody>
-  </table>
-</div>
+  <% end %>
+<% end %>

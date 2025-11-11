@@ -2,21 +2,21 @@
 <%= render Ui::Storage::Settings::TabsComponent.new %>
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Compact Filters & Actions -->
-  <div class="bg-base-300 rounded-lg border border-base-200 p-3 my-8">
+  <div class="bg-base-300 rounded-md border border-base-200 p-3 my-4">
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
       <!-- Quick filters -->
       <div class="flex flex-wrap items-center gap-3">
         <!-- Katalog (tylko jeśli więcej niż jeden) -->
         <% if current_account.catalogs.count > 1 %>
           <%= form_with url: update_current_catalog_in_session_storage_products_path, method: :post, class: "form-control" do |f| %>
-            <%= f.label :catalog_id, "Katalog", class: "label" %>
+            <%= f.label :catalog_id, "Katalog", class: "label text-xs" %>
             <%= f.select :catalog_id, options_from_collection_for_select(current_account.catalogs, :id, :name, @current_catalog.id), {}, { class: "input", onchange: 'this.form.submit()' } %>
           <% end %>
         <% end %>
         <!-- Magazyn (tylko jeśli więcej niż jeden) -->
         <% if @current_catalog.warehouses.count > 1 %>
           <%= form_with url: update_current_warehouse_in_session_storage_products_path, method: :post, class: "form-control" do |f| %>
-            <%= f.label :warehouse_id, "Magazyn", class: "label" %>
+            <%= f.label :warehouse_id, "Magazyn", class: "label text-xs" %>
             <% options = @current_catalog.warehouses.map { |w| [w.name, w.id] } %>
             <% options.unshift(['Wszystkie stany', 'all']) %>
             <%= f.select :warehouse_id, options_for_select(options, @current_warehouse&.id || 'all'), {}, { class: "input", onchange: 'this.form.submit()' } %>
@@ -25,7 +25,7 @@
         <!-- Grupa cenowa (tylko jeśli więcej niż jeden) -->
         <% if @current_catalog.price_groups.count > 1 %>
           <%= form_with url: update_current_price_group_in_session_storage_products_path, method: :post, class: "form-control" do |f| %>
-            <%= f.label :price_group_id, "Grupa cenowa", class: "label" %>
+            <%= f.label :price_group_id, "Grupa cenowa", class: "label text-xs" %>
             <%= f.select :price_group_id, options_from_collection_for_select(@current_catalog.price_groups, :id, :name, @current_price_group.id), {}, { class: "input", onchange: 'this.form.submit()' } %>
           <% end %>
         <% end %>
