@@ -1,50 +1,81 @@
-<div class="min-h-screen flex items-center justify-center bg-base-300 p-4 flex-col">
-  <div class="flex flex-col items-center justify-center mb-4 text-green-400 text-sm">
-    <span class="font-bold">Konto testowe</span>
-    <span>test@test.me / testowe1</span>
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-base-300 to-secondary/10 p-4 flex-col relative overflow-hidden">
+  <!-- Decorative Elements -->
+  <div class="absolute top-0 left-0 w-72 h-72 bg-primary/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+  <div class="absolute bottom-0 right-0 w-96 h-96 bg-secondary/20 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
+  <!-- Test Account Badge -->
+  <div class="mb-6 z-10">
+    <div class="flex flex-col items-center text-sm p-2 bg-base-300 rounded-md border border-base-200 text-green-400">
+      <span class="font-bold">Konto testowe</span>
+      <span class="opacity-90">test@test.me / testowe1</span>
+    </div>
   </div>
-  <div class="card w-full max-w-md bg-base-100 shadow-xl">
-    <div class="card-body">
-      <!-- Header -->
-      <div class="text-center mb-6">
-        <h1 class="text-2xl font-bold text-base-content">Optisale</h1>
-        <p class="text-base-content/60 mt-2">Zaloguj się do swojego konta</p>
+  <!-- Login Card -->
+  <div class="card w-full max-w-md bg-base-100/95 backdrop-blur-sm shadow-2xl border border-base-300/50 z-10">
+    <div class="card-body p-8">
+      <!-- Header with Icon -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          Optisale
+        </h1>
+        <p class="text-base-content/60 mt-2 text-sm">Zaloguj się, aby kontynuować</p>
       </div>
       <!-- Login Form -->
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <!-- Email Field -->
         <div class="form-control">
           <%= f.label :email, class: "label" do %>
-            <span class="label-text">Email</span>
+            <span class="label-text">Adres email</span>
           <% end %>
-          <%= f.email_field :email, 
-              autofocus: true, 
-              autocomplete: "email", 
-              class: "input input-bordered w-full",
-              placeholder: "twoj@email.com" %>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-primary z-10 pointer-events-none">
+              <i class="fas fa-at"></i>
+            </span>
+            <%= f.email_field :email, 
+                autofocus: true, 
+                autocomplete: "email", 
+                class: "input input-bordered w-full pl-12 focus:input-primary transition-all",
+                placeholder: "twoj@email.com" %>
+          </div>
         </div>
-        <div class="form-control mt-4">
+        <!-- Password Field -->
+        <div class="form-control mt-5">
           <%= f.label :password, class: "label" do %>
             <span class="label-text">Hasło</span>
           <% end %>
-          <%= f.password_field :password, 
-              autocomplete: "current-password", 
-              class: "input input-bordered w-full",
-              placeholder: "••••••••" %>
-        </div>
-        <% if devise_mapping.rememberable? %>
-          <div class="form-control mt-4">
-            <label class="label cursor-pointer justify-start gap-3">
-              <%= f.check_box :remember_me, class: "checkbox checkbox-primary" %>
-              <span class="label-text">Zapamiętaj mnie</span>
-            </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-primary z-10 pointer-events-none">
+              <i class="fas fa-lock"></i>
+            </span>
+            <%= f.password_field :password, 
+                autocomplete: "current-password", 
+                class: "input input-bordered w-full pl-12 focus:input-primary transition-all",
+                placeholder: "••••••••" %>
           </div>
-        <% end %>
+        </div>
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex items-center justify-between mt-5">
+          <% if devise_mapping.rememberable? %>
+            <label class="label cursor-pointer gap-2 p-0">
+              <%= f.check_box :remember_me, class: "checkbox checkbox-primary checkbox-sm" %>
+              <span class="label-text text-sm">Zapamiętaj mnie</span>
+            </label>
+          <% end %>
+        </div>
+        <!-- Submit Button -->
         <div class="form-control mt-6">
-          <%= f.submit "Zaloguj się", class: "btn btn-primary w-full" %>
+          <%= f.submit "Zaloguj się", class: "btn btn-primary w-full gap-2 shadow-lg hover:shadow-xl transition-all" %>
         </div>
       <% end %>
+      <!-- Divider -->
+      <div class="divider text-xs text-base-content/40 my-6">lub</div>
       <!-- Links -->
-      <%= render "devise/shared/links" %>
+      <div class="text-center space-y-2">
+        <%= render "devise/shared/links" %>
+      </div>
     </div>
+  </div>
+  <!-- Footer -->
+  <div class="mt-6 text-center text-sm text-base-content/40 z-10">
+    <p>&copy; <%= Time.current.year %> Optisale. Wszystkie prawa zastrzeżone.</p>
   </div>
 </div>

@@ -36,7 +36,7 @@
       <%= form.collection_select :order_status_group_id, @groups, :id, :name, { prompt: "Brak grupy" }, { class: "select select-bordered w-full focus:select-primary" } %>
     </div>
   </div>
-  <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-base-300">
+  <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-gray-500/30">
     <% if @order_status.new_record? %>
       <%= form.submit "Utwórz status", class: "btn btn-primary" %>
     <% else %>

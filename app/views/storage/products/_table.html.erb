@@ -50,9 +50,9 @@
   </div>
 <% end %>
 <!-- Table -->
-<div class="bg-base-200 rounded-lg border border-base-200 overflow-y-visible shadow-sm">
-  <table class="table w-full">
-    <thead class="bg-base-100">
+<%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
+  <% component.with_table_header do %>
+    <thead class="bg-base-300">
       <tr>
         <th class="text-base-content font-semibold">Nazwa produktu</th>
         <th class="text-base-content font-semibold text-center">Cena</th>
@@ -61,30 +61,16 @@
         <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
+  <%end %>
+  <% component.with_table_body do %>
     <tbody>
       <% if @products.present? %>
         <% @products.each do |product| %>
           <%= render partial: "storage/products/row", locals: { product: product } %>
         <% end %>
       <% else %>
-        <tr>
-          <td colspan="5" class="text-center py-16">
-            <div class="max-w-sm mx-auto">
-              <div class="w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-box text-3xl text-primary"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-base-content mb-3">Brak produktów</h3>
-              <p class="text-base-content/60 mb-6">
-                Utwórz swój pierwszy produkt, aby rozpocząć zarządzanie asortymentem.
-              </p>
-              <%= link_to new_storage_product_path, data: { turbo_frame: "modal-frame" }, class: "btn btn-primary gap-2" do %>
-                <i class="fas fa-plus"></i>
-                Utwórz produkt
-              <% end %>
-            </div>
-          </td>
-        </tr>
+        <%= render Ui::Layout::Table::EmptyStateComponent.new(title: "Brak produktów", paragraph: "Utwórz swój pierwszy produkt, aby rozpocząć zarządzanie asortymentem.", href: new_storage_product_path, text_button: "Utwórz produkt", icon: "fa-box") %>
       <% end %>
     </tbody>
-  </table>
-</div>
+  <% end %>
+<% end %>

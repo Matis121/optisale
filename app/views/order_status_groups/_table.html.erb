@@ -1,17 +1,19 @@
-<!-- Table Section -->
-<div>
-  <table class="table w-full">
-    <thead class="bg-base-100">
+  <%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
+  <% component.with_header(title: "Grupy statusów", href: new_order_status_group_path, text_button: "Dodaj grupę") %>
+  <% component.with_table_header do %>
+    <thead>
       <tr>
         <th class="text-base-content font-semibold w-10">
-          <button class="btn btn-ghost btn-xs p-1" onclick="toggleGroupsTableBody()">
-            <i class="fas fa-chevron-down transition-transform" id="toggle-groups-icon"></i>
+          <button class="btn btn-ghost btn-xs p-1" onclick="toggleTableBody()">
+            <i class="fas fa-chevron-down transition-transform" id="toggle-icon"></i>
           </button>
         </th>
         <th class="text-base-content font-semibold">Nazwa grupy</th>
         <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
+  <%end %>
+  <% component.with_table_body do %>
     <tbody id="groups-table-body" data-controller="sortable" data-sortable-resource-name-value="order_status_group" data-sortable-handle-value=".handle">
       <% groups = defined?(@order_status_groups) ? @order_status_groups : current_account.order_status_groups.order(:position) %>
       <% if groups.present? %>
@@ -19,38 +21,8 @@
           <%= render partial: "order_status_groups/row", locals: { group: group } %>
         <% end %>
       <% else %>
-        <tr>
-          <td colspan="3" class="text-center py-16">
-            <div class="max-w-sm mx-auto">
-              <div class="w-20 h-20 bg-gradient-to-br from-secondary/10 to-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-layer-group text-3xl text-secondary"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-base-content mb-3">Brak grup</h3>
-              <p class="text-base-content/60 mb-6">
-                Utwórz swoją pierwszą grupę statusów.
-              </p>
-              <%= link_to new_order_status_group_path, class: "btn btn-primary gap-2", data: { turbo_frame: "modal-frame" } do %>
-                <i class="fas fa-plus"></i>
-                Utwórz grupę
-              <% end %>
-            </div>
-          </td>
-        </tr>
+        <%= render Ui::Layout::Table::EmptyStateComponent.new(icon: "fa-layer-group", title: "Brak grup", paragraph: "Utwórz swoją pierwszą grupę statusów.", href: "order_status_groups/new", text_button: "Utwórz grupę" ) %>
       <% end %>
     </tbody>
-  </table>
-</div>
-<script>
-  function toggleGroupsTableBody() {
-    const tbody = document.getElementById('groups-table-body');
-    const icon = document.getElementById('toggle-groups-icon');
-
-    if (tbody.style.display === 'none') {
-      tbody.style.display = '';
-      icon.classList.remove('rotate-180');
-    } else {
-      tbody.style.display = 'none';
-      icon.classList.add('rotate-180');
-    }
-  }
-</script>
+  <% end %>
+<% end %>

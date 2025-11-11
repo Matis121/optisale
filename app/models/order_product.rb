@@ -35,7 +35,7 @@ class OrderProduct < ApplicationRecord
   end
 
   def set_prices
-    default_price_group = order.user.price_groups.find_by(default: true)
+    default_price_group = order.account.price_groups.find_by(default: true)
     product_price = product.product_prices.find_by(price_group: default_price_group) ||
                    product.product_prices.first
 
@@ -50,7 +50,7 @@ class OrderProduct < ApplicationRecord
     return unless order&.persisted?
     return unless product
 
-    default_warehouse = order.user.warehouses.find_by(default: true)
+    default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
     available_quantity = product.stock_in_warehouse(default_warehouse)
@@ -64,14 +64,14 @@ class OrderProduct < ApplicationRecord
   def reduce_stock_on_create
     return unless product
 
-    default_warehouse = order.user.warehouses.find_by(default: true)
+    default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
     begin
       product.reduce_stock!(
         default_warehouse,
         quantity,
-        order.user,
+        order.account,
         reference: order
       )
     rescue ArgumentError => e
@@ -81,7 +81,7 @@ class OrderProduct < ApplicationRecord
   def adjust_stock_on_update
     return unless product
 
-    default_warehouse = order.user.warehouses.find_by(default: true)
+    default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
     old_quantity = quantity_before_last_save
@@ -95,7 +95,7 @@ class OrderProduct < ApplicationRecord
         product.reduce_stock!(
           default_warehouse,
           quantity_difference,
-          order.user,
+          order.account,
           reference: order
         )
       else
@@ -107,7 +107,7 @@ class OrderProduct < ApplicationRecord
         product.update_stock!(
           default_warehouse,
           new_stock,
-          order.user,
+          order.account,
           movement_type: "return",
           reference: order
         )
@@ -119,7 +119,7 @@ class OrderProduct < ApplicationRecord
   def restore_stock_on_destroy
     return unless product
 
-    default_warehouse = order.user.warehouses.find_by(default: true)
+    default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
     begin
@@ -129,7 +129,7 @@ class OrderProduct < ApplicationRecord
       product.update_stock!(
         default_warehouse,
         new_stock,
-        order.user,
+        order.account,
         movement_type: "return",
         reference: order
       )

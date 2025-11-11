@@ -2,19 +2,19 @@
   <%= form_with model: pickup_point, url: order_customer_pickup_point_path(pickup_point.order, pickup_point), method: :patch, data: { turbo_frame: dom_id(pickup_point) } do |f| %>
     <div class="grid grid-cols-2 gap-2">
       <div>
-        <%= f.label :name, "Imię i nazwisko", class: "label text-sm" %>
+        <%= f.label :name, "Nazwa", class: "label text-sm" %>
       </div>
       <div>
         <%= f.text_field :name, class: "input w-full input-sm" %>
       </div>
       <div>
-        <%= f.label :point_id, "Firma", class: "label text-sm" %>
+        <%= f.label :point_id, "ID punktu", class: "label text-sm" %>
       </div>
       <div>
         <%= f.text_field :point_id, class: "input w-full input-sm" %>
       </div>
       <div>
-        <%= f.label :address, "Ulica i numer", class: "label text-sm" %>
+        <%= f.label :address, "Adres", class: "label text-sm" %>
       </div>
       <div>
         <%= f.text_field :address, class: "input w-full input-sm" %>

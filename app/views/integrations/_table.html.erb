@@ -2,7 +2,7 @@
 <% if @invoicing_integrations.any? %>
   <div class="grid gap-4 mb-12">
     <% @invoicing_integrations.each do |integration| %>
-      <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card bg-base-100 border border-gray-500/30 shadow-sm">
         <div class="card-body p-6">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
@@ -69,14 +69,14 @@
   </div>
 <% end %>
 <!-- Dostępne integracje Section -->
-<div class="bg-base-200 rounded-lg border border-base-200 overflow-y-visible shadow-sm p-4">
+<div class="bg-base-300 rounded-lg border border-base-200 overflow-y-visible shadow-sm p-4">
   <div class="space-y-8">
     <!-- Systemy do fakturowania -->
     <div>
       <h3 class="font-semibold text-base-content mb-4">Systemy do fakturowania</h3>
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <% @available_invoicing_providers.each do |provider| %>
-          <div class="card bg-base-100 border border-base-300 hover:shadow-md hover:border-primary/20 transition-all duration-200">
+          <div class="card bg-base-100 border border-gray-500/30 hover:shadow-md hover:border-primary/20 transition-all duration-200">
             <div class="card-body p-5">
               <div class="flex items-center gap-3 mb-2">
                 <div class="w-30 h-30 p-2 bg-white rounded-lg flex items-center justify-center">
@@ -115,7 +115,7 @@
       </div>
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Allegro -->
-        <div class="card bg-base-100 border border-base-300">
+        <div class="card bg-base-100 border border-gray-500/30">
           <div class="card-body p-6">
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center">
@@ -127,7 +127,7 @@
           </div>
         </div>
         <!-- Amazon -->
-        <div class="card bg-base-100 border border-base-300">
+        <div class="card bg-base-100 border border-gray-500/30">
           <div class="card-body p-6">
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 bg-yellow-500/10 rounded-lg flex items-center justify-center">
@@ -139,7 +139,7 @@
           </div>
         </div>
         <!-- eBay -->
-        <div class="card bg-base-100 border border-base-300">
+        <div class="card bg-base-100 border border-gray-500/30">
           <div class="card-body p-6">
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">

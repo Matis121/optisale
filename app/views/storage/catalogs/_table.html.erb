@@ -1,91 +1,23 @@
-<% if @catalogs.any? %>
-  <div class="bg-base-200 rounded-lg border border-base-200 overflow-y-visible shadow-sm">
-    <table class="table w-full">
-      <thead class="bg-base-100">
-        <tr>
-          <th class="text-base-content font-semibold">Nazwa katalogu</th>
-          <th class="text-base-content font-semibold">Domyślny</th>
-          <th class="text-base-content font-semibold text-center">Produkty</th>
-          <th class="text-base-content font-semibold text-center">Magazyny</th>
-          <th class="text-base-content font-semibold text-center">Grupy cenowe</th>
-          <th class="text-base-content font-semibold">Utworzony</th>
-          <th class="text-base-content font-semibold text-right">Akcje</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @catalogs.each do |catalog| %>
-          <tr class="hover:bg-base-300/50 transition-colors duration-200">
-            <td>
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <i class="fas fa-folder text-primary text-sm"></i>
-                </div>
-                <div>
-                  <div class="font-semibold text-base-content"><%= catalog.name %></div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="flex items-center gap-3">
-                <div class="font-semibold text-base-content"><%= catalog.default ? "Tak" : "Nie" %></div>
-              </div>
-            </td>
-            <td class="text-center">
-              <span class="badge badge-primary badge-sm"><%= catalog.products.count %></span>
-            </td>
-            <td class="text-center">
-              <span class="badge badge-secondary badge-sm"><%= catalog.warehouses.count %></span>
-            </td>
-            <td class="text-center">
-              <span class="badge badge-accent badge-sm"><%= catalog.price_groups.count %></span>
-            </td>
-            <td>
-              <span class="text-sm text-base-content/60"><%= time_ago_in_words(catalog.created_at) %> temu</span>
-            </td>
-            <td class="text-right">
-              <div class="flex items-center justify-end gap-2">
-                <div class="dropdown dropdown-end">
-                  <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
-                    <i class="fas fa-ellipsis-v text-base-content/60"></i>
-                  </div>
-                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
-                    <li>
-                      <%= link_to edit_storage_catalog_path(catalog), class: "gap-2", data: { turbo_frame: "modal-frame" }, onclick: "document.activeElement.blur()" do %>
-                        <i class="fas fa-edit text-base-content"></i> Edytuj
-                      <% end %>
-                    </li>
-                    <% unless catalog.default %>
-                      <li>
-                        <%= link_to storage_catalog_path(catalog), 
-                                data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć katalog '#{catalog.name}'?" },
-                                class: "text-error gap-2" do %>
-                          <i class="fas fa-trash"></i> Usuń
-                        <% end %>
-                      <% end %>
-                    </ul>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <!-- Empty State -->
-    <div class="text-center py-16">
-      <div class="max-w-sm mx-auto">
-        <div class="w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <i class="fas fa-folder text-3xl text-primary"></i>
-        </div>
-        <h3 class="text-xl font-semibold text-base-content mb-3">Brak katalogów</h3>
-        <p class="text-base-content/60 mb-6">
-          Utwórz swój pierwszy katalog, aby rozpocząć organizowanie produktów.
-        </p>
-        <%= link_to new_storage_catalog_path, class: "btn btn-primary gap-2" do %>
-          <i class="fas fa-plus"></i>
-          Utwórz katalog
-        <% end %>
-      </div>
-    </div>
+  <%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
+  <% component.with_header(title: "Katalogi", href: new_storage_catalog_path, text_button: "Dodaj katalog") %>
+  <% component.with_table_header do %>
+    <thead>
+      <tr>
+        <th class="text-base-content font-semibold">Nazwa katalogu</th>
+        <th class="text-base-content font-semibold">Domyślny</th>
+        <th class="text-base-content font-semibold text-center">Produkty</th>
+        <th class="text-base-content font-semibold text-center">Magazyny</th>
+        <th class="text-base-content font-semibold text-center">Grupy cenowe</th>
+        <th class="text-base-content font-semibold">Utworzony</th>
+        <th class="text-base-content font-semibold text-right">Akcje</th>
+      </tr>
+    </thead>
+  <%end %>
+  <% component.with_table_body do %>
+    <tbody>
+      <% @catalogs.each do |catalog| %>
+        <%= render "row", catalog: catalog %>
+      <% end %>
+    </tbody>
   <% end %>
+<% end %>

@@ -4,31 +4,31 @@
       <div class="space-y-2">
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Nazwa:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to(pickup_point.name.presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">ID punktu:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to(pickup_point.point_id.presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Adres:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to(pickup_point.address.presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Kod i miasto:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to([pickup_point.postcode, pickup_point.city].compact.join(' ').presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Kraj:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to(pickup_point.country.presence || "...", edit_order_customer_pickup_point_path(@order, pickup_point), data: { turbo_frame: dom_id(pickup_point) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>

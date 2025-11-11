@@ -1,0 +1,22 @@
+<!-- Table Section -->
+<section class="rounded-md border border-gray-500/30 shadow-md overflow-y-visible">
+  <%= header %>
+  <table class="table">
+    <%= table_header %>
+    <%= table_body %>
+  </table>
+</section>
+<script>
+  function toggleTableBody() {
+    const tbody = event.target.closest("table").querySelector("tbody")
+    const icon = event.target.closest('toggle-icon');
+
+    if (tbody.style.display === 'none') {
+      tbody.style.display = '';
+      icon.classList.remove('rotate-180');
+    } else {
+      tbody.style.display = 'none';
+      icon.classList.add('rotate-180');
+    }
+  }
+</script>

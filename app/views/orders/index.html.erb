@@ -3,9 +3,9 @@
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <div class="flex gap-4">
     <!-- Sidebar -->
-    <div class="w-52 flex-shrink-0 relative">
-      <div class="fixed flex flex-col gap-4 items-center">
-        <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-sm gap-2 w-52" do %>
+    <div class="w-50">
+      <div class="fixed flex flex-col gap-4 items-center w-50">
+        <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-sm gap-2 w-44" do %>
           <i class="fas fa-plus text-xs"></i>
           Nowe zamówienie
         <% end %>

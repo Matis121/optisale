@@ -4,31 +4,31 @@
       <div class="space-y-2">
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Imię i nazwisko:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to(address.fullname.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Firma:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to(address.company_name.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Adres:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to(address.street.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Kod i miasto:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to([address.postcode, address.city].compact.join(' ').presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-base-content/60">Kraj:</span>
-          <span class="text-sm font-medium text-base-content">
+          <span class="text-sm text-base-content">
             <%= link_to(address.country.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
