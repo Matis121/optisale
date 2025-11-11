@@ -2,25 +2,25 @@
   <div class="space-y-2">
     <div class="flex justify-between items-center">
       <span class="text-sm text-base-content/60">Źródło:</span>
-      <span class="text-sm font-medium text-base-content">
+      <span class="text-sm text-base-content">
         <%= link_to(@order.source.presence || "...", edit_order_path(@order), class: "hover:text-primary transition-colors") %>
       </span>
     </div>
     <div class="flex justify-between items-center">
       <span class="text-sm text-base-content/60">Sposób wysyłki:</span>
-      <span class="text-sm font-medium text-base-content">
+      <span class="text-sm text-base-content">
         <%= link_to(@order.shipping_method.presence || "...", edit_order_path(@order), class: "hover:text-primary transition-colors") %>
       </span>
     </div>
     <div class="flex justify-between items-center">
       <span class="text-sm text-base-content/60">Koszt wysyłki:</span>
-      <span class="text-sm font-medium text-base-content">
+      <span class="text-sm text-base-content">
         <%= link_to(@order.shipping_cost.presence || "...", edit_order_path(@order), class: "hover:text-primary transition-colors") %>
       </span>
     </div>
     <div class="flex justify-between items-center">
       <span class="text-sm text-base-content/60">Sposób płatności:</span>
-      <span class="text-sm font-medium text-base-content">
+      <span class="text-sm text-base-content">
         <%= link_to(@order.payment_method.presence || "...", edit_order_path(@order), class: "hover:text-primary transition-colors") %>
       </span>
     </div>

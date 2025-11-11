@@ -8,7 +8,7 @@ class Order::ProductsController < ApplicationController
 
   def create
     @order_product = OrderProduct.new(product_params)
-    @order_product.order_id = params[:order_id]
+    @order_product.order_id = params.expect(:order_id)
 
     if @order_product.save
       respond_to do |format|

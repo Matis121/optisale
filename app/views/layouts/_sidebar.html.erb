@@ -19,7 +19,7 @@
         <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
           <i class="fas fa-home text-sm"></i>
         </div>
-        <span class="flex-1 font-medium text-sm <%= 'text-primary font-semibold' if current_page?(root_path) %>">Strona główna</span>
+        <span class="flex-1  text-sm <%= 'text-primary ' if current_page?(root_path) %>">Strona główna</span>
       <% end %>
     </div>
     <!-- Zamówienia Section -->
@@ -29,13 +29,13 @@
           <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
             <i class="fas fa-shopping-cart text-sm"></i>
           </div>
-          <span class="flex-1 font-semibold text-sm">Zamówienia</span>
+          <span class="flex-1  text-sm">Zamówienia</span>
           <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-open:rotate-180"></i>
         </summary>
         <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
-          <li><%= link_to "Lista zamówień", orders_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(orders_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
-          <li><%= link_to "Faktury", invoices_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(invoices_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
-          <li><%= link_to "Statusy zamówień", order_statuses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(order_statuses_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li><%= link_to "Lista zamówień", orders_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(orders_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+          <li><%= link_to "Faktury", invoices_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(invoices_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+          <li><%= link_to "Statusy zamówień", order_statuses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(order_statuses_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
           <li>
             <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
               <span>Automatyczne akcje</span>
@@ -52,14 +52,14 @@
           <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
             <i class="fas fa-box text-sm"></i>
           </div>
-          <span class="flex-1 font-semibold text-sm">Produkty</span>
+          <span class="flex-1  text-sm">Produkty</span>
           <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-open:rotate-180"></i>
         </summary>
         <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
-          <li><%= link_to "Lista produktów", storage_products_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_products_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
-          <li><%= link_to "Katalogi", storage_catalogs_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_catalogs_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
-          <li><%= link_to "Magazyny", storage_warehouses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_warehouses_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
-          <li><%= link_to "Grupy cenowe", storage_price_groups_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_price_groups_path) ? 'bg-primary/10 text-primary font-medium' : ''}" %></li>
+          <li><%= link_to "Lista produktów", storage_products_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_products_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+          <li><%= link_to "Katalogi", storage_catalogs_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_catalogs_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+          <li><%= link_to "Magazyny", storage_warehouses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_warehouses_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+          <li><%= link_to "Grupy cenowe", storage_price_groups_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_price_groups_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
           <li>
             <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
               <span>Import/Eksport</span>
@@ -81,13 +81,13 @@
         <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
           <i class="fas fa-plug text-sm"></i>
         </div>
-        <span class="flex-1 font-medium text-sm <%= 'text-primary font-semibold' if controller_name == 'integrations' %>">Integracje</span>
+        <span class="flex-1  text-sm <%= 'text-primary ' if controller_name == 'integrations' %>">Integracje</span>
       <% end %>
       <%= link_to manage_users_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(manage_users_path) || controller_name == 'users' ? 'bg-primary/10' : ''}" do %>
         <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
           <i class="fas fa-users text-sm"></i>
         </div>
-        <span class="flex-1 font-medium text-sm <%= 'text-primary font-semibold' if controller_name == 'users' %>">Użytkownicy</span>
+        <span class="flex-1  text-sm <%= 'text-primary ' if controller_name == 'users' %>">Użytkownicy</span>
       <% end %>
     </div>
     <!-- Marketplace Section -->
@@ -103,19 +103,19 @@
         <li>
           <div class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-not-allowed">
             <span class="flex items-center justify-center w-7 h-7 rounded-md bg-base-300 text-base-content/50 font-bold text-[10px]">Al</span>
-            <span class="flex-1 font-medium text-sm text-base-content/50">Allegro</span>
+            <span class="flex-1  text-sm text-base-content/50">Allegro</span>
           </div>
         </li>
         <li>
           <div class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-not-allowed">
             <span class="flex items-center justify-center w-7 h-7 rounded-md bg-base-300 text-base-content/50 font-bold text-[10px]">Em</span>
-            <span class="flex-1 font-medium text-sm text-base-content/50">Empik</span>
+            <span class="flex-1  text-sm text-base-content/50">Empik</span>
           </div>
         </li>
         <li>
           <div class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-not-allowed">
             <span class="flex items-center justify-center w-7 h-7 rounded-md bg-base-300 text-base-content/50 font-bold text-[10px]">Ce</span>
-            <span class="flex-1 font-medium text-sm text-base-content/50">Ceneo</span>
+            <span class="flex-1  text-sm text-base-content/50">Ceneo</span>
           </div>
         </li>
       </ul>
@@ -126,13 +126,13 @@
     <div class="flex items-center gap-2.5 px-1.5 py-1.5 mb-2">
       <div class="avatar avatar-placeholder">
         <div class="bg-primary text-primary-content w-8 h-8 rounded-full flex items-center justify-center">
-          <p class="text-sm font-semibold w-fit">
+          <p class="text-sm  w-fit">
             <%= current_user.email.first(2).upcase %>
           </p>
         </div>
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-sm font-medium truncate"><%= current_account.name %></p>
+        <p class="text-sm  truncate"><%= current_account.name %></p>
         <p class="text-[10px] text-base-content/60 truncate">Panel administracyjny</p>
       </div>
     </div>
@@ -140,7 +140,7 @@
       <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:bg-error/10 group-hover:text-error transition-all duration-200">
         <i class="fas fa-sign-out-alt text-xs"></i>
       </div>
-      <span class="flex-1 font-medium text-sm">Wyloguj się</span>
+      <span class="flex-1  text-sm">Wyloguj się</span>
     <% end %>
   </div>
 </div>

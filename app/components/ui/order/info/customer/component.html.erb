@@ -2,19 +2,19 @@
   <div class="space-y-2">
     <div class="flex justify-between items-center">
       <span class="text-sm text-base-content/60">Login:</span>
-      <span class="text-sm font-medium text-base-content">
+      <span class="text-sm text-base-content">
         <%= link_to(@order.customer&.login.presence || "...", edit_order_customer_path(@order, @customer), class: "hover:text-primary transition-colors") %>
       </span>
     </div>
     <div class="flex justify-between items-center">
       <span class="text-sm text-base-content/60">E-mail:</span>
-      <span class="text-sm font-medium text-base-content">
+      <span class="text-sm text-base-content">
         <%= link_to(@order.customer&.email.presence || "...", edit_order_customer_path(@order, @customer), class: "hover:text-primary transition-colors") %>
       </span>
     </div>
     <div class="flex justify-between items-center">
       <span class="text-sm text-base-content/60">Telefon:</span>
-      <span class="text-sm font-medium text-base-content">
+      <span class="text-sm text-base-content">
         <%= link_to(@order.customer&.phone.presence || "...", edit_order_customer_path(@order, @customer), class: "hover:text-primary transition-colors") %>
       </span>
     </div>
