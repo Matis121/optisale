@@ -1,0 +1,57 @@
+<tr class="hover:bg-base-300/50 transition-colors duration-200">
+  <td>
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center">
+        <i class="fas fa-warehouse text-primary text-sm"></i>
+      </div>
+      <div>
+        <div class="font-semibold text-base-content"><%= warehouse.name %></div>
+      </div>
+    </div>
+  </td>
+  <td>
+    <div class="flex gap-2">
+      <% warehouse.catalogs.each do |catalog| %>
+        <span class="badge badge-outline badge-sm"><%= catalog.name %></span>
+      <% end %>
+    </div>
+  </td>
+  <td class="text-center">
+    <% if warehouse.default? %>
+      <span class="badge badge-success badge-sm">Tak</span>
+    <% else %>
+      <span class="badge badge-ghost badge-sm">Nie</span>
+    <% end %>
+  </td>
+  <td>
+    <div class="flex gap-1">
+      <span class="badge badge-info badge-sm">Allegro</span>
+      <span class="badge badge-warning badge-sm">Empik</span>
+    </div>
+  </td>
+  <td class="text-right">
+    <div class="flex items-center justify-end gap-2">
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+          <i class="fas fa-ellipsis-v text-base-content/60"></i>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200">
+          <li>
+            <%= link_to edit_storage_warehouse_path(warehouse), class: "gap-2", data: { turbo_frame: "modal-frame" }, onclick: "document.activeElement.blur()" do %>
+              <i class="fas fa-edit text-base-content"></i> Edytuj
+            <% end %>
+          </li>
+          <% unless warehouse.default? %>
+            <li>
+              <%= link_to storage_warehouse_path(warehouse), 
+                              data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć magazyn '#{warehouse.name}'?" },
+                              class: "text-error gap-2" do %>
+                <i class="fas fa-trash"></i> Usuń
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </td>
+</tr>

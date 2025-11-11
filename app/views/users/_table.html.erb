@@ -1,5 +1,5 @@
 <%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
-  <% component.with_header(title: "Użytkownicy", href: "users/new") %>
+  <% component.with_header(title: "Użytkownicy", href: new_manage_user_path, text_button: "Dodaj użytkownika") %>
   <% component.with_table_header do %>
     <thead>
       <tr>

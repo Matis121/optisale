@@ -1,5 +1,5 @@
 <%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
-  <% component.with_header(title: "Status zamówień", href: "order_statuses/new") %>
+  <% component.with_header(title: "Status zamówień", href: new_order_status_path, text_button: "Dodaj status") %>
   <% component.with_table_header do %>
     <thead>
       <tr>

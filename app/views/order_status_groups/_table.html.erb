@@ -1,5 +1,5 @@
   <%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
-  <% component.with_header(title: "Grupy statusów", href: "order_status_groups/new") %>
+  <% component.with_header(title: "Grupy statusów", href: new_order_status_group_path, text_button: "Dodaj grupę") %>
   <% component.with_table_header do %>
     <thead>
       <tr>

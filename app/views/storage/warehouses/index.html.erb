@@ -2,18 +2,7 @@
 <%= render Ui::Storage::Settings::TabsComponent.new %>
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 my-8">
-    <div>
-      <h1 class="text-2xl font-bold text-base-content">Magazyny</h1>
-      <p class="text-base-content/60 mt-1">Zarządzaj swoimi magazynami produktów</p>
-    </div>
-    <div class="flex items-center gap-3">
-      <%= link_to new_storage_warehouse_path, class: "btn btn-primary btn-sm gap-2", data: { turbo_frame: "modal-frame" } do %>
-        <i class="fas fa-plus"></i>
-        Nowy magazyn
-      <% end %>
-    </div>
-  </div>
+  <%= render Ui::Layout::Header::DefaultComponent.new(title: "Zarządzanie magazynami") %>
   <!-- Content -->
   <%= turbo_frame_tag "warehouses_frame" do %>
     <%= render "table" %>
