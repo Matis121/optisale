@@ -30,7 +30,7 @@
   --color-warning-content: lch(100% 0 272.695);
   --color-error: lch(58 73.36 17.585);
   --color-error-content: lch(100% 0 272.695);
-  --radius-selector: 2rem;
+  --radius-selector: 0.25rem;
   --radius-field: 0.5rem;
   --radius-box: 0.25rem;
   --size-selector: 0.25rem;
