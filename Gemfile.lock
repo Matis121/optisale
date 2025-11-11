@@ -152,6 +152,8 @@ GEM
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    groupdate (6.7.0)
+      activesupport (>= 7.1)
     hashdiff (1.2.1)
     http (5.3.1)
       addressable (~> 2.8)
@@ -491,6 +493,7 @@ DEPENDENCIES
   devise (~> 4.9)
   factory_bot_rails (~> 6.4)
   faker (~> 3.5)
+  groupdate
   http (~> 5.0)
   importmap-rails
   jbuilder

@@ -78,6 +78,7 @@ gem "view_component"
 gem "lucide-rails", "~> 0.5.1"
 gem "kaminari"
 gem "ransack"
+gem "groupdate"
 
 # Billing integrations
 gem "http", "~> 5.0" # For API requests to billing providers

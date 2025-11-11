@@ -5,7 +5,7 @@
     <div class="lg:col-span-2">
       <div class="card bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 shadow-sm h-full">
         <div class="card-body p-6 flex justify-center">
-          <h1 class="text-2xl font-bold text-base-content">
+          <h1 class="text-2xl font-semibold text-base-content">
             Witaj z powrotem, <%= current_user.email.split('@').first.capitalize %>! 👋
           </h1>
         </div>
@@ -34,7 +34,7 @@
   <!-- Stats Grid -->
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <!-- Wszystkie zamówienia -->
-    <div class="card bg-base-100 border border-gray-500/30 shadow-sm hover:shadow-md transition-all p-5">
+    <div class="card  border border-gray-500/30 shadow-sm hover:shadow-md transition-all p-5">
       <div class="flex flex-col">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-medium text-base-content/60 uppercase tracking-wide">Zamówienia</span>
@@ -47,7 +47,7 @@
       </div>
     </div>
     <!-- Produkty -->
-    <div class="card bg-base-100 border border-gray-500/30 shadow-sm hover:shadow-md transition-all p-5">
+    <div class="card  border border-gray-500/30 shadow-sm hover:shadow-md transition-all p-5">
       <div class="flex flex-col">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-medium text-base-content/60 uppercase tracking-wide">Produkty</span>
@@ -60,7 +60,7 @@
       </div>
     </div>
     <!-- Faktury -->
-    <div class="card bg-base-100 border border-gray-500/30 shadow-sm hover:shadow-md transition-all p-5">
+    <div class="card  border border-gray-500/30 shadow-sm hover:shadow-md transition-all p-5">
       <div class="flex flex-col">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-medium text-base-content/60 uppercase tracking-wide">Faktury</span>
@@ -73,7 +73,7 @@
       </div>
     </div>
     <!-- Dzisiaj -->
-    <div class="card bg-base-100 border border-gray-500/30 shadow-sm hover:shadow-md transition-all p-5">
+    <div class="card  border border-gray-500/30 shadow-sm hover:shadow-md transition-all p-5">
       <div class="flex flex-col">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-medium text-base-content/60 uppercase tracking-wide">Dzisiaj</span>
@@ -87,104 +87,139 @@
     </div>
   </div>
   <!-- Main Content Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Ostatnie zamówienia -->
-    <div class="lg:col-span-2">
-      <div class="card bg-base-100 border border-gray-500/30 shadow-sm min-h-full">
-        <div class="card-body p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold flex items-center gap-2">
-              <i class="fas fa-history text-primary"></i>
-              Ostatnie zamówienia
-            </h2>
-            <%= link_to orders_path, class: "btn btn-sm btn-ghost gap-2" do %>
-              Zobacz wszystkie
-              <i class="fas fa-arrow-right"></i>
-            <% end %>
+  <div class="card border border-gray-500/30 shadow-sm min-h-full">
+    <div class="card-body p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold flex items-center gap-2">
+          <i class="fas fa-chart-line text-primary"></i>
+          Aktualny miesiąc
+        </h2>
+        <%= link_to orders_path, class: "btn btn-sm btn-ghost gap-2" do %>
+          Zobacz wszystkie
+          <i class="fas fa-arrow-right"></i>
+        <% end %>
+      </div>
+      <% if @monthly_orders.values.sum > 0 %>
+        <div class="w-full" style="height: 400px;">
+          <canvas id="ordersChart"></canvas>
+        </div>
+      <% else %>
+        <div class="text-center py-12">
+          <div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center rounded-full bg-base-200">
+            <i class="fas fa-inbox text-4xl text-base-content/20"></i>
           </div>
-          <% if @recent_orders.any? %>
-            <div class="overflow-x-auto">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Numer</th>
-                    <th>Klient</th>
-                    <th>Status</th>
-                    <th>Data</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% @recent_orders.each do |order| %>
-                    <tr>
-                      <td class="text-sm py-4">
-                        <%= link_to "##{order.id}", order_path(order), class: "link link-primary font-semibold" %>
-                      </td>
-                      <td>
-                        <div class="flex items-center gap-2">
-                          <span class="text-sm"><%= order.customer&.login || order.customer&.email || "Brak danych" %></span>
-                        </div>
-                      </td>
-                      <td>
-                        <% if order.order_status.present? %>
-                          <span class="badge badge-sm" style="background-color: <%= order.order_status.color %>; color: white;">
-                            <%= order.order_status.short_name %>
-                          </span>
-                        <% else %>
-                          <span class="badge badge-sm badge-ghost">Brak statusu</span>
-                        <% end %>
-                      </td>
-                      <td class="text-sm text-base-content/60">
-                        <%= order.created_at.strftime("%d.%m.%Y %H:%M") %>
-                      </td>
-                    </tr>
-                  <% end %>
-                </tbody>
-              </table>
-            </div>
-          <% else %>
-            <div class="text-center py-12">
-              <div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center rounded-full bg-base-200">
-                <i class="fas fa-inbox text-4xl text-base-content/20"></i>
-              </div>
-              <p class="text-base-content/60 mb-4">Brak zamówień w systemie</p>
-              <%= link_to new_order_path, class: "btn btn-primary btn-sm gap-2" do %>
-                <i class="fas fa-plus"></i>
-                Utwórz pierwsze zamówienie
-              <% end %>
-            </div>
+          <p class="text-base-content/60 mb-4">Brak zamówień w tym miesiącu</p>
+          <%= link_to new_order_path, class: "btn btn-primary btn-sm gap-2" do %>
+            <i class="fas fa-plus"></i>
+            Utwórz pierwsze zamówienie
           <% end %>
         </div>
-      </div>
-    </div>
-    <!-- Sidebar -->
-    <div class="space-y-4">
-      <!-- Quick Actions Card -->
-      <div class="card bg-base-100 border border-gray-500/30 shadow-sm">
-        <div class="card-body p-6">
-          <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <i class="fas fa-bolt text-warning"></i>
-            Szybkie akcje
-          </h2>
-          <div class="space-y-2">
-            <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-block justify-start gap-2" do %>
-              <i class="fas fa-plus text-xs"></i>
-              Nowe zamówienie
-            <% end %>
-            <%= link_to storage_products_path, class: "btn btn-outline btn-block justify-start gap-2" do %>
-              <i class="fas fa-box"></i>
-              Przeglądaj produkty
-            <% end %>
-            <%= link_to invoices_path, class: "btn btn-outline btn-block justify-start gap-2" do %>
-              <i class="fas fa-file-invoice"></i>
-              Lista faktur
-            <% end %>
-            <%= link_to integrations_path, class: "btn btn-outline btn-block justify-start gap-2" do %>
-              <i class="fas fa-plug"></i>
-              Integracje
-            <% end %>
-          </div>
-        </div>
-      </div>
+      <% end %>
     </div>
   </div>
+  <% content_for :head do %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <% end %>
+  <% if @monthly_orders.values.sum > 0 %>
+    <script>
+      function initOrdersChart() {
+        const ctx = document.getElementById('ordersChart');
+        if (!ctx) return;
+
+        // Destroy existing chart instance if it exists to prevent duplicates
+        if (window.ordersChartInstance) {
+          window.ordersChartInstance.destroy();
+        }
+
+        const chartData = <%= raw @monthly_orders.to_json %>;
+        const labels = Object.keys(chartData).map(date => {
+          const d = new Date(date);
+          return d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' });
+        });
+        const data = Object.values(chartData);
+
+        window.ordersChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Liczba zamówień',
+              data: data,
+              borderColor: 'rgb(99, 102, 241)',
+              backgroundColor: 'rgba(99, 102, 241, 0.1)',
+              fill: true,
+              tension: 0.4,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: 'var(--color-primary)',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                  color: '#fff',
+                  font: {
+                    size: 12,
+                    family: "'Inter', sans-serif"
+                  }
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                padding: 12,
+                titleFont: {
+                  size: 14
+                },
+                bodyFont: {
+                  size: 13
+                },
+                borderColor: 'rgba(99, 102, 241, 0.5)',
+                borderWidth: 1
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1,
+                  color: '#fff'
+                },
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.2)'
+                }
+              },
+              x: {
+                ticks: {
+                  color: '#fff',
+                  maxRotation: 45,
+                  minRotation: 45
+                },
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.2)'
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // Support both Turbo and regular page loads
+      document.addEventListener('turbo:load', initOrdersChart);
+      document.addEventListener('DOMContentLoaded', initOrdersChart);
+
+      // Also handle browser back/forward cache
+      window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+          initOrdersChart();
+        }
+      });
+    </script>
+  <% end %>
 <% end %>
