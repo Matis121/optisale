@@ -1,4 +1,4 @@
-# Optisale 📊
+# Optisale
 
 A modern, multi-tenant order and inventory management system built with Ruby on Rails 8. Optisale helps businesses streamline their sales operations, manage inventory across multiple warehouses, and automate invoice generation.
 
