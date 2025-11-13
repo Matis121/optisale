@@ -8,7 +8,7 @@ A modern, multi-tenant order and inventory management system built with Ruby on 
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-38B2AC)
 ![DaisyUI](https://img.shields.io/badge/DaisyUI-5.0.35-5A0EF8)
 
-## ✨ Features
+## Features
 
 ### 📦 Order Management
 - **Complete Order Lifecycle**: Manage orders from creation to fulfillment
@@ -63,14 +63,14 @@ A modern, multi-tenant order and inventory management system built with Ruby on 
 - **Background Jobs**: Sidekiq
 - **Icons**: Lucide Rails & Font Awesome
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
 - Ruby 3.3.5
 - PostgreSQL 14+
 - Node.js 18+ (for asset compilation)
-- Redis (optional, for Action Cable in production)
+- Redis (optional, for Sidekiq in production)
 
 ### Installation
 
@@ -102,7 +102,7 @@ A modern, multi-tenant order and inventory management system built with Ruby on 
    Open your browser and navigate to `http://localhost:3000`
 
 
-## 📋 Configuration
+## Configuration
 
 ### Invoicing Integration (Fakturownia)
 
@@ -112,7 +112,7 @@ A modern, multi-tenant order and inventory management system built with Ruby on 
    - Account name (subdomain)
    - API token
 
-## 🏗️ Architecture
+## Architecture
 
 ### Database Schema Highlights
 
@@ -131,7 +131,7 @@ A modern, multi-tenant order and inventory management system built with Ruby on 
 - `Invoice` - Invoice records and external sync
 - `InvoicingIntegration` - External service connections
 
-## 🧪 Testing
+## Testing
 
 The project uses RSpec for testing:
 
@@ -143,19 +143,19 @@ bundle exec rspec
 bundle exec rspec spec/models/order_spec.rb
 ```
 
-## 🗺️ Roadmap
+## Roadmap
 
-[ ] Marketplace integrations (Allegro, Amazon, eBay)
-[ ] Shipping integrations (DPD, InPost, DHL)
-[ ] Advanced reporting and analytics
-[ ] Mobile responsive design
-[ ] Dark mode / Light mode system
-[ ] REST API for external integrations
-[ ] Automated order workflows
-[ ] Email notifications
-[ ] Multi-language support
-[ ] Advanced permissions system
-[ ] Advanced Analytics and Reporting
+- [ ] Marketplace integrations (Allegro, Amazon, eBay)
+- [ ] Shipping integrations (DPD, InPost, DHL)
+- [ ] Advanced reporting and analytics
+- [ ] Mobile responsive design
+- [ ] Dark mode / Light mode system
+- [ ] REST API for external integrations
+- [ ] Automated order workflows
+- [ ] Email notifications
+- [ ] Multi-language support
+- [ ] Advanced permissions system
+- [ ] Advanced Analytics and Reporting
 
 ---
 
