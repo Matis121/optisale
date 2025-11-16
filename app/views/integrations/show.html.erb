@@ -149,7 +149,7 @@
               <div class="flex justify-between">
                 <span class="text-base-content/60">Faktury utworzone</span>
                 <span class="font-bold">
-                  <%= @integration.user.invoices.where(invoicing_integration_id: @integration.id).count %>
+                  <%= @integration.account.invoices.where(invoicing_integration_id: @integration.id).count %>
                 </span>
               </div>
               <div class="flex justify-between">

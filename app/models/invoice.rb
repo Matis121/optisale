@@ -1,6 +1,5 @@
 class Invoice < ApplicationRecord
   belongs_to :account
-  belongs_to :user
   belongs_to :order
   belongs_to :invoicing_integration
 
@@ -19,7 +18,6 @@ class Invoice < ApplicationRecord
   validates :order_id, uniqueness: { scope: :account_id, message: "może mieć tylko jedną fakturę" }
 
   scope :recent, -> { order(created_at: :desc) }
-  scope :for_user, ->(user) { where(user: user) }
   scope :by_status, ->(status) { where(status: status) if status.present? }
 
   # Deserializuje external_data z JSON

@@ -52,10 +52,10 @@ module Integrations
         customer = order.customer
         invoice_address = order.addresses.invoice.first
 
-        # Use user email as fallback if customer email is invalid
         email = customer&.email
-        if email.blank? || !email.match?(/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i)
-          email = order.user.email
+        # Validate email format, set to nil if invalid
+        if email.present? && !email.match?(/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i)
+          email = nil
         end
 
         {

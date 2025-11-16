@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_07_224630) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_16_200844) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -81,7 +81,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_07_224630) do
   end
 
   create_table "invoices", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.bigint "order_id", null: false
     t.bigint "invoicing_integration_id", null: false
     t.string "invoice_number"
@@ -98,7 +97,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_07_224630) do
     t.index ["account_id"], name: "index_invoices_on_account_id"
     t.index ["invoicing_integration_id"], name: "index_invoices_on_invoicing_integration_id"
     t.index ["order_id"], name: "index_invoices_on_order_id"
-    t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
   create_table "invoicing_integrations", force: :cascade do |t|
@@ -274,7 +272,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_07_224630) do
   add_foreign_key "invoices", "accounts"
   add_foreign_key "invoices", "invoicing_integrations"
   add_foreign_key "invoices", "orders"
-  add_foreign_key "invoices", "users"
   add_foreign_key "invoicing_integrations", "accounts"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"

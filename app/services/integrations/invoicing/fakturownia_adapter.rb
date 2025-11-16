@@ -176,7 +176,7 @@ module Integrations
 
       def create_local_invoice(order, fakturownia_data)
         invoice = Invoice.create!(
-          user: integration.user,
+          account: order.account,
           order: order,
           invoicing_integration: integration,
           invoice_number: fakturownia_data["number"],
