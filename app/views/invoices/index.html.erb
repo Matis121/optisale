@@ -1,4 +1,5 @@
 <% content_for :title, "Faktury" %>
+<%= render Ui::Storage::Settings::TabsComponent.new %>
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Header -->
   <%= render Ui::Layout::Header::DefaultComponent.new(title: "Zarządzanie fakturami") %>

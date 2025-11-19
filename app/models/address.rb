@@ -4,6 +4,12 @@ class Address < ApplicationRecord
   enum :kind, { delivery: 0, invoice: 1 }
 
   validates :kind, presence: true
+  validates :fullname, length: { maximum: 100 }
+  validates :company_name, length: { maximum: 100 }
+  validates :street, length: { maximum: 100 }
+  validates :postcode, length: { maximum: 10 }
+  validates :city, length: { maximum: 50 }
+  validates :country, length: { maximum: 50 }
 
   # Ransack configuration
   def self.ransackable_attributes(auth_object = nil)

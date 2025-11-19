@@ -13,6 +13,14 @@ class Order::CustomerPickupPointsController < ApplicationController
 
     if @customer_pickup_point.update(address_params)
       render turbo_stream: turbo_stream.replace(dom_id(@customer_pickup_point), Ui::Order::Address::PickupPoint::Component.new(order: @order))
+    else
+      error_messages = @customer_pickup_point.errors.full_messages.join(", ")
+      flash.now[:error] = "Nie udało się zapisać punktu odbioru: #{error_messages}"
+
+      render turbo_stream: [
+        turbo_stream.replace(dom_id(@customer_pickup_point), Ui::Order::Address::PickupPoint::FormComponent.new(pickup_point: @customer_pickup_point)),
+        turbo_stream.update("flash-messages", partial: "shared/flash_messages")
+      ]
     end
   end
 

@@ -8,9 +8,11 @@
       <p class="text-base-content/60 mb-6">
         <%= paragraph %>
       </p>
-      <%= link_to href, class: "btn btn-primary gap-2", data:(href_turbo ? { turbo_frame: "modal-frame" } : { turbo: false }) do %>
-        <i class="fas fa-plus"></i>
-        <%= text_button %>
+      <% if href.present? %>
+        <%= link_to href, class: "btn btn-primary gap-2", data:(href_turbo ? { turbo_frame: "modal-frame" } : { turbo: false }) do %>
+          <i class="fas fa-plus"></i>
+          <%= text_button %>
+        <% end %>
       <% end %>
     </div>
   </td>

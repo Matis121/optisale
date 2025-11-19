@@ -1,6 +1,5 @@
 class InvoicingIntegration < Integration
   # Specific associations for fakturownia
-  has_many :invoices, dependent: :destroy
 
   # Specific validations for fakturownia
   validates :provider, inclusion: { in: %w[fakturownia] }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_16_200844) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_17_190007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,13 +24,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_200844) do
   create_table "addresses", force: :cascade do |t|
     t.bigint "order_id", null: false
     t.integer "kind", null: false
-    t.string "fullname"
-    t.string "company_name"
-    t.string "street"
-    t.string "postcode"
-    t.string "city"
-    t.string "country"
-    t.string "country_code"
+    t.string "fullname", limit: 100
+    t.string "company_name", limit: 100
+    t.string "street", limit: 100
+    t.string "postcode", limit: 10
+    t.string "city", limit: 50
+    t.string "country", limit: 50
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_addresses_on_order_id"
@@ -60,12 +59,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_200844) do
   end
 
   create_table "customer_pickup_points", force: :cascade do |t|
-    t.string "name"
-    t.string "point_id"
-    t.string "address"
-    t.string "city"
-    t.string "postcode"
-    t.string "country"
+    t.string "name", limit: 100
+    t.string "point_id", limit: 50
+    t.string "address", limit: 100
+    t.string "city", limit: 50
+    t.string "postcode", limit: 10
+    t.string "country", limit: 50
     t.bigint "order_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -80,22 +79,50 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_200844) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "invoice_items", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.string "name", limit: 200, null: false
+    t.string "sku", limit: 50
+    t.string "ean", limit: 32
+    t.decimal "price_brutto", precision: 10, scale: 2, null: false
+    t.decimal "price_netto", precision: 10, scale: 2, null: false
+    t.decimal "tax_rate", precision: 3, scale: 1, null: false
+    t.integer "quantity", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
+  end
+
   create_table "invoices", force: :cascade do |t|
     t.bigint "order_id", null: false
-    t.bigint "invoicing_integration_id", null: false
-    t.string "invoice_number"
-    t.string "external_id"
-    t.string "status"
-    t.decimal "amount"
-    t.date "issue_date"
-    t.date "due_date"
-    t.string "external_url"
-    t.text "external_data"
+    t.string "invoice_number", limit: 30
+    t.string "external_id", limit: 30
+    t.string "status", limit: 30
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "account_id"
+    t.string "invoice_fullname", limit: 100, null: false
+    t.string "invoice_company", limit: 100
+    t.string "invoice_nip", limit: 100
+    t.string "invoice_street", limit: 100, null: false
+    t.string "invoice_city", limit: 100, null: false
+    t.string "invoice_postcode", limit: 100, null: false
+    t.string "invoice_country", limit: 50, default: "PL"
+    t.integer "sub_id", null: false
+    t.integer "month", null: false
+    t.integer "year", null: false
+    t.decimal "total_price_brutto", precision: 10, scale: 2, null: false
+    t.decimal "total_price_netto", precision: 10, scale: 2, null: false
+    t.string "currency", limit: 3, default: "PLN", null: false
+    t.string "payment_method", limit: 100, null: false
+    t.string "additional_info", limit: 500
+    t.datetime "date_add", null: false
+    t.datetime "date_sell", null: false
+    t.datetime "date_pay_to"
+    t.string "seller", limit: 250
+    t.string "issuer", limit: 100
+    t.string "external_invoice_number", limit: 30
     t.index ["account_id"], name: "index_invoices_on_account_id"
-    t.index ["invoicing_integration_id"], name: "index_invoices_on_invoicing_integration_id"
     t.index ["order_id"], name: "index_invoices_on_order_id"
   end
 
@@ -269,8 +296,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_200844) do
   add_foreign_key "addresses", "orders"
   add_foreign_key "catalogs", "accounts"
   add_foreign_key "customer_pickup_points", "orders"
+  add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoices", "accounts"
-  add_foreign_key "invoices", "invoicing_integrations"
   add_foreign_key "invoices", "orders"
   add_foreign_key "invoicing_integrations", "accounts"
   add_foreign_key "order_products", "orders"

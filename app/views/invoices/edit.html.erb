@@ -1,0 +1,170 @@
+<% content_for :title, "Edytuj fakturę - #{@invoice.invoice_number}" %>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
+  <%= render Ui::Layout::Header::DefaultComponent.new(title: "Edytuj fakturę - #{@invoice.invoice_number}") %>
+  <div class="card bg-base-100 shadow-sm border border-base-200">
+    <div class="card-body">
+      <%= form_with(model: @invoice, class: "space-y-6", data: { turbo_frame: "_top" }) do |form| %>
+        <% if @invoice.errors.any? %>
+          <div class="alert alert-error">
+            <div>
+              <i class="fas fa-exclamation-circle"></i>
+              <div>
+                <h3 class="font-bold">Wystąpiły następujące błędy:</h3>
+                <ul class="list-disc list-inside mt-2">
+                  <% @invoice.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <!-- Customer Information Section -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-base-content border-b border-base-300 pb-2">
+            <i class="fas fa-user"></i>
+            Dane nabywcy
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <%= form.label :invoice_fullname, "Imię i nazwisko", class: "label" %>
+              <%= form.text_field :invoice_fullname, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:invoice_fullname].any?}",
+                  placeholder: "Jan Kowalski" %>
+              <% if @invoice.errors[:invoice_fullname].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:invoice_fullname].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :invoice_company, "Nazwa firmy (opcjonalnie)", class: "label" %>
+              <%= form.text_field :invoice_company, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:invoice_company].any?}",
+                  placeholder: "Firma Sp. z o.o." %>
+              <% if @invoice.errors[:invoice_company].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:invoice_company].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :invoice_nip, "NIP", class: "label" %>
+              <%= form.text_field :invoice_nip, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:invoice_nip].any?}",
+                  placeholder: "1234567890" %>
+              <% if @invoice.errors[:invoice_nip].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:invoice_nip].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :invoice_street, "Ulica i numer", class: "label" %>
+              <%= form.text_field :invoice_street, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:invoice_street].any?}",
+                  placeholder: "ul. Przykładowa 123" %>
+              <% if @invoice.errors[:invoice_street].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:invoice_street].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :invoice_postcode, "Kod pocztowy", class: "label" %>
+              <%= form.text_field :invoice_postcode, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:invoice_postcode].any?}",
+                  placeholder: "00-000" %>
+              <% if @invoice.errors[:invoice_postcode].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:invoice_postcode].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :invoice_city, "Miasto", class: "label" %>
+              <%= form.text_field :invoice_city, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:invoice_city].any?}",
+                  placeholder: "Warszawa" %>
+              <% if @invoice.errors[:invoice_city].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:invoice_city].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :invoice_country, "Kraj", class: "label" %>
+              <%= form.text_field :invoice_country, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:invoice_country].any?}",
+                  placeholder: "PL" %>
+              <% if @invoice.errors[:invoice_country].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:invoice_country].first %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <!-- Additional Information Section -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-base-content border-b border-base-300 pb-2">
+            <i class="fas fa-info-circle"></i>
+            Informacje dodatkowe
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <%= form.label :payment_method, "Metoda płatności", class: "label" %>
+              <%= form.text_field :payment_method, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:payment_method].any?}",
+                  placeholder: "Przelew" %>
+              <% if @invoice.errors[:payment_method].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:payment_method].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :seller, "Sprzedawca", class: "label" %>
+              <%= form.text_field :seller, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:seller].any?}",
+                  placeholder: "Nazwa sprzedawcy" %>
+              <% if @invoice.errors[:seller].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:seller].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :issuer, "Wystawca", class: "label" %>
+              <%= form.text_field :issuer, 
+                  class: "input input-bordered w-full #{'input-error' if @invoice.errors[:issuer].any?}",
+                  placeholder: "Nazwa wystawcy" %>
+              <% if @invoice.errors[:issuer].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @invoice.errors[:issuer].first %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="form-control">
+            <%= form.label :additional_info, "Informacje dodatkowe", class: "label" %>
+            <%= form.text_area :additional_info, 
+                rows: 4,
+                class: "textarea textarea-bordered w-full #{'textarea-error' if @invoice.errors[:additional_info].any?}",
+                placeholder: "Dodatkowe informacje o fakturze..." %>
+            <% if @invoice.errors[:additional_info].any? %>
+              <div class="label">
+                <span class="label-text-alt text-error"><%= @invoice.errors[:additional_info].first %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <!-- Form Actions -->
+        <div class="flex gap-3 justify-end pt-6 border-t border-base-300">
+          <%= link_to "Anuluj", @invoice, class: "btn btn-ghost", data: { turbo_frame: "_top" } %>
+          <%= form.submit "Zapisz zmiany", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

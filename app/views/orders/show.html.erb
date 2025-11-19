@@ -108,6 +108,18 @@
             <!-- Status -->
             <!-- Invoices & Receipts -->
             <div>
+              <div class="flex flex-col justify-between items-center">
+                <p>Nowe faktury i paragony:</p>
+                <span class="text-sm text-base-content/60">Faktury:</span>
+                <%= button_to invoices_path, method: :post, remote: true, params: { order_id: @order.id }, class: "btn btn-outline btn-sm gap-1" do %>
+                  <i class="fas fa-file-invoice"></i>
+                  Wystaw faktury
+                <% end %>
+                ------------------
+                <br>
+                <br>
+                <br>
+              </div>
               <div class="space-y-2">
                 <div class="flex justify-between items-center">
                   <span class="text-sm text-base-content/60">Paragon:</span>
@@ -116,7 +128,6 @@
                     Wystaw paragon
                   </button>
                 </div>
-                <%= render "invoice_section", order: @order %>
               </div>
             </div>
           </div>

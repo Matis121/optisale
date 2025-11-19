@@ -1,19 +1,50 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: [ :show, :destroy, :sync_status, :cancel_invoice, :delete_from_external ]
+  before_action :set_invoice, only: [ :show, :edit, :update, :destroy, :sync_status, :cancel_invoice, :delete_from_external, :restore_products, :restore_customer_data ]
 
   def index
-    @invoices = current_account.invoices.includes(:order, :invoicing_integration)
-
-    # Filter by invoicing_integration_id if provided
-    if params[:invoicing_integration_id].present?
-      @invoices = @invoices.where(invoicing_integration_id: params[:invoicing_integration_id])
-    end
-
-    @invoices = @invoices.order(created_at: :desc)
-                         .page(params[:page]).per(20)
+    @invoices = current_account.invoices
   end
 
   def show
+  end
+
+  def edit
+  end
+
+  def update
+    if @invoice.update(invoice_params)
+      @invoice.recalculate_totals
+      redirect_to @invoice, notice: "Faktura została zaktualizowana."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def create
+    unless params[:order_id]
+      redirect_to orders_path, alert: "Brak order_id."
+      return
+    end
+
+    order = current_account.orders.find_by(id: params[:order_id])
+    unless order
+      redirect_to orders_path, alert: "Zamówienie nie zostało znalezione."
+      return
+    end
+
+    @invoice = current_account.invoices.new(order: order)
+
+    if @invoice.save
+      order.reload
+      respond_to do |format|
+        format.html { redirect_to order_path(order), notice: "Faktura została utworzona." }
+      end
+    else
+      error_message = "Nie udało się utworzyć faktury: #{@invoice.errors.full_messages.join(', ')}"
+      respond_to do |format|
+        format.html { redirect_to order_path(order), alert: error_message }
+      end
+    end
   end
 
   def destroy
@@ -138,7 +169,34 @@ class InvoicesController < ApplicationController
     end
   end
 
+  # Przywraca produkty z zamówienia do faktury
+  def restore_products
+    if @invoice.restore_products_from_order
+      redirect_to @invoice, notice: "Produkty zostały przywrócone z zamówienia."
+    else
+      redirect_to @invoice, alert: "Nie udało się przywrócić produktów z zamówienia."
+    end
+  end
+
+  def restore_customer_data
+    if @invoice.restore_customer_data_from_order
+      redirect_to @invoice, notice: "Dane klienta zostały przywrócone z zamówienia."
+    else
+      redirect_to @invoice, alert: "Nie udało się przywrócić danych klienta z zamówienia."
+    end
+  end
+
+
   private
+
+  def invoice_params
+    params.require(:invoice).permit(
+      :invoice_fullname, :invoice_company, :invoice_nip,
+      :invoice_street, :invoice_city, :invoice_postcode, :invoice_country,
+      :additional_info, :payment_method, :seller, :issuer, :external_invoice_number
+    )
+  end
+
 
   def set_invoice
     @invoice = current_account.invoices.find(params[:id])
