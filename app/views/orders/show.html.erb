@@ -53,7 +53,7 @@
       <!-- Order Information -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
         <!-- Payment, Status, Invoices -->
-        <div class="rounded-md border border-gray-500/30 shadow-sm p-6">
+        <div class="rounded-md border border-gray-500/30 shadow-sm p-6 bg-base-300">
           <div class="space-y-8">
             <!-- Payment Details -->
             <div>
@@ -105,35 +105,11 @@
                 <% end %>
               </div>
             </div>
-            <!-- Status -->
-            <!-- Invoices & Receipts -->
-            <div>
-              <div class="flex flex-col justify-between items-center">
-                <p>Nowe faktury i paragony:</p>
-                <span class="text-sm text-base-content/60">Faktury:</span>
-                <%= button_to invoices_path, method: :post, remote: true, params: { order_id: @order.id }, class: "btn btn-outline btn-sm gap-1" do %>
-                  <i class="fas fa-file-invoice"></i>
-                  Wystaw faktury
-                <% end %>
-                ------------------
-                <br>
-                <br>
-                <br>
-              </div>
-              <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-base-content/60">Paragon:</span>
-                  <button class="btn btn-outline btn-sm gap-1">
-                    <i class="fas fa-receipt"></i>
-                    Wystaw paragon
-                  </button>
-                </div>
-              </div>
-            </div>
+            <%= render "invoice_section", order: @order %>
           </div>
         </div>
         <!-- Customer Data, Order Details, Extra Fields -->
-        <div class="rounded-md border border-gray-500/30 shadow-sm p-6">
+        <div class="rounded-md border border-gray-500/30 shadow-sm p-6 bg-base-300">
           <div class="space-y-6">
             <!-- Customer Info -->
             <div>
@@ -155,15 +131,15 @@
       </div>
       <!-- Addresses -->
       <div class="grid grid-cols-3 gap-4">
-        <div class="rounded-md border border-gray-500/30 shadow-sm p-6">
+        <div class="rounded-md border border-gray-500/30 shadow-sm p-6 bg-base-300">
           <h4 class="font-medium text-base-content mb-3">Adres dostawy</h4>
           <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :delivery)) %>
         </div>
-        <div class="rounded-md border border-gray-500/30 shadow-sm p-6">
+        <div class="rounded-md border border-gray-500/30 shadow-sm p-6 bg-base-300">
           <h4 class="font-medium text-base-content mb-3">Dane do faktury</h4>
           <%= render(Ui::Order::Address::Shipping::Component.new(order: @order, address_type: :invoice)) %>
         </div>
-        <div class="rounded-md border border-gray-500/30 shadow-sm p-6">
+        <div class="rounded-md border border-gray-500/30 shadow-sm p-6 bg-base-300">
           <h4 class="font-medium text-base-content mb-3">Punkt odbioru</h4>
           <%= render(Ui::Order::Address::PickupPoint::Component.new(order: @order)) %>
         </div>

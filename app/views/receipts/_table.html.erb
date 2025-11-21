@@ -2,23 +2,22 @@
   <% component.with_table_header do %>
     <thead class="bg-base-300">
       <tr>
-        <th class="text-base-content font-semibold">Faktura</th>
+        <th class="text-base-content font-semibold">Paragon</th>
         <th class="text-base-content font-semibold">Zamówienie</th>
-        <th class="text-base-content font-semibold">Nabywca</th>
         <th class="text-base-content font-semibold">Suma brutto</th>
-        <th class="text-base-content font-semibold">Data wystawienia</th>
+        <th class="text-base-content font-semibold">Data dodania</th>
         <th class="text-base-content font-semibold text-right">Akcje</th>
       </tr>
     </thead>
   <%end %>
   <% component.with_table_body do %>
     <tbody id="status-table-body" data-controller="sortable" data-sortable-resource-name-value="order_status" data-sortable-handle-value=".handle">
-      <% if @invoices.present? %>
-        <% @invoices.each do |invoice| %>
-          <%= render partial: "invoices/row", locals: { invoice: invoice } %>
+      <% if @receipts.present? %>
+        <% @receipts.each do |receipt| %>
+          <%= render partial: "receipts/row", locals: { receipt: receipt } %>
         <% end %>
       <% else %>
-        <%= render Ui::Layout::Table::EmptyStateComponent.new(icon: "fa-file-invoice", title: "Brak faktur", paragraph: "Nie masz jeszcze żadnych faktur. Przejdź do zamówień i wygeneruj pierwszą fakturę.", href: "orders", text_button: "Przejdź do zamówień", href_turbo: false ) %>
+        <%= render Ui::Layout::Table::EmptyStateComponent.new(icon: "fa-file-invoice", title: "Brak paragonów", paragraph: "Nie masz jeszcze żadnych paragonów. Przejdź do zamówień i wygeneruj pierwszy paragon.", href: "orders", text_button: "Przejdź do zamówień", href_turbo: false ) %>
       <% end %>
     </tbody>
   <% end %>

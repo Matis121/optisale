@@ -32,7 +32,7 @@ class Order::AddressesController < ApplicationController
   def address_params
     params.require(:address).permit(
       :fullname, :company_name, :street,
-      :postcode, :city, :country
+      :postcode, :city, :country, :nip
     )
   end
 end

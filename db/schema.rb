@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_17_190007) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_19_210716) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,6 +32,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_190007) do
     t.string "country", limit: 50
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "nip", limit: 100
     t.index ["order_id"], name: "index_addresses_on_order_id"
   end
 
@@ -244,6 +245,41 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_190007) do
     t.index ["catalog_id"], name: "index_products_on_catalog_id"
   end
 
+  create_table "receipt_items", force: :cascade do |t|
+    t.bigint "receipt_id", null: false
+    t.string "name", limit: 200, null: false
+    t.string "sku", limit: 50
+    t.string "ean", limit: 32
+    t.decimal "price_brutto", precision: 10, scale: 2, null: false
+    t.decimal "tax_rate", precision: 3, scale: 1, null: false
+    t.integer "quantity", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receipt_id"], name: "index_receipt_items_on_receipt_id"
+  end
+
+  create_table "receipts", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "order_id", null: false
+    t.string "status", limit: 30
+    t.string "receipt_number", limit: 30
+    t.integer "series_id"
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.integer "sub_id", null: false
+    t.datetime "date_add", null: false
+    t.string "payment_method", limit: 30, null: false
+    t.string "nip", limit: 30
+    t.string "currency", limit: 3, null: false
+    t.decimal "total_price_brutto", precision: 10, scale: 2, null: false
+    t.string "external_receipt_number", limit: 30
+    t.string "external_id", limit: 30
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_receipts_on_account_id"
+    t.index ["order_id"], name: "index_receipts_on_order_id"
+  end
+
   create_table "stock_movements", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "warehouse_id", null: false
@@ -314,6 +350,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_190007) do
   add_foreign_key "product_stocks", "products"
   add_foreign_key "product_stocks", "warehouses"
   add_foreign_key "products", "catalogs"
+  add_foreign_key "receipt_items", "receipts"
+  add_foreign_key "receipts", "accounts"
+  add_foreign_key "receipts", "orders"
   add_foreign_key "stock_movements", "accounts"
   add_foreign_key "stock_movements", "products"
   add_foreign_key "stock_movements", "users"

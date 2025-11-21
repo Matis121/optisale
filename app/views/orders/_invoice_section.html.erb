@@ -1,64 +1,81 @@
-<%= turbo_frame_tag "invoice_section_#{order.id}" do %>
-  <div class="flex justify-between items-center">
-    <span class="text-sm text-base-content/60">Faktura:</span>
-    <% if order.invoice.present? %>
-      <div class="flex flex-col gap-1">
-        <div class="flex items-center justify-between p-2 bg-base-300 rounded mb-2">
-          <div class="flex items-center gap-1">
-            <%= link_to order.invoice.download_pdf_url, target: "_blank", 
-                          class: "btn btn-outline btn-sm gap-1", 
-                          title: "Pobierz PDF" do %>
-              <span class="text-sm font-medium"><%= order.invoice.invoice_number %></span>
-            <% end %>
-            <%= link_to delete_from_external_invoice_path(order.invoice), 
-                          data: { turbo_method: :delete, 
-                                 turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę? Ta operacja jest nieodwracalna!",
-                                 turbo_frame: "invoice_section_#{order.id}" },
-                          class: "btn btn-ghost btn-xs text-base-content/40 hover:text-error hover:bg-error/10 transition-colors", 
-                          title: "Usuń fakturę" do %>
-              <i class="fas fa-trash text-xs"></i>
+<%= turbo_frame_tag "order_documents_#{order.id}" do %>
+  <div>
+    <h4 class="font-medium text-base-content mb-4">Dokumenty</h4>
+    <div class="grid grid-cols-2 gap-3">
+      <!-- Invoice Card -->
+      <div class="border border-gray-500/30 rounded-lg p-3 transition-colors">
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+              <div class="flex-1 min-w-0">
+                <div class="text-xs text-base-content/60 mb-1">Faktura</div>
+                <% if order.invoice.present? %>
+                  <div class="font-semibold text-base-content truncate text-sm">
+                    <%= order.invoice.invoice_number %>
+                  </div>
+                  <% if order.invoice.external_invoice_number.present? %>
+                    <div class="text-xs text-base-content/50 mt-1 flex items-center gap-1">
+                      <i class="fas fa-external-link-alt text-[10px]"></i>
+                      <span>Zewnętrzny: <span class="font-medium"><%= order.invoice.external_invoice_number %></span></span>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <div class="text-sm text-base-content">Brak faktury</div>
+                <% end %>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <% if order.invoice.present? %>
+                <%= link_to invoice_path(order.invoice), class: "btn btn-sm btn-ghost gap-2", data: { turbo_frame: "_top" } do %>
+                  <i class="fas fa-eye"></i>
+                  <span class="hidden sm:inline">Zobacz</span>
+                <% end %>
+                <%= button_to invoice_path(order.invoice), method: :delete, class: "btn btn-sm btn-ghost text-error hover:bg-error/10", data: { turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę?" } do %>
+                  <i class="fas fa-trash"></i>
+                <% end %>
+              <% else %>
+                <%= button_to invoices_path, method: :post, params: { order_id: order.id }, class: "btn btn-sm btn-primary gap-2" do %>
+                  <i class="fas fa-plus"></i>
+                  <span class="hidden sm:inline">Wystaw</span>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Receipt Card -->
+      <div class="border border-gray-500/30 rounded-lg p-3 transition-colors">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <div class="flex-1 min-w-0">
+              <div class="text-xs text-base-content/60 mb-0.5">Paragon</div>
+              <% if order.receipt.present? %>
+                <div class="font-semibold text-base-content truncate text-sm">
+                  <%= order.receipt.receipt_number %>
+                </div>
+              <% else %>
+                <div class="text-sm text-base-content">Brak paragonu</div>
+              <% end %>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <% if order.receipt.present? %>
+              <%= link_to receipt_path(order.receipt), class: "btn btn-sm btn-ghost gap-2", data: { turbo_frame: "_top" } do %>
+                <i class="fas fa-eye"></i>
+                <span class="hidden sm:inline">Zobacz</span>
+              <% end %>
+              <%= button_to receipt_path(order.receipt), method: :delete, class: "btn btn-sm btn-ghost text-error hover:bg-error/10", data: { turbo_confirm: "Czy na pewno chcesz usunąć ten paragon?" } do %>
+                <i class="fas fa-trash"></i>
+              <% end %>
+            <% else %>
+              <%= button_to receipts_path, method: :post, params: { order_id: order.id }, class: "btn btn-sm btn-primary gap-2" do %>
+                <i class="fas fa-plus"></i>
+                <span class="hidden sm:inline">Wystaw</span>
+              <% end %>
             <% end %>
           </div>
         </div>
       </div>
-    <% else %>
-      <% invoice_service = InvoiceService.new(current_account) %>
-      <% if invoice_service.has_active_invoicing_integration? %>
-        <% if invoice_service.can_generate_invoice_for_order?(order) %>
-          <%= link_to generate_invoice_order_path(order), 
-                      data: { turbo_method: :post, turbo_frame: "invoice_section_#{order.id}" },
-                      class: "btn btn-outline btn-sm gap-1" do %>
-            <i class="fas fa-file-invoice"></i>
-            Wystaw fakturę
-          <% end %>
-        <% else %>
-          <div class="text-center">
-            <button class="btn btn-outline btn-sm gap-1 btn-disabled" disabled>
-              <i class="fas fa-file-invoice"></i>
-              Wystaw fakturę
-            </button>
-            <div class="text-xs text-base-content/60 mt-1">
-              <% if order.order_products.empty? %>
-                Dodaj produkty do zamówienia
-              <% elsif order.invoice.present? %>
-                Faktura już istnieje
-              <% else %>
-                Nie można wygenerować faktury
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-      <% else %>
-        <div class="text-center">
-          <button class="btn btn-outline btn-sm gap-1 btn-disabled" disabled>
-            <i class="fas fa-file-invoice"></i>
-            Wystaw fakturę
-          </button>
-          <div class="text-xs text-base-content/60 mt-1">
-            <%= link_to "Skonfiguruj integrację", integrations_path, class: "link link-primary", data: { turbo_frame: "_top" } %>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
+    </div>
   </div>
 <% end %>

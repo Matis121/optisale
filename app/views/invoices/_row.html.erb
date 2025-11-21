@@ -27,4 +27,14 @@
   <td>
     <span class="text-base-content"><%= invoice.date_sell&.strftime("%d.%m.%Y") %></span>
   </td>
+  <td>
+    <div class="flex items-center justify-end gap-3">
+      <%= link_to invoice_path(invoice), class: "btn btn-sm btn-outline", data: { turbo_frame: "_top" } do %>
+        <i class="fas fa-edit"></i>
+      <% end %>
+      <%= button_to invoice_path(invoice), method: :delete, class: "btn btn-sm btn-outline btn-error", data: { turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę?", turbo_frame: "_top" } do %>
+        <i class="fas fa-trash"></i>
+      <% end %>
+    </div>
+  </td>
 </tr>

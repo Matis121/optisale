@@ -1,0 +1,35 @@
+<tr class="hover:bg-base-300/50 transition-colors duration-200">
+  <td>
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+        <i class="fas fa-file-invoice-dollar text-primary text-sm"></i>
+      </div>
+      <div>
+        <div class="font-semibold text-base-content"><%= link_to receipt.receipt_number, receipt_path(receipt), data: { turbo_frame: "_top" } %></div>
+      </div>
+    </div>
+  </td>
+  <td>
+    <%= link_to receipt.order, class: "link link-primary font-medium", data: { turbo_frame: "_top" } do %>
+      #<%= receipt.order.id %>
+    <% end %>
+  </td>
+  <td>
+    <span class="font-semibold text-base-content">
+      <%= number_to_currency(receipt.total_price_brutto, unit: "PLN", format: "%n %u") %>
+    </span>
+  </td>
+  <td>
+    <span class="text-base-content"><%= receipt.date_add&.strftime("%d.%m.%Y") %></span>
+  </td>
+  <td>
+    <div class="flex items-center justify-end gap-3">
+      <%= link_to receipt_path(receipt), class: "btn btn-sm btn-outline", data: { turbo_frame: "_top" } do %>
+        <i class="fas fa-edit"></i>
+      <% end %>
+      <%= button_to receipt_path(receipt), method: :delete, class: "btn btn-sm btn-outline btn-error", data: { turbo_confirm: "Czy na pewno chcesz usunąć ten paragon?", turbo_frame: "_top" } do %>
+        <i class="fas fa-trash"></i>
+      <% end %>
+    </div>
+  </td>
+</tr>

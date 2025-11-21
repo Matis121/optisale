@@ -32,6 +32,14 @@
             <%= link_to(address.country.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
           </span>
         </div>
+        <% if address.kind == "invoice" %>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-base-content/60">NIP:</span>
+            <span class="text-sm text-base-content">
+              <%= link_to(address.nip.presence || "...", edit_order_address_path(@order, address), data: { turbo_frame: dom_id(address) }, class: "hover:text-primary transition-colors") %>
+            </span>
+          </div>
+        <% end %>
       </div>
     </div>
   <% else %>

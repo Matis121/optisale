@@ -82,4 +82,12 @@ Rails.application.routes.draw do
     end
     resources :invoice_items, only: [ :destroy ]
   end
+
+  # Receipts
+  resources :receipts do
+    member do
+      post :restore_products
+    end
+    resources :receipt_items, only: [ :destroy ]
+  end
 end

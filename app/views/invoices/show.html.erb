@@ -1,16 +1,23 @@
 <% content_for :title, "Faktura - #{@invoice.invoice_number}" %>
-<%= render Ui::Layout::Container::DefaultComponent.new do %>
+<div class="border-b border-gray-500/30 rounded-none py-2 px-4">
   <!-- Header -->
-  <%= render Ui::Layout::Header::DefaultComponent.new(title: "Faktura - #{@invoice.invoice_number}") %>
+  <div class="breadcrumbs text-sm">
+    <ul>
+      <li><%= link_to "Faktury", invoices_path %></li>
+      <li><%= @invoice.invoice_number %></li>
+    </ul>
+  </div>
+</div>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Action buttons -->
   <div class="flex gap-3 mb-6">
     <%= link_to edit_invoice_path(@invoice), class: "btn btn-primary", data: { turbo_frame: "_top" } do %>
       <i class="fas fa-edit"></i>
-      Edytuj fakturę
+      Edytuj
     <% end %>
-    <%= button_to invoice_path(@invoice), method: :delete, class: "btn btn-error", data: { turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę?", turbo_frame: "_top" } do %>
+    <%= button_to invoice_path(@invoice), method: :delete, class: "btn btn-outline btn-error", data: { turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę?", turbo_frame: "_top" } do %>
       <i class="fas fa-trash"></i>
-      Usuń fakturę
+      Usuń
     <% end %>
     <%= link_to order_path(@invoice.order), class: "btn btn-ghost", data: { turbo_frame: "_top" } do %>
       <i class="fas fa-shopping-cart"></i>

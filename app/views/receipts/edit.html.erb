@@ -1,0 +1,114 @@
+<% content_for :title, "Edytuj paragon - #{@receipt.receipt_number}" %>
+<div class="border-b border-gray-500/30 rounded-none py-2 px-4">
+  <!-- Header -->
+  <div class="breadcrumbs text-sm">
+    <ul>
+      <li><%= link_to "Paragony", receipts_path %></li>
+      <li><%= link_to @receipt.receipt_number, receipt_path(@receipt) %></li>
+      <li>Edycja</li>
+    </ul>
+  </div>
+</div>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
+  <div class="card bg-base-100 shadow-sm border border-base-200">
+    <div class="card-body">
+      <%= form_with(model: @receipt, class: "space-y-6", data: { turbo_frame: "_top" }) do |form| %>
+        <% if @receipt.errors.any? %>
+          <div class="alert alert-error">
+            <div>
+              <i class="fas fa-exclamation-circle"></i>
+              <div>
+                <h3 class="font-bold">Wystąpiły następujące błędy:</h3>
+                <ul class="list-disc list-inside mt-2">
+                  <% @receipt.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <!-- Receipt Information Section -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-base-content border-b border-base-300 pb-2">
+            <i class="fas fa-file-invoice-dollar"></i>
+            Informacje o paragonie
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <%= form.label :receipt_number, "Numer paragonu", class: "label" %>
+              <%= form.text_field :receipt_number, 
+                  class: "input input-bordered w-full #{'input-error' if @receipt.errors[:receipt_number].any?}",
+                  placeholder: "PA/1/12/2024" %>
+              <% if @receipt.errors[:receipt_number].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @receipt.errors[:receipt_number].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :date_add, "Data dodania", class: "label" %>
+              <%= form.datetime_local_field :date_add, 
+                  class: "input input-bordered w-full #{'input-error' if @receipt.errors[:date_add].any?}" %>
+              <% if @receipt.errors[:date_add].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @receipt.errors[:date_add].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :payment_method, "Metoda płatności", class: "label" %>
+              <%= form.text_field :payment_method, 
+                  class: "input input-bordered w-full #{'input-error' if @receipt.errors[:payment_method].any?}",
+                  placeholder: "Gotówka" %>
+              <% if @receipt.errors[:payment_method].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @receipt.errors[:payment_method].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :currency, "Waluta", class: "label" %>
+              <%= form.text_field :currency, 
+                  class: "input input-bordered w-full #{'input-error' if @receipt.errors[:currency].any?}",
+                  placeholder: "PLN" %>
+              <% if @receipt.errors[:currency].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @receipt.errors[:currency].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :total_price_brutto, "Cena brutto", class: "label" %>
+              <%= form.number_field :total_price_brutto, 
+                  step: 0.01,
+                  class: "input input-bordered w-full #{'input-error' if @receipt.errors[:total_price_brutto].any?}",
+                  placeholder: "0.00" %>
+              <% if @receipt.errors[:total_price_brutto].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @receipt.errors[:total_price_brutto].first %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-control">
+              <%= form.label :nip, "NIP (opcjonalnie)", class: "label" %>
+              <%= form.text_field :nip, 
+                  class: "input input-bordered w-full #{'input-error' if @receipt.errors[:nip].any?}",
+                  placeholder: "1234567890" %>
+              <% if @receipt.errors[:nip].any? %>
+                <div class="label">
+                  <span class="label-text-alt text-error"><%= @receipt.errors[:nip].first %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <!-- Form Actions -->
+        <div class="flex gap-3 justify-end pt-6 border-t border-base-300">
+          <%= link_to "Anuluj", @receipt, class: "btn btn-ghost", data: { turbo_frame: "_top" } %>
+          <%= form.submit "Zapisz zmiany", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

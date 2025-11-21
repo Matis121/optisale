@@ -97,12 +97,11 @@ class Invoice < ApplicationRecord
     # Dane adresowe z zamówienia (snapshot) - tylko jeśli nie są już ustawione
     self.invoice_fullname ||= invoice_address&.fullname
     self.invoice_company ||= invoice_address&.company_name
-    self.invoice_nip ||= account.nip
     self.invoice_street ||= invoice_address&.street
     self.invoice_city ||= invoice_address&.city
     self.invoice_postcode ||= invoice_address&.postcode
     self.invoice_country ||= invoice_address&.country || "PL"
-    self.invoice_nip ||= "0000000000" # TODO: Remove this after testing, use invoice_address.nip
+    self.invoice_nip ||= invoice_address&.nip
 
     # Identyfikatory i daty
     sell_date = order.order_date || order.created_at
