@@ -8,7 +8,7 @@
           <div class="flex-1 min-w-0">
             <% if order.invoice.present? %>
               <div class="font-semibold text-base-content truncate text-xs">
-                <%= order.invoice.invoice_number %>
+                <%= link_to order.invoice.invoice_number, invoice_path(order.invoice), class: "link link-primary", data: { turbo_frame: "_top" } %>
               </div>
               <% if order.invoice.external_invoice_number.present? %>
                 <div class="text-xs text-base-content/50 mt-0.5 flex items-center gap-1">
@@ -24,10 +24,6 @@
           </div>
           <div class="flex items-center gap-2">
             <% if order.invoice.present? %>
-              <%= link_to invoice_path(order.invoice), class: "btn btn-sm btn-ghost gap-2", data: { turbo_frame: "_top" } do %>
-                <i class="fas fa-eye"></i>
-                <span class="hidden sm:inline">Zobacz</span>
-              <% end %>
               <%= button_to invoice_path(order.invoice), method: :delete, class: "btn btn-sm btn-ghost text-error hover:bg-error/10", data: { turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę?" } do %>
                 <i class="fas fa-trash"></i>
               <% end %>
@@ -45,7 +41,7 @@
         <div class="flex items-center justify-between gap-3">
           <% if order.receipt.present? %>
             <div class="font-semibold text-base-content truncate text-xs">
-              <%= order.receipt.receipt_number %>
+              <%= link_to order.receipt.receipt_number, receipt_path(order.receipt), class: "link link-primary", data: { turbo_frame: "_top" } %>
             </div>
           <% else %>
             <div class="font-semibold text-base-content truncate text-xs">
@@ -54,10 +50,6 @@
           <% end %>
           <div class="flex items-center gap-2">
             <% if order.receipt.present? %>
-              <%= link_to receipt_path(order.receipt), class: "btn btn-sm btn-ghost gap-2", data: { turbo_frame: "_top" } do %>
-                <i class="fas fa-eye"></i>
-                <span class="hidden sm:inline">Zobacz</span>
-              <% end %>
               <%= button_to receipt_path(order.receipt), method: :delete, class: "btn btn-sm btn-ghost text-error hover:bg-error/10", data: { turbo_confirm: "Czy na pewno chcesz usunąć ten paragon?" } do %>
                 <i class="fas fa-trash"></i>
               <% end %>
