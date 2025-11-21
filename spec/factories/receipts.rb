@@ -1,19 +1,16 @@
 FactoryBot.define do
   factory :receipt do
-    account { nil }
-    order { nil }
-    status { "MyString" }
-    series_id { 1 }
-    receipt_full_nr { "MyString" }
-    year { 1 }
-    month { 1 }
+    association :account
+    association :order
+    receipt_number { "PA/1/#{Time.current.month}/#{Time.current.year}" }
+    year { Time.current.year }
+    month { Time.current.month }
     sub_id { 1 }
-    date_add { 1 }
-    payment_method { "MyString" }
-    nip { "MyString" }
-    currency { "MyString" }
-    total_price_brutto { "9.99" }
-    external_receipt_number { "MyString" }
-    external_id { "MyString" }
+    date_add { Time.current }
+    payment_method { "Gotówka" }
+    nip { rand(1000000000..9999999999).to_s }
+    currency { "PLN" }
+    total_price_brutto { 100.0 }
+    status { "success" }
   end
 end
