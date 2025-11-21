@@ -3,62 +3,56 @@
     <h4 class="font-medium text-base-content mb-4">Dokumenty</h4>
     <div class="grid grid-cols-2 gap-3">
       <!-- Invoice Card -->
-      <div class="border border-gray-500/30 rounded-lg p-3 transition-colors">
-        <div class="flex flex-col gap-2">
-          <div class="flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3 flex-1 min-w-0">
-              <div class="flex-1 min-w-0">
-                <div class="text-xs text-base-content/60 mb-1">Faktura</div>
-                <% if order.invoice.present? %>
-                  <div class="font-semibold text-base-content truncate text-sm">
-                    <%= order.invoice.invoice_number %>
-                  </div>
-                  <% if order.invoice.external_invoice_number.present? %>
-                    <div class="text-xs text-base-content/50 mt-1 flex items-center gap-1">
-                      <i class="fas fa-external-link-alt text-[10px]"></i>
-                      <span>Zewnętrzny: <span class="font-medium"><%= order.invoice.external_invoice_number %></span></span>
-                    </div>
-                  <% end %>
-                <% else %>
-                  <div class="text-sm text-base-content">Brak faktury</div>
-                <% end %>
+      <div class="border border-gray-500/30 rounded-md transition-colors p-2">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <% if order.invoice.present? %>
+              <div class="font-semibold text-base-content truncate text-xs">
+                <%= order.invoice.invoice_number %>
               </div>
-            </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <% if order.invoice.present? %>
-                <%= link_to invoice_path(order.invoice), class: "btn btn-sm btn-ghost gap-2", data: { turbo_frame: "_top" } do %>
-                  <i class="fas fa-eye"></i>
-                  <span class="hidden sm:inline">Zobacz</span>
-                <% end %>
-                <%= button_to invoice_path(order.invoice), method: :delete, class: "btn btn-sm btn-ghost text-error hover:bg-error/10", data: { turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę?" } do %>
-                  <i class="fas fa-trash"></i>
-                <% end %>
-              <% else %>
-                <%= button_to invoices_path, method: :post, params: { order_id: order.id }, class: "btn btn-sm btn-primary gap-2" do %>
-                  <i class="fas fa-plus"></i>
-                  <span class="hidden sm:inline">Wystaw</span>
-                <% end %>
+              <% if order.invoice.external_invoice_number.present? %>
+                <div class="text-xs text-base-content/50 mt-0.5 flex items-center gap-1">
+                  <i class="fas fa-external-link-alt text-[10px]"></i>
+                  <span>Zewnętrzny: <span class="font-medium"><%= order.invoice.external_invoice_number %></span></span>
+                </div>
               <% end %>
-            </div>
+            <% else %>
+              <div class="font-semibold text-base-content truncate text-xs">
+                Faktura
+              </div>
+            <% end %>
+          </div>
+          <div class="flex items-center gap-2">
+            <% if order.invoice.present? %>
+              <%= link_to invoice_path(order.invoice), class: "btn btn-sm btn-ghost gap-2", data: { turbo_frame: "_top" } do %>
+                <i class="fas fa-eye"></i>
+                <span class="hidden sm:inline">Zobacz</span>
+              <% end %>
+              <%= button_to invoice_path(order.invoice), method: :delete, class: "btn btn-sm btn-ghost text-error hover:bg-error/10", data: { turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę?" } do %>
+                <i class="fas fa-trash"></i>
+              <% end %>
+            <% else %>
+              <%= button_to invoices_path, method: :post, params: { order_id: order.id }, class: "btn btn-sm btn-primary gap-2" do %>
+                <i class="fas fa-plus"></i>
+                <span class="hidden sm:inline">Wystaw</span>
+              <% end %>
+            <% end %>
           </div>
         </div>
       </div>
       <!-- Receipt Card -->
-      <div class="border border-gray-500/30 rounded-lg p-3 transition-colors">
+      <div class="border border-gray-500/30 rounded-md transition-colors p-2">
         <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3 flex-1 min-w-0">
-            <div class="flex-1 min-w-0">
-              <div class="text-xs text-base-content/60 mb-0.5">Paragon</div>
-              <% if order.receipt.present? %>
-                <div class="font-semibold text-base-content truncate text-sm">
-                  <%= order.receipt.receipt_number %>
-                </div>
-              <% else %>
-                <div class="text-sm text-base-content">Brak paragonu</div>
-              <% end %>
+          <% if order.receipt.present? %>
+            <div class="font-semibold text-base-content truncate text-xs">
+              <%= order.receipt.receipt_number %>
             </div>
-          </div>
-          <div class="flex items-center gap-2 flex-shrink-0">
+          <% else %>
+            <div class="font-semibold text-base-content truncate text-xs">
+              Paragon
+            </div>
+          <% end %>
+          <div class="flex items-center gap-2">
             <% if order.receipt.present? %>
               <%= link_to receipt_path(order.receipt), class: "btn btn-sm btn-ghost gap-2", data: { turbo_frame: "_top" } do %>
                 <i class="fas fa-eye"></i>
