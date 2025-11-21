@@ -72,11 +72,22 @@ Rails.application.routes.draw do
   # end
 
   # Invoices (for viewing and managing)
-  resources :invoices, only: [ :index, :show, :destroy ] do
+  resources :invoices do
     member do
       post :sync_status
       post :cancel_invoice
       delete :delete_from_external
+      post :restore_products
+      post :restore_customer_data
     end
+    resources :invoice_items, only: [ :destroy ]
+  end
+
+  # Receipts
+  resources :receipts do
+    member do
+      post :restore_products
+    end
+    resources :receipt_items, only: [ :destroy ]
   end
 end

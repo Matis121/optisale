@@ -1,4 +1,4 @@
-<% content_for :title, "Faktury" %>
+<% content_for :title, "Paragony" %>
 <div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none">
   <%= link_to invoices_path, 
         class: "tab #{current_page?(invoices_path) ? 'tab-active' : ''}" do %>
@@ -11,9 +11,9 @@
 </div>
 <%= render Ui::Layout::Container::DefaultComponent.new do %>
   <!-- Header -->
-  <%= render Ui::Layout::Header::DefaultComponent.new(title: "Zarządzanie fakturami") %>
+  <%= render Ui::Layout::Header::DefaultComponent.new(title: "Zarządzanie paragonami") %>
   <!-- Content -->
-  <%= turbo_frame_tag "invoices_table" do %>
+  <%= turbo_frame_tag "receipts_table" do %>
     <%= render "table" %>
   <% end %>
 <% end %>

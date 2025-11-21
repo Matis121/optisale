@@ -9,6 +9,7 @@ class Account < ApplicationRecord
   has_many :order_status_groups, dependent: :destroy
   has_many :invoicing_integrations, dependent: :destroy
   has_many :invoices, dependent: :destroy
+  has_many :receipts, dependent: :destroy
   has_many :stock_movements, dependent: :destroy
 
   validates :name, presence: true
@@ -21,7 +22,7 @@ class Account < ApplicationRecord
   end
 
   def owner
-    users.find_by(role: 'owner')
+    users.find_by(role: "owner")
   end
 
   private

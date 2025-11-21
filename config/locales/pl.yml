@@ -61,7 +61,7 @@ pl:
     errors:
       messages:
         blank: "nie może być puste"
-        required: "jest wymagane"
+        required: " - pole wymagane"
         taken: "zostało już zajęte"
         invalid: "jest nieprawidłowe"
         too_short: "jest za krótkie (minimum to %{count} znaków)"
@@ -91,6 +91,16 @@ pl:
       user: "Użytkownik"
       account: "Konto"
     attributes:
+      invoice:
+        invoice_number: "Numer faktury"
+        invoice_fullname: "Imię i nazwisko"
+        invoice_company: "Firma"
+        invoice_nip: "NIP"
+        invoice_street: "Ulica"
+        invoice_city: "Miasto"
+        invoice_postcode: "Kod pocztowy"
+        invoice_country: "Kraj"
+        payment_method: "Metoda płatności"
       user:
         email: "Email"
         password: "Hasło"
