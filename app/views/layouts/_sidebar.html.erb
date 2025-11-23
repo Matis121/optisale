@@ -35,7 +35,7 @@
           <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-open:rotate-180"></i>
         </summary>
         <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
-          <li><%= link_to "Lista zamówień", orders_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(orders_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+          <li><%= link_to "Lista zamówień", orders_path(status: "all"), class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(orders_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
           <li><%= link_to "Faktury i paragony", invoices_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(invoices_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
           <li><%= link_to "Statusy zamówień", order_statuses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(order_statuses_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
           <li>

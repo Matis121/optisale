@@ -35,7 +35,6 @@ Rails.application.routes.draw do
       get :edit_payment
       patch :update_payment
       get :search_products
-      post :generate_invoice
     end
     resources :addresses, controller: "order/addresses"
     resources :customer_pickup_points, controller: "order/customer_pickup_points"
