@@ -1,4 +1,8 @@
 <div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none">
+  <%= link_to storage_products_path, 
+        class: "tab #{current_page?(storage_products_path) ? 'tab-active' : ''}" do %>
+    <i class="fas fa-box mr-2"></i> Produkty
+  <% end %>
   <%= link_to storage_catalogs_path, 
         class: "tab #{current_page?(storage_catalogs_path) ? 'tab-active' : ''}" do %>
     <i class="fas fa-folder mr-2"></i> Katalogi

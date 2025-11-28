@@ -11,6 +11,7 @@ class User < ApplicationRecord
   validates :password_confirmation, presence: true, length: { minimum: 12 }, on: :create
   validates :role, presence: true, inclusion: { in: %w[owner employee] }
   validates :account_id, presence: true, unless: -> { new_record? && owner? }
+  validates_associated :account
 
   before_validation :build_account_from_attributes, on: :create, if: :owner?
   before_destroy :prevent_destroy_if_owner

@@ -109,8 +109,8 @@
             <i class="fas fa-inbox text-4xl text-base-content/20"></i>
           </div>
           <p class="text-base-content/60 mb-4">Brak zamówień w tym miesiącu</p>
-          <%= link_to new_order_path, class: "btn btn-primary btn-sm gap-2" do %>
-            <i class="fas fa-plus"></i>
+          <%= button_to orders_path, method: :post, remote: true, class: "btn btn-primary btn-sm gap-2" do %>
+            <i class="fas fa-plus text-xs"></i>
             Utwórz pierwsze zamówienie
           <% end %>
         </div>
