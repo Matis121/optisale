@@ -1,4 +1,15 @@
-<div class="fixed top-0 left-0 h-full w-62 text-base-content overflow-y-auto flex flex-col">
+<style>
+  .sidebar-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .sidebar-scroll {
+    scrollbar-width: none;
+  }
+  .sidebar-scroll {
+    -ms-overflow-style: none;
+  }
+</style>
+<div class="fixed top-0 left-0 h-full w-60 text-base-content flex flex-col">
   <!-- Header/Logo Section -->
   <div class="pl-4 pr-5 py-4 border-b border-base-300/50">
     <div class="flex items-center gap-2.5">
@@ -14,7 +25,7 @@
     </div>
   </div>
   <!-- Main Navigation -->
-  <nav class="flex-1 pl-3 pr-4 py-4 space-y-1.5">
+  <nav class="sidebar-scroll flex-1 pl-3 pr-4 py-4 space-y-1.5 overflow-y-auto">
     <!-- Home Link -->
     <div class="mb-3">
       <%= link_to root_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(root_path) ? 'bg-primary/10' : ''}" do %>
