@@ -7,10 +7,10 @@ class Account < ApplicationRecord
   has_many :price_groups, dependent: :delete_all
   has_many :order_statuses, dependent: :delete_all
   has_many :order_status_groups, dependent: :destroy
-  has_many :invoicing_integrations, dependent: :destroy
   has_many :invoices, dependent: :destroy
   has_many :receipts, dependent: :destroy
   has_many :stock_movements, dependent: :destroy
+  has_many :account_integrations, dependent: :destroy
 
   validates :name, presence: true
   validates :nip, presence: true, format: { with: /\A\d{10}\z/ }, uniqueness: true

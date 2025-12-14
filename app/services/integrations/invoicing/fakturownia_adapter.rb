@@ -1,240 +1,230 @@
 module Integrations
   module Invoicing
     class FakturowniaAdapter < BaseAdapter
-      BASE_URL_TEMPLATE = "https://%{account}.fakturownia.pl"
+      BASE_URL_TEMPLATE = "https://%{subdomain}.fakturownia.pl"
 
       def test_connection
+        validate_credentials!
+
         response = http_client.get("#{base_url}/invoices.json", params: {
           api_token: api_token,
           per_page: 1
         })
 
-        return true if response.status == 200
-
-        handle_http_error(response, "testing connection")
+        if response.status == 200
+          true
+        else
+          raise "Sprawdź dane logowania (HTTP #{response.status})"
+        end
       end
 
-      def create_invoice(order)
-        invoice_data = build_invoice_payload(order)
+      # ========== FAKTURY ==========
 
+      def do_export_invoice(invoice)
+        validate_credentials!
+        raise "Faktura nie ma pozycji" if invoice.invoice_items.empty?
+        raise "Faktura już została wyeksportowana" if invoice.external_id.present?
+
+        payload = build_invoice_payload(invoice)
         response = http_client.post("#{base_url}/invoices.json", json: {
           api_token: api_token,
-          invoice: invoice_data
+          invoice: payload
         })
 
         if response.status == 201
           data = JSON.parse(response.body)
-          create_local_invoice(order, data)
+          invoice.update_columns(
+            external_id: data["id"].to_s,
+            external_invoice_number: data["number"]
+          )
         else
-          handle_http_error(response, "creating invoice")
+          raise "Nie udało się wyeksportować faktury (HTTP #{response.body}, #{payload.inspect})"
         end
       end
 
-      def get_invoice_status(invoice)
-        response = http_client.get("#{base_url}/invoices/#{invoice.external_id}.json",
-                                  params: { api_token: api_token })
-
-        if response.status == 200
-          data = JSON.parse(response.body)
-          map_status_from_fakturownia(data["status"])
-        else
-          handle_http_error(response, "getting invoice status")
-        end
-      rescue => e
-        log_error("Failed to get status for invoice #{invoice.id}", e)
-        "error"
-      end
-
-      def view_url(invoice)
-        "#{base_url}/invoices/#{invoice.external_id}"
-      end
-
-      def download_pdf_url(invoice)
-        "#{base_url}/invoices/#{invoice.external_id}.pdf?api_token=#{api_token}"
-      end
-
-      def cancel_invoice(invoice)
-        response = http_client.put("#{base_url}/invoices/#{invoice.external_id}.json", json: {
-          api_token: api_token,
-          invoice: { status: "cancelled" }
-        })
-
-        if response.status == 200
-          true
-        else
-          handle_http_error(response, "cancelling invoice")
-        end
-      rescue => e
-        log_error("Failed to cancel invoice #{invoice.id}", e)
-        false
+      def download_invoice_pdf(invoice)
+        download_pdf(invoice.external_id)
       end
 
       def delete_invoice(invoice)
-        response = http_client.delete("#{base_url}/invoices/#{invoice.external_id}.json", params: {
-          api_token: api_token
+        return if invoice.external_id.blank?
+
+        delete_document(invoice.external_id)
+        invoice.update_columns(external_id: nil, external_invoice_number: nil)
+      end
+
+      # ========== PARAGONY ==========
+
+      def do_export_receipt(receipt)
+        validate_credentials!
+        raise "Paragon nie ma pozycji" if receipt.receipt_items.empty?
+        raise "Paragon już został wyeksportowany" if receipt.external_id.present?
+
+        payload = build_receipt_payload(receipt)
+        response = http_client.post("#{base_url}/invoices.json", json: {
+          api_token: api_token,
+          invoice: payload
         })
 
-        if response.status == 200 && (response.body.to_s.strip == "ok" || response.body.to_s.include?("ok"))
-          # Invoice was successfully deleted from Fakturownia
-          true
-        elsif response.status == 404
-          # Invoice no longer exists in Fakturownia - treat as success
-          # (probably already deleted manually)
-          true
+        if response.status == 201
+          data = JSON.parse(response.body)
+          receipt.update_columns(
+            external_id: data["id"].to_s,
+            external_receipt_number: data["number"]
+          )
         else
-          handle_http_error(response, "deleting invoice")
-          false
+          raise "Nie udało się wyeksportować paragonu (HTTP #{response.status})"
         end
-      rescue => e
-        log_error("Failed to delete invoice #{invoice.id}", e)
-        false
+      end
+
+      def download_receipt_pdf(receipt)
+        download_pdf(receipt.external_id)
+      end
+
+      def delete_receipt(receipt)
+        return if receipt.external_id.blank?
+
+        delete_document(receipt.external_id)
+        receipt.update_columns(external_id: nil, external_receipt_number: nil)
       end
 
       private
 
-      def base_url
-        if account.blank?
-          raise "Account name is missing from credentials"
+      # ========== WSPÓLNE ==========
+
+      def download_pdf(external_id)
+        return nil if external_id.blank?
+
+        response = http_client.get("#{base_url}/invoices/#{external_id}.pdf", params: { api_token: api_token })
+
+        if response.status == 200
+          response.body.to_s
+        else
+          raise "Nie udało się pobrać PDF (HTTP #{response.status})"
         end
-        @base_url ||= BASE_URL_TEMPLATE % { account: account }
+      end
+
+      def delete_document(external_id)
+        response = http_client.delete("#{base_url}/invoices/#{external_id}.json", params: {
+          api_token: api_token
+        })
+
+        unless response.status == 200
+          raise "Nie udało się usunąć dokumentu z Fakturowni (HTTP #{response.status})"
+        end
+      end
+
+      def base_url
+        raise "Subdomain is missing from credentials" if subdomain.blank?
+        @base_url ||= BASE_URL_TEMPLATE % { subdomain: subdomain }
       end
 
       def api_token
-        @api_token ||= credentials[:api_token] || credentials["api_token"]
+        @api_token ||= credentials["api_token"]
       end
 
-      def account
-        @account ||= credentials[:account] || credentials["account"]
+      def subdomain
+        @subdomain ||= credentials["subdomain"]
       end
 
-      def build_invoice_payload(order)
-        data = order_to_invoice_data(order)
+      def validate_credentials!
+        raise "API token is required" if api_token.blank?
+        raise "Subdomain is required" if subdomain.blank?
+        raise "Invalid subdomain format" unless subdomain.match?(/\A[a-zA-Z0-9\-_]+\z/)
+      end
 
+      # ========== PAYLOADY ==========
+
+      def build_invoice_payload(invoice)
         {
           kind: "vat",
-          number: nil, # Auto-generate
-          sell_date: Date.current.strftime("%Y-%m-%d"),
-          issue_date: Date.current.strftime("%Y-%m-%d"),
-          payment_to: 14.days.from_now.strftime("%Y-%m-%d"),
-          payment_type: "transfer",
-
-          # Customer data
-          buyer_name: data[:customer][:company] || data[:customer][:name],
-          buyer_tax_no: data[:customer][:tax_id],
-          buyer_email: data[:customer][:email],
-          buyer_phone: data[:customer][:phone],
-
-          # Billing address
-          buyer_street: data[:addresses][:billing][:street],
-          buyer_city: data[:addresses][:billing][:city],
-          buyer_post_code: data[:addresses][:billing][:postal_code],
-          buyer_country: data[:addresses][:billing][:country] || "PL",
-
-          # Shipping address (if different)
-          delivery_address: build_delivery_address(data[:addresses][:shipping]),
-
-          # Items
-          positions: data[:items].map { |item| map_item_to_fakturownia(item) },
-
-          # Additional options
+          number: nil,
+          sell_date: invoice.date_sell.strftime("%Y-%m-%d"),
+          issue_date: invoice.date_add.strftime("%Y-%m-%d"),
+          payment_to: invoice.date_pay_to&.strftime("%Y-%m-%d") || 14.days.from_now.strftime("%Y-%m-%d"),
+          payment_type: map_payment_method(invoice.payment_method),
+          buyer_name: invoice.invoice_company.presence || invoice.invoice_fullname,
+          buyer_tax_no: invoice.invoice_nip,
+          buyer_street: invoice.invoice_street,
+          buyer_city: invoice.invoice_city,
+          buyer_post_code: invoice.invoice_postcode,
+          buyer_country: invoice.invoice_country || "PL",
+          positions: invoice.invoice_items.map { |item| build_invoice_position(item) },
           lang: "pl",
-          currency: "PLN",
-          exchange_currency: "PLN",
-
-          # Internal reference
-          description: "Zamówienie ##{data[:order_id]}"
-        }
-      end
-
-      def build_delivery_address(shipping_address)
-        return nil if shipping_address.blank? || shipping_address[:street].blank?
-
-        "#{shipping_address[:name]}\n#{shipping_address[:street]}\n#{shipping_address[:postal_code]} #{shipping_address[:city]}"
-      end
-
-      def map_item_to_fakturownia(item)
-        net_price = calculate_net_price(item[:unit_price], item[:tax_rate])
-
-        {
-          name: item[:name],
-          tax: item[:tax_rate],
-          price_net: net_price,
-          quantity: item[:quantity],
-          total_price_gross: item[:total],
-
-          # Optional fields
-          code: item[:sku],
-          ean_code: item[:ean]
+          currency: invoice.currency || "PLN",
+          exchange_currency: invoice.currency || "PLN",
+          description: "Zamówienie ##{invoice.order_id}",
+          oid: invoice.invoice_number
         }.compact
       end
 
-      def calculate_net_price(gross_price, tax_rate)
-        return gross_price if tax_rate.to_f.zero?
-
-        (gross_price / (1 + tax_rate.to_f / 100.0)).round(2)
+      def build_receipt_payload(receipt)
+        {
+          kind: "receipt",
+          number: nil,
+          issue_date: receipt.date_add.strftime("%Y-%m-%d"),
+          payment_type: map_payment_method(receipt.payment_method),
+          buyer_tax_no: receipt.nip.presence,
+          positions: receipt.receipt_items.map { |item| build_receipt_position(item) },
+          lang: "pl",
+          currency: receipt.currency || "PLN",
+          description: "Zamówienie ##{receipt.order_id}",
+          oid: receipt.receipt_number
+        }.compact
       end
 
-      def create_local_invoice(order, fakturownia_data)
-        invoice = Invoice.create!(
-          account: order.account,
-          order: order,
-          invoicing_integration: integration,
-          invoice_number: fakturownia_data["number"],
-          external_id: fakturownia_data["id"].to_s,
-          amount: fakturownia_data["price_gross"].to_f,
-          issue_date: Date.parse(fakturownia_data["issue_date"]),
-          due_date: Date.parse(fakturownia_data["payment_to"]),
-          external_url: view_url_for_id(fakturownia_data["id"]),
-          external_data: fakturownia_data,
-          status: map_status_from_fakturownia(fakturownia_data["status"])
-        )
-
-        invoice
-      rescue ActiveRecord::RecordInvalid => e
-        log_error("Failed to create local invoice record", e)
-        raise "Failed to save invoice: #{e.message}"
+      def build_invoice_position(item)
+        {
+          name: item.name,
+          tax: item.tax_rate.to_f,
+          price_net: item.price_netto.to_f,
+          quantity: item.quantity,
+          total_price_gross: (item.price_brutto * item.quantity).to_f,
+          code: item.sku,
+          ean_code: item.ean
+        }.compact
       end
 
-      def map_status_from_fakturownia(fakturownia_status)
-        case fakturownia_status&.downcase
-        when "issued", "sent"
-          "sent"
-        when "paid"
-          "paid"
-        when "cancelled"
-          "cancelled"
-        when "partial"
-          "partial"
-        else
-          "draft"
+      def build_receipt_position(item)
+        price_netto = item.price_brutto / (1 + item.tax_rate.to_f / 100.0)
+        {
+          name: item.name,
+          tax: item.tax_rate.to_f,
+          price_net: price_netto.round(2),
+          quantity: item.quantity,
+          total_price_gross: (item.price_brutto * item.quantity).to_f,
+          code: item.sku,
+          ean_code: item.ean
+        }.compact
+      end
+
+      def map_payment_method(payment_method)
+        # Check if there's a custom mapping in settings
+        mapping = account_integration.settings&.dig("payment_method_mapping")
+        if mapping.present? && mapping.is_a?(Hash)
+          mapped_value = mapping[payment_method.to_s]
+          return mapped_value if mapped_value.present?
+
+          default_value = mapping["default"]
+          default_value if default_value.present?
         end
       end
 
-      def view_url_for_id(external_id)
-        "#{base_url}/invoices/#{external_id}"
+      # Hardcoded list of payment methods in Fakturownia
+      def self.available_payment_methods
+        [
+          { value: "Przelew", label: "Przelew" },
+          { value: "Gotówka", label: "Gotówka" },
+          { value: "Za Pobraniem", label: "Za Pobraniem" },
+          { value: "Karta", label: "Karta" },
+          { value: "PayPal", label: "PayPal" },
+          { value: "PayU", label: "PayU" },
+          { value: "Przelewy24", label: "Przelewy24" }
+        ]
       end
 
-      def handle_http_error(response, action)
-        error_message = "HTTP #{response.status} error while #{action}"
-
-        begin
-          error_data = JSON.parse(response.body)
-          error_message += ": #{error_data['message'] || error_data['error']}" if error_data["message"] || error_data["error"]
-        rescue JSON::ParserError
-          error_message += ": #{response.body.to_s.truncate(200)}"
-        end
-
-        log_error(error_message)
-        raise error_message
-      end
-
-      # Credentials validation
-      def validate_credentials!
-        raise "API token is required" if api_token.blank?
-        raise "Account subdomain is required" if account.blank?
-
-        # Basic format validation
-        raise "Invalid account format" unless account.match?(/\A[a-zA-Z0-9\-_]+\z/)
+      def payment_methods
+        self.class.available_payment_methods
       end
     end
   end

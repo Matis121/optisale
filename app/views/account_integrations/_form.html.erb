@@ -1,0 +1,69 @@
+<%= form_with(model: @account_integration, url: local_assigns[:form_url], method: (local_assigns[:method] || :post), local: true, data: { turbo: false }, class: "space-y-6") do |form| %>
+  <%# Hidden fields %>
+  <%= form.hidden_field :integration_id unless @account_integration.persisted? %>
+  <%# Integration name - Always visible %>
+  <div class="form-control">
+    <%= form.label :name, "Nazwa integracji", class: "label" %>
+    <%= form.text_field :name, 
+                        class: "input input-bordered w-full #{'input-error' if @account_integration.errors[:name].any?}", 
+                        placeholder: "np. Moja #{@config[:name]}" %>
+    <% if @account_integration.errors[:name].any? %>
+      <span class="text-sm text-error mt-1"><%= @account_integration.errors[:name].first %></span>
+    <% end %>
+  </div>
+  <div class="divider"></div>
+  <%# Dynamic sections from config %>
+  <% @config[:schema]&.each_with_index do |section, index| %>
+    <div data-tabs-target="panel" id="<%= section[:url_hash].parameterize %>" class="hidden">
+      <h3 class="font-semibold text-lg mb-6"><%= section[:section] %></h3>
+      <div class="space-y-6">
+        <% section[:fields]&.each do |field_key, field| %>
+          <% field_name = "account_integration[#{section[:store]}][#{field_key}]" %>
+          <% field_id = "account_integration_#{section[:store]}_#{field_key}" %>
+          <% field_value = @account_integration.send(section[:store]).try(:[], field_key.to_s) %>
+          <% has_error = @account_integration.errors[:"#{section[:store]}_#{field_key}"].any? rescue false %>
+          <% partial_name = case field[:type]
+          when "checkbox" then "checkbox"
+          when "password" then "password"
+          when "select" then "select"
+          when "textarea" then "textarea"
+          when "number" then "number"
+          when "time" then "time"
+          when "payment_method_mapping" then "payment_method_mapping"
+          when "month_export" then "month_export"
+          else "text"
+          end %>
+          <%= render partial: "account_integrations/form_fields/#{partial_name}", locals: {
+                field: field,
+                field_key: field_key,
+                field_name: field_name,
+                field_id: field_id,
+                field_value: field_value,
+                has_error: has_error,
+                section: section,
+                form: form
+              } %>
+        <% end %>
+      </div>
+      <%# Instructions - only in first tab (Konto) %>
+      <% if index.zero? && @config[:instructions].present? %>
+        <div class="alert alert-info mt-6">
+          <i class="fas fa-info-circle"></i>
+          <div>
+            <h4 class="font-semibold"><%= @config[:instructions][:title] %></h4>
+            <ol class="list-decimal list-inside text-sm mt-2 space-y-1">
+              <% @config[:instructions][:steps]&.each do |step| %>
+                <li><%= step %></li>
+              <% end %>
+            </ol>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+  <%# Action buttons %>
+  <div class="flex justify-end gap-3 pt-6 hidden" data-tabs-target="actions">
+    <%= link_to "Anuluj", local_assigns[:cancel_path], class: "btn btn-ghost" %>
+    <%= form.submit local_assigns[:submit_text], class: "btn btn-primary" %>
+  </div>
+<% end %>

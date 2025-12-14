@@ -79,7 +79,7 @@
     </div>
     <!-- Single Items -->
     <div class="space-y-1.5">
-      <%= link_to integrations_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(integrations_path) || controller_name == 'integrations' ? 'bg-primary/10' : ''}" do %>
+      <%= link_to account_integrations_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(account_integrations_path) || controller_name == 'account_integrations' ? 'bg-primary/10' : ''}" do %>
         <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
           <i class="fas fa-plug text-sm"></i>
         </div>

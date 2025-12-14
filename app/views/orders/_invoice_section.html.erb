@@ -1,67 +1,88 @@
 <%= turbo_frame_tag "order_documents_#{order.id}" do %>
-  <div>
-    <h4 class="font-medium text-base-content mb-4">Dokumenty</h4>
-    <div class="grid grid-cols-2 gap-3">
-      <!-- Invoice Card -->
-      <div class="border border-gray-500/30 rounded-md transition-colors p-2">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex-1 min-w-0">
-            <% if order.invoice.present? %>
-              <div class="font-semibold text-base-content truncate text-xs">
-                <%= link_to order.invoice.invoice_number, invoice_path(order.invoice), class: "link link-primary", data: { turbo_frame: "_top" } %>
-              </div>
-              <% if order.invoice.external_invoice_number.present? %>
-                <div class="text-xs text-base-content/50 mt-0.5 flex items-center gap-1">
-                  <i class="fas fa-external-link-alt text-[10px]"></i>
-                  <span>Zewnętrzny: <span class="font-medium"><%= order.invoice.external_invoice_number %></span></span>
-                </div>
-              <% end %>
-            <% else %>
-              <div class="font-semibold text-base-content truncate text-xs">
-                Faktura
-              </div>
-            <% end %>
-          </div>
-          <div class="flex items-center gap-2">
-            <% if order.invoice.present? %>
-              <%= button_to invoice_path(order.invoice), method: :delete, class: "btn btn-sm btn-ghost text-error hover:bg-error/10", data: { turbo_confirm: "Czy na pewno chcesz usunąć tę fakturę?" } do %>
-                <i class="fas fa-trash"></i>
-              <% end %>
-            <% else %>
-              <%= button_to invoices_path, method: :post, params: { order_id: order.id }, class: "btn btn-sm btn-primary gap-2" do %>
-                <i class="fas fa-plus"></i>
-                <span class="hidden sm:inline">Wystaw</span>
-              <% end %>
-            <% end %>
-          </div>
-        </div>
+  <div class="space-y-2">
+    <!-- Faktura -->
+    <div class="flex items-center justify-between group">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-file-invoice text-base-content/40 text-xs"></i>
+        <span class="text-sm text-base-content/70">Faktura</span>
       </div>
-      <!-- Receipt Card -->
-      <div class="border border-gray-500/30 rounded-md transition-colors p-2">
-        <div class="flex items-center justify-between gap-3">
-          <% if order.receipt.present? %>
-            <div class="font-semibold text-base-content truncate text-xs">
-              <%= link_to order.receipt.receipt_number, receipt_path(order.receipt), class: "link link-primary", data: { turbo_frame: "_top" } %>
-            </div>
-          <% else %>
-            <div class="font-semibold text-base-content truncate text-xs">
-              Paragon
-            </div>
+      <% if order.invoice.present? %>
+        <div class="flex items-center gap-1">
+          <%= link_to invoice_path(order.invoice), 
+                      class: "btn btn-ghost btn-sm font-mono gap-1 border border-gray-500/20 hover:border-gray-500/40 cursor-pointer",
+                      data: { turbo_frame: "_top" },
+                      title: "Lokalna" do %>
+            <i class="fas fa-home text-[12px] opacity-50 mr-1"></i>
+            <%= order.invoice.invoice_number %>
           <% end %>
-          <div class="flex items-center gap-2">
-            <% if order.receipt.present? %>
-              <%= button_to receipt_path(order.receipt), method: :delete, class: "btn btn-sm btn-ghost text-error hover:bg-error/10", data: { turbo_confirm: "Czy na pewno chcesz usunąć ten paragon?" } do %>
-                <i class="fas fa-trash"></i>
-              <% end %>
-            <% else %>
-              <%= button_to receipts_path, method: :post, params: { order_id: order.id }, class: "btn btn-sm btn-primary gap-2" do %>
-                <i class="fas fa-plus"></i>
-                <span class="hidden sm:inline">Wystaw</span>
-              <% end %>
+          <% if order.invoice.external_invoice_number.present? %>
+            <%= link_to download_pdf_invoice_path(order.invoice),
+                        class: "btn btn-ghost btn-sm font-mono gap-1 border border-gray-500/20 hover:border-gray-500/40 cursor-pointer",
+                        data: { turbo_frame: "_top" },
+                        title: "Zewnętrzna" do %>
+              <i class="fas fa-external-link-alt text-[12px] opacity-50 mr-1"></i>
+              <%= order.invoice.external_invoice_number %>
             <% end %>
-          </div>
+          <% end %>
+          <%= button_to invoice_path(order.invoice),
+                        method: :delete,
+                        class: "btn btn-ghost btn-sm text-error/70 hover:text-error border border-error/20 hover:border-error/40 cursor-pointer",
+                        title: "Usuń",
+                        data: { turbo_confirm: "Usuń fakturę?" } do %>
+            <i class="fas fa-trash text-xs"></i>
+          <% end %>
         </div>
+      <% else %>
+        <%= button_to invoices_path,
+                      method: :post,
+                      params: { order_id: order.id },
+                      class: "btn btn-ghost btn-sm border border-gray-500/30 hover:border-gray-500/50" do %>
+          <i class="fas fa-plus text-xs"></i>
+          Wystaw fakturę
+        <% end %>
+      <% end %>
+    </div>
+    <!-- Paragon -->
+    <div class="flex items-center justify-between group">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-receipt text-base-content/40 text-xs"></i>
+        <span class="text-sm text-base-content/70">Paragon</span>
       </div>
+      <% if order.receipt.present? %>
+        <div class="flex items-center gap-1">
+          <%= link_to receipt_path(order.receipt), 
+                      class: "btn btn-ghost btn-sm font-mono gap-1 border border-gray-500/20 hover:border-gray-500/40 cursor-pointer",
+                      data: { turbo_frame: "_top" },
+                      title: "Lokalny" do %>
+            <i class="fas fa-home text-[12px] opacity-50 mr-1"></i>
+            <%= order.receipt.receipt_number %>
+          <% end %>
+          <% if order.receipt.external_receipt_number.present? %>
+            <%= link_to download_pdf_receipt_path(order.receipt),
+                        class: "btn btn-ghost btn-sm font-mono gap-1 border border-gray-500/20 hover:border-gray-500/40 cursor-pointer",
+                        data: { turbo_frame: "_top" },
+                        title: "Zewnętrzny" do %>
+              <i class="fas fa-external-link-alt text-[12px] opacity-50 mr-1"></i>
+              <%= order.receipt.external_receipt_number %>
+            <% end %>
+          <% end %>
+          <%= button_to receipt_path(order.receipt),
+                        method: :delete,
+                        class: "btn btn-ghost btn-sm text-error/70 hover:text-error border border-error/20 hover:border-error/40 cursor-pointer",
+                        title: "Usuń",
+                        data: { turbo_confirm: "Usuń paragon?" } do %>
+            <i class="fas fa-trash text-xs"></i>
+          <% end %>
+        </div>
+      <% else %>
+        <%= button_to receipts_path,
+                      method: :post,
+                      params: { order_id: order.id },
+                      class: "btn btn-ghost btn-sm border border-gray-500/30 hover:border-gray-500/50" do %>
+          <i class="fas fa-plus text-xs"></i>
+          Wystaw paragon
+        <% end %>
+      <% end %>
     </div>
   </div>
 <% end %>

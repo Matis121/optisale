@@ -1,22 +1,32 @@
 <%= turbo_frame_tag dom_id(order, :payment) do %>
   <div>
-    <div class="flex items-center gap-4">
-      <span class="text-sm text-base-content/60">Zapłacono:</span>
-      <div class="flex items-center gap-2">
-        <%= form_with model: order, url: update_payment_order_path(order), method: :patch do |f| %>
-          <div class="flex gap-1">
-            <%= f.number_field :amount_paid, step: 0.01, min: 0, class: "input w-full input-sm" %>
-            <%= f.submit "Zapisz", class: "btn btn-primary btn-sm" %>
-            <%= link_to "Anuluj", order_path(order), class: "btn btn-sm" %>
-            <%= button_tag name: "set_amount_paid", value: "full", class: "btn btn-success btn-sm" do %>
-              <%= @order.total_price %>
-            <% end %>
-            <%= button_tag name: "set_amount_paid", value: "zero", class: "btn btn-error btn-sm" do %>
-              0.0
-            <% end %>
-          </div>
-        <% end %>
+    <%= form_with model: order, url: update_payment_order_path(order), method: :patch do |f| %>
+      <div class="flex items-center gap-1 h-8">
+        <span class="text-sm text-base-content/60">Zapłacono:</span>
+        <%= f.number_field :amount_paid, step: 0.01, min: 0, 
+            class: "input input-sm w-22" %>
+        <!-- Dropdown with quick amounts -->
+        <div class="dropdown">
+          <button type="button" class="btn btn-sm" tabindex="0">
+            <i class="fas fa-bolt"></i>
+          </button>
+          <ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32 z-10">
+            <li>
+              <%= button_tag type: "submit", name: "set_amount_paid", value: "full", 
+                  class: "btn btn-ghost btn-sm justify-start w-full" do %>
+                <%= order.total_price %>
+              <% end %>
+            </li>
+            <li>
+              <%= button_tag type: "submit", name: "set_amount_paid", value: "zero", 
+                  class: "btn btn-ghost btn-sm justify-start w-full" do %>
+                0.0
+              <% end %>
+            </li>
+          </ul>
+        </div>
+        <%= f.submit "Zapisz", class: "btn btn-primary btn-sm" %>
       </div>
-    </div>
+    <% end %>
   </div>
 <% end %>

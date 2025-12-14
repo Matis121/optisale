@@ -1,0 +1,22 @@
+<div class="border border-base-300 rounded-lg px-4 py-2 bg-base-50">
+  <div class="flex items-center gap-3">
+    <%= check_box_tag field_name, "1", field[:default] || field_value,
+        id: field_id,
+        class: "checkbox checkbox-primary" %>
+    <div class="flex-1">
+      <label for="<%= field_id %>" class="text-base cursor-pointer block">
+        <%= field[:label] %>
+      </label>
+      <% if field[:hint].present? %>
+        <p class="text-sm text-base-content/70 leading-relaxed">
+          <%= field[:hint] %>
+        </p>
+      <% end %>
+      <% if has_error %>
+        <span class="text-sm text-error mt-2 block">
+          <%= @account_integration.errors[:"#{section[:store]}_#{field_key}"].first %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+</div>

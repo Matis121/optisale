@@ -1,39 +1,24 @@
 module Integrations
   class BaseAdapter
-    attr_reader :integration
+    attr_reader :account_integration
 
-    def initialize(integration)
-      @integration = integration
-    end
-
-    # Interface to implement in specific adapters
-
-    # Connection test - returns true/false
-    def test_connection
-      raise NotImplementedError, "Subclass must implement test_connection"
+    def initialize(account_integration)
+      @account_integration = account_integration
     end
 
     protected
 
-    # Helper methods available for all adapters
 
     def credentials
-      integration.credentials
+      account_integration.credentials || {}
     end
 
-    def configuration
-      integration.configuration
+    def settings
+      account_integration.settings || {}
     end
 
     def http_client
       @http_client ||= HTTP.timeout(30)
-    end
-
-    # Logs errors with context
-    def log_error(message, error = nil)
-      Rails.logger.error "[#{self.class.name}] #{message}"
-      Rails.logger.error "[#{self.class.name}] Error: #{error.message}" if error
-      Rails.logger.error "[#{self.class.name}] Backtrace: #{error.backtrace.join("\n")}" if error&.backtrace
     end
   end
 end

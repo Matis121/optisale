@@ -10,9 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_19_210716) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_14_011351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "account_integration_syncs", force: :cascade do |t|
+    t.bigint "account_integration_id", null: false
+    t.string "sync_type"
+    t.boolean "enabled"
+    t.integer "frequency_minutes"
+    t.string "status"
+    t.text "error_message"
+    t.datetime "last_sync_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_integration_id"], name: "index_account_integration_syncs_on_account_integration_id"
+  end
+
+  create_table "account_integrations", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "integration_id", null: false
+    t.string "name"
+    t.text "credentials"
+    t.jsonb "settings"
+    t.string "status"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_account_integrations_on_account_id"
+    t.index ["integration_id"], name: "index_account_integrations_on_integration_id"
+  end
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -80,6 +107,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_210716) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "integrations", force: :cascade do |t|
+    t.string "name"
+    t.string "key"
+    t.string "integration_type"
+    t.boolean "multiple_allowed"
+    t.boolean "enabled"
+    t.boolean "beta"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "invoice_items", force: :cascade do |t|
     t.bigint "invoice_id", null: false
     t.string "name", limit: 200, null: false
@@ -125,23 +163,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_210716) do
     t.string "external_invoice_number", limit: 30
     t.index ["account_id"], name: "index_invoices_on_account_id"
     t.index ["order_id"], name: "index_invoices_on_order_id"
-  end
-
-  create_table "invoicing_integrations", force: :cascade do |t|
-    t.string "provider", null: false
-    t.string "name", null: false
-    t.boolean "active", default: false
-    t.text "encrypted_credentials"
-    t.text "configuration"
-    t.string "status", default: "inactive"
-    t.datetime "last_sync_at"
-    t.text "error_message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "account_id"
-    t.index ["account_id"], name: "index_invoicing_integrations_on_account_id"
-    t.index ["active"], name: "index_invoicing_integrations_on_active"
-    t.index ["status"], name: "index_invoicing_integrations_on_status"
   end
 
   create_table "order_products", force: :cascade do |t|
@@ -329,13 +350,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_210716) do
     t.index ["account_id"], name: "index_warehouses_on_account_id"
   end
 
+  add_foreign_key "account_integration_syncs", "account_integrations"
+  add_foreign_key "account_integrations", "accounts"
+  add_foreign_key "account_integrations", "integrations"
   add_foreign_key "addresses", "orders"
   add_foreign_key "catalogs", "accounts"
   add_foreign_key "customer_pickup_points", "orders"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoices", "accounts"
   add_foreign_key "invoices", "orders"
-  add_foreign_key "invoicing_integrations", "accounts"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "order_products", "warehouses"

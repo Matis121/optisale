@@ -1,11 +1,7 @@
 class InvoicingIntegration < Integration
-  # Specific associations for fakturownia
-
-  # Specific validations for fakturownia
   validates :provider, inclusion: { in: %w[fakturownia] }
   validate :validate_required_credentials
 
-  # Returns required credentials for given provider (specific for fakturownia)
   def self.required_credentials_for(provider)
     case provider
     when "fakturownia"
@@ -15,7 +11,6 @@ class InvoicingIntegration < Integration
     end
   end
 
-  # Validates that all required credentials are present (specific for fakturownia)
   def validate_required_credentials
     return unless provider.present?
 
@@ -37,7 +32,6 @@ class InvoicingIntegration < Integration
   end
 
 
-  # Specific methods for fakturownia
   def adapter
     @adapter ||= case provider
     when "fakturownia"

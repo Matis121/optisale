@@ -1,0 +1,22 @@
+<%= link_to new_account_integration_path(provider: integration.key), class: "block group" do %>
+  <div class="flex flex-col gap-2 h-full">
+    <div>
+      <% if integration.beta? %>
+        <span class="badge badge-warning badge-xs">Beta</span>
+      <% end %>
+    </div>
+    <div class="w-full h-26 rounded-md bg-white flex items-center justify-center p-2 transition-transform duration-200 group-hover:scale-[1.02]">
+      <% if (logo_path = integration_logo_asset_path(integration.key)) %>
+        <%= image_tag logo_path, class: "w-full h-full object-contain" %>
+      <% else %>
+        <i class="fas fa-plug text-2xl text-base-content/40"></i>
+      <% end %>
+    </div>
+    <div class="flex items-center justify-end gap-2 transition-all duration-200">
+      <span class="text-[11px] rounded-full bg-base-200/60 text-base-content/70 group-hover:bg-base-300/60 group-hover:text-base-content">
+        Połącz
+      </span>
+      <i class="fas fa-arrow-right text-[10px] text-base-content/40 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-base-content/70"></i>
+    </div>
+  </div>
+<% end %>

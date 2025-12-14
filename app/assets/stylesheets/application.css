@@ -8,3 +8,37 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+ .select-sm {
+  padding: 3px 30px 3px 10px;
+ }
+
+ label.label {
+  margin-bottom: 4px;
+ }
+
+ /* Tabs loading state - hide ALL panels and actions until JS determines the active tab */
+ .tabs-loading [data-tabs-target="panel"],
+ .tabs-loading [data-tabs-target="actions"] {
+   display: none !important;
+ }
+
+ /* Tabs panel animations */
+ [data-tabs-target="panel"]:not(.hidden),
+ [data-tabs-target="actions"]:not(.hidden) {
+   animation: tabFadeIn 0.2s ease-out;
+ }
+
+ [data-tabs-target="panel"].hidden,
+ [data-tabs-target="actions"].hidden {
+   display: none;
+ }
+
+ @keyframes tabFadeIn {
+   from {
+     opacity: 0;
+   }
+   to {
+     opacity: 1;
+   }
+ }

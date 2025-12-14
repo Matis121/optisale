@@ -1,6 +1,7 @@
 class ReceiptsController < ApplicationController
-  before_action :set_receipt, only: [ :show, :edit, :update, :destroy, :restore_products ]
+  before_action :set_receipt, only: [ :show, :edit, :update, :destroy, :restore_products, :download_pdf ]
   before_action :set_receipts, only: [ :index, :destroy ]
+  before_action :set_order, only: [ :create ]
 
   def index
   end
@@ -23,23 +24,12 @@ class ReceiptsController < ApplicationController
   end
 
   def create
-    unless params[:order_id]
-      redirect_to orders_path, alert: "Brak order_id."
-      return
-    end
-
-    order = current_account.orders.find_by(id: params[:order_id])
-    unless order
-      redirect_to orders_path, alert: "Zamówienie nie zostało znalezione."
-      return
-    end
-
-    @receipt = current_account.receipts.new(order: order)
+    @receipt = current_account.receipts.new(order: @order)
 
     if @receipt.save
-      order.association(:receipt).reload
+      @order.association(:receipt).reload
       flash.now[:notice] = "Paragon został utworzony."
-      render_order_documents(order)
+      render_order_documents(@order)
     else
       error_message = "Nie udało się utworzyć paragonu: #{@receipt.errors.full_messages.join(', ')}"
       flash.now[:alert] = error_message
@@ -49,9 +39,18 @@ class ReceiptsController < ApplicationController
 
   def destroy
     order = @receipt.order
+
+    begin
+      @receipt.delete_from_external!
+    rescue => e
+      flash.now[:alert] = e.message
+      render_flash_messages
+      return
+    end
+
     if @receipt.destroy
       order.association(:receipt).reload if order
-      flash.now[:notice] = "Paragon został usunięty z lokalnej bazy danych."
+      flash.now[:notice] = "Paragon został usunięty."
 
       if request.referer.match?(%r{/receipts/\d+})
         redirect_to receipts_path, notice: "Paragon został usunięty."
@@ -75,12 +74,29 @@ class ReceiptsController < ApplicationController
     end
   end
 
+  def download_pdf
+    pdf_data = @receipt.download_pdf
+
+    if pdf_data
+      send_data pdf_data, filename: "#{@receipt.external_receipt_number || @receipt.receipt_number}.pdf", type: "application/pdf"
+    else
+      redirect_to @receipt, alert: "Nie udało się pobrać PDF paragonu."
+    end
+  end
+
   private
 
   def receipt_params
     params.require(:receipt).permit(
       :receipt_number, :series_id, :year, :month, :sub_id, :date_add, :payment_method, :nip, :currency, :total_price_brutto, :external_receipt_number, :external_id
     )
+  end
+
+  def set_order
+    @order = current_account.orders.find_by(id: params[:order_id])
+    unless @order
+      redirect_to orders_path, alert: "Zamówienie nie zostało znalezione."
+    end
   end
 
   def set_receipt

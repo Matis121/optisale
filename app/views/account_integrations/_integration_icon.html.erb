@@ -1,0 +1,12 @@
+<div class="relative">
+  <div class="w-26 h-18 rounded-md bg-white border border-base-200 flex items-center justify-center flex-shrink-0">
+    <% if (logo_path = integration_logo_asset_path(account_integration.integration.key)) %>
+      <%= image_tag logo_path, class: "w-22 h-14 object-contain" %>
+    <% else %>
+      <i class="fas fa-plug text-xl text-base-content/60"></i>
+    <% end %>
+  </div>
+  <% if account_integration.error_message.present? %>
+    <div class="absolute -top-1 -right-1 w-4 h-4 bg-error rounded-full border-2 border-base-100" title="Błąd połączenia"></div>
+  <% end %>
+</div>

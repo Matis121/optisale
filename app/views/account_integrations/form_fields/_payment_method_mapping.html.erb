@@ -1,0 +1,63 @@
+<% mapping_value = field_value.is_a?(Hash) ? field_value : {} %>
+<% if @order_payment_methods.present? && @integration_payment_methods.present? %>
+  <div class="border border-base-300 rounded-lg p-4 bg-base-50">
+    <div class="space-y-3">
+      <div class="flex items-center gap-3">
+        <div class="flex-1 min-w-0">
+          <label class="text-sm font-medium text-base-content block truncate">
+            Domyślna metoda płatności
+          </label>
+        </div>
+        <div class="flex-1">
+          <% default_key = "#{field_name}[default]" %>
+          <% current_default = mapping_value["default"] %>
+          <%= select_tag default_key,
+          options_for_select(
+            [["-- Nie mapuj --", ""]] + @integration_payment_methods.map { |pm| [pm[:label], pm[:value]] },
+            current_default
+          ),
+          class: "select select-bordered w-full select-sm",
+          data: { "payment-mapping": "true" } %>
+        </div>
+      </div>
+      <% @order_payment_methods.each do |order_method| %>
+        <% mapping_key = "#{field_name}[#{order_method}]" %>
+        <% current_mapping = mapping_value[order_method.to_s] || mapping_value[order_method.to_sym] %>
+        <div class="flex items-center gap-3">
+          <div class="flex-1 min-w-0">
+            <label class="text-sm font-medium text-base-content block truncate" title="<%= order_method %>">
+              <%= order_method %>
+            </label>
+          </div>
+          <div class="flex-1">
+            <%# DOdaj też wartość domyślną, którą się ustawi jeśli inne nie są zmapowane
+            Ale to też ma być jako payment-mapping, i też jako dropdown, i też jako value %>
+            <%= select_tag mapping_key,
+                options_for_select(
+                  [["-- Nie mapuj --", ""]] + @integration_payment_methods.map { |pm| [pm[:label], pm[:value]] },
+                  current_mapping
+                ),
+                class: "select select-bordered w-full select-sm",
+                data: { "payment-mapping": "true" } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <% if field[:hint].present? %>
+      <p class="text-xs text-base-content/60 mt-3">
+        <%= field[:hint] %>
+      </p>
+    <% end %>
+  </div>
+<% else %>
+  <div class="alert alert-info">
+    <i class="fas fa-info-circle"></i>
+    <div>
+      <% if @order_payment_methods.blank? %>
+        <p class="text-sm">Brak metod płatności w zamówieniach. Dodaj zamówienia z metodami płatności, aby móc je zmapować.</p>
+      <% else %>
+        <p class="text-sm">Nie można pobrać metod płatności z integracji.</p>
+      <% end %>
+    </div>
+  </div>
+<% end %>

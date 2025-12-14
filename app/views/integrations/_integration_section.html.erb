@@ -1,0 +1,11 @@
+<section>
+  <div class="flex items-center gap-3 mb-5">
+    <div class="w-4 h-8 rounded-lg bg-base-200 flex items-center justify-center text-base-content/70">
+      <i class="fas <%= config[:icon] %>"></i>
+    </div>
+    <h2 class="text-md font-semibold text-base-content"><%= config[:label] %></h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-8 gap-5">
+    <%= render partial: "integrations/integration_card", collection: integrations, as: :integration %>
+  </div>
+</section>

@@ -10,6 +10,7 @@ class Receipt < ApplicationRecord
 
   before_validation :populate_from_order_snapshot, if: -> { order.present? && new_record? }
   after_create :snapshot_receipt_items
+  after_create :export_to_external_system
 
   validates :order_id, uniqueness: { scope: :account_id, message: "może mieć tylko jeden paragon" }
   validates :total_price_brutto, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -63,7 +64,28 @@ class Receipt < ApplicationRecord
     true
   end
 
+  def export_to_external!
+    invoicing_adapter&.export_receipt(self)
+  end
+
+  def download_pdf
+    return nil if external_id.blank?
+    invoicing_adapter&.download_receipt_pdf(self)
+  end
+
+  def delete_from_external!
+    return if external_id.blank?
+    invoicing_adapter&.delete_receipt(self)
+  end
+
   private
+
+  def invoicing_adapter
+    account.account_integrations.active
+      .joins(:integration)
+      .find_by(integrations: { integration_type: "invoicing" })
+      &.adapter
+  end
 
   def populate_from_order_snapshot
     return unless order
@@ -89,5 +111,11 @@ class Receipt < ApplicationRecord
     order.order_products.each do |op|
       receipt_items.create(name: op.name, sku: op.sku, ean: op.ean, price_brutto: op.gross_price, tax_rate: op.tax_rate, quantity: op.quantity)
     end
+  end
+
+  def export_to_external_system
+    export_to_external!
+  rescue => e
+    Rails.logger.error "Failed to export receipt #{id}: #{e.message}"
   end
 end

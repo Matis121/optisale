@@ -197,7 +197,7 @@
     </div>
   </div>
   <div class="mt-3 mb-6 flex justify-end">
-    <%= link_to restore_customer_data_invoice_path(@invoice), method: :post, class: "btn btn-sm btn-outline", data: { turbo_confirm: "Czy na pewno chcesz przywrócić dane klienta z zamówienia? Obecne dane zostaną nadpisane.", turbo_frame: "_top" } do %>
+    <%= button_to restore_customer_data_invoice_path(@invoice), method: :post, class: "btn btn-sm btn-outline", data: { turbo_confirm: "Czy na pewno chcesz przywrócić dane klienta z zamówienia? Obecne dane zostaną nadpisane.", turbo_frame: "_top" } do %>
       <i class="fas fa-undo"></i>
       Przywróć dane z zamówienia
     <% end %>
