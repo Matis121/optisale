@@ -1,0 +1,139 @@
+<%# app/views/account_integrations/edit.html.erb %>
+<% content_for :title, "Edycja integracji #{@account_integration.name}" %>
+<div data-controller="tabs" data-tabs-loading-class="tabs-loading" class="tabs-loading">
+  <%# Tabs Header %>
+  <div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none bg-base-100">
+    <% @config[:schema]&.each_with_index do |section, index| %>
+      <%= link_to section[:section], "##{section[:url_hash].parameterize}", 
+          class: "tab", 
+          data: { action: "click->tabs#switch", tabs_target: "tab" } %>
+    <% end %>
+  </div>
+  <%= render Ui::Layout::Container::DefaultComponent.new do %>
+    <div class="mb-8 flex items-center justify-between">
+      <div class="flex items-center gap-2 text-sm breadcrumbs mb-3">
+        <ul>
+          <li><%= link_to "Moje integracje", account_integrations_path, class: "text-base-content/60 hover:text-base-content" %></li>
+          <li class="text-base-content"> <%= @account_integration.name %> (Edycja)</li>
+        </ul>
+      </div>
+      <%= button_to account_integration_path(@account_integration),
+                    method: :delete,
+                    data: { turbo_confirm: "Na pewno usunąć integrację?" },
+                    class: "btn btn-error btn-sm w-full" do %>
+        <i class="fas fa-trash"></i>
+        Usuń integrację
+      <% end %>
+    </div>
+    <div class="mb-6">
+      <% if @account_integration.errors.any? %>
+        <div class="alert bg-error/5 border border-error/20 text-error mb-6">
+          <div class="flex gap-3">
+            <div class="flex-shrink-0">
+              <i class="fas fa-circle-exclamation text-lg"></i>
+            </div>
+            <div>
+              <% if @account_integration.errors.count == 1 %>
+                <p class="text-sm opacity-90"><%= @account_integration.errors.full_messages.first %></p>
+              <% else %>
+                <ul class="text-sm mt-2 space-y-1 list-disc list-inside opacity-90">
+                  <% @account_integration.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="grid lg:grid-cols-3 gap-8">
+      <%# Main form %>
+      <div class="lg:col-span-2">
+        <div class="card bg-base-100 shadow-sm border border-base-200">
+          <div class="card-body">
+            <%= render "form", 
+                form_url: account_integration_path(@account_integration),
+                method: :patch,
+                submit_text: "Zapisz zmiany",
+                cancel_path: account_integration_path(@account_integration) %>
+          </div>
+        </div>
+      </div>
+      <%# Sidebar %>
+      <div class="lg:col-span-1 space-y-4">
+        <%# Status card %>
+        <div class="card bg-base-100 shadow-sm border border-base-200">
+          <div class="card-body">
+            <h3 class="card-title text-lg">Status integracji</h3>
+            <div class="flex items-center gap-2">
+              <% if @account_integration.active? %>
+                <span class="badge badge-success gap-1">
+                  <i class="fas fa-check-circle"></i>
+                  Aktywna
+                </span>
+              <% else %>
+                <span class="badge badge-warning gap-1">
+                  <i class="fas fa-pause-circle"></i>
+                  Nieaktywna
+                </span>
+              <% end %>
+            </div>
+            <% if @account_integration.error_message.present? %>
+              <div class="alert alert-error mt-4 text-sm">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span><%= @account_integration.error_message %></span>
+              </div>
+            <% end %>
+            <div class="mt-4 space-y-2 flex gap-2">
+              <%= button_to "Test połączenia",
+                    test_account_integration_path(@account_integration),
+                    method: :post,
+                    class: "btn btn-primary btn-sm w-full" %>
+            </div>
+          </div>
+        </div>
+        <%# Current settings - dynamic %>
+        <% has_any_value = @config[:schema]&.any? { |s| s[:fields]&.any? { |k, f| @account_integration.send(s[:store])[k.to_s].present? rescue false } } %>
+        <% if has_any_value %>
+          <div class="card bg-base-100 shadow-sm border border-base-200">
+            <div class="card-body">
+              <h3 class="card-title text-lg">Obecne ustawienia</h3>
+              <div class="space-y-3 text-sm">
+                <% @config[:schema]&.each do |section| %>
+                  <% section[:fields]&.each do |field_key, field| %>
+                    <% value = @account_integration.send(section[:store])[field_key.to_s] rescue nil %>
+                    <% next if value.blank? %>
+                    <div>
+                      <p class="text-base-content/60"><%= field[:label] %></p>
+                      <% if field[:type] == "password" %>
+                        <span class="badge badge-success badge-sm">Ustawiony</span>
+                      <% else %>
+                        <p class="font-mono"><%= value %></p>
+                      <% end %>
+                    </div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <%# Help section %>
+        <div class="card bg-base-200/50 border border-base-300">
+          <div class="card-body">
+            <h3 class="card-title text-lg">
+              <i class="fas fa-info-circle text-info"></i>
+              Pomoc
+            </h3>
+            <div class="text-sm space-y-2 text-base-content/80">
+              <p>Po zmianie danych uwierzytelniających konieczne jest ponowne przetestowanie połączenia.</p>
+              <% if @config[:instructions].present? %>
+                <p><%= @config[:instructions][:steps]&.last %></p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

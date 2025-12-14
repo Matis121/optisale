@@ -1,0 +1,11 @@
+<% if account_integration.active? %>
+  <span class="badge badge-success gap-1.5 badge-sm">
+    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+    Aktywna
+  </span>
+<% else %>
+  <span class="badge badge-warning gap-1.5 badge-sm">
+    <i class="fas fa-pause text-[10px]"></i>
+    Nieaktywna
+  </span>
+<% end %>

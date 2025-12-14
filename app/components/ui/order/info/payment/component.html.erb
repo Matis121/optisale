@@ -1,10 +1,10 @@
 <%= turbo_frame_tag dom_id(@order, :payment) do %>
   <% order_paid = @order.amount_paid.to_f == @order.total_price.to_f %>
-  <div class="space-y-2">
+  <div class="flex items-center space-y-2 h-8">
     <div class="flex items-center gap-4">
       <span class="text-sm text-base-content/60">Zapłacono:</span>
-      <div class="flex items-center gap-2">
-        <%= link_to(edit_payment_order_path(@order), class: "hover:text-primary transition-colors") do %>
+      <div class="flex items-center justify-center gap-2">
+        <%= link_to(edit_payment_order_path(@order), class: "hover:text-primary transition-colors flex items-center justify-center") do %>
           <span class="badge badge-sm <%= order_paid ? 'badge-success' : 'badge-error' %>">
             <%= number_to_currency(@order.amount_paid, unit: "PLN", format: "%n %u") %>
           </span>

@@ -10,6 +10,7 @@ class Invoice < ApplicationRecord
 
   before_validation :populate_from_order_snapshot, if: -> { order.present? && new_record? }
   after_create :snapshot_invoice_items
+  after_create :export_to_external_system
 
   validates :total_price_brutto, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :total_price_netto, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -55,6 +56,21 @@ class Invoice < ApplicationRecord
     end
   end
 
+  def export_to_external!
+    invoicing_adapter&.export_invoice(self)
+  end
+
+  def download_pdf
+    return nil if external_id.blank?
+    invoicing_adapter&.download_invoice_pdf(self)
+  end
+
+  def delete_from_external!
+    return if external_id.blank?
+    invoicing_adapter&.delete_invoice(self)
+  end
+
+
   def restore_products_from_order
     return false unless order.present?
 
@@ -88,6 +104,20 @@ class Invoice < ApplicationRecord
   end
 
   private
+
+  def invoicing_adapter
+    account.account_integrations.active
+      .joins(:integration)
+      .find_by(integrations: { integration_type: "invoicing" })
+      &.adapter
+  end
+
+  def export_to_external_system
+    export_to_external!
+  rescue => e
+    Rails.logger.error "Failed to export invoice #{id}: #{e.message}"
+    # Nie blokuj tworzenia lokalnej faktury
+  end
 
   def populate_from_order_snapshot
     return unless order

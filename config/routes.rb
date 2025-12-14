@@ -46,13 +46,15 @@ Rails.application.routes.draw do
   resources :order_statuses, controller: "order_statuses"
   resources :order_status_groups, controller: "order_status_groups"
 
-  # Main integrations index and management
-  get "integrations", to: "integrations#index"
+  # Integrations - lista dostępnych integracji
+  resources :integrations, only: [ :index ]
 
-  # Invoicing integrations under /integrations path
-  resources :invoicing_integrations, path: "integrations", as: "integrations", controller: "integrations" do
+  # Account Integrations - zarządzanie integracjami konta
+  resources :account_integrations do
     member do
       post :test
+      post :export_invoices_month
+      post :export_receipts_month
     end
   end
 
@@ -73,9 +75,7 @@ Rails.application.routes.draw do
   # Invoices (for viewing and managing)
   resources :invoices do
     member do
-      post :sync_status
-      post :cancel_invoice
-      delete :delete_from_external
+      get :download_pdf
       post :restore_products
       post :restore_customer_data
     end
@@ -85,6 +85,7 @@ Rails.application.routes.draw do
   # Receipts
   resources :receipts do
     member do
+      get :download_pdf
       post :restore_products
     end
     resources :receipt_items, only: [ :destroy ]

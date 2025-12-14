@@ -1,0 +1,13 @@
+<div class="flex flex-col items-center justify-center py-16 text-center">
+  <div class="w-20 h-20 bg-base-200 rounded-2xl flex items-center justify-center mb-6 rotate-3">
+    <i class="fas fa-plug text-4xl text-base-content/20"></i>
+  </div>
+  <h3 class="text-xl font-semibold text-base-content mb-2">Brak aktywnych integracji</h3>
+  <p class="text-base-content/60 max-w-md mb-8">
+    Twoja lista integracji jest pusta. Połącz system z zewnętrznymi usługami, aby zautomatyzować pracę.
+  </p>
+  <%= link_to integrations_path, class: "btn btn-primary gap-2" do %>
+    <i class="fas fa-plus"></i>
+    Dodaj
+  <% end %>
+</div>

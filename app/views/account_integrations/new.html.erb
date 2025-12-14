@@ -1,0 +1,52 @@
+<%# app/views/account_integrations/new.html.erb %>
+<% content_for :title, "Nowa integracja" %>
+<div data-controller="tabs" data-tabs-loading-class="tabs-loading" class="tabs-loading">
+  <%# Tabs Header %>
+  <div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none bg-base-100">
+    <% @config[:schema]&.each_with_index do |section, index| %>
+      <%= link_to section[:section], "##{section[:url_hash].parameterize}", 
+          class: "tab", 
+          data: { action: "click->tabs#switch", tabs_target: "tab" } %>
+    <% end %>
+  </div>
+  <%= render Ui::Layout::Container::DefaultComponent.new do %>
+    <div class="mb-8">
+      <div class="flex items-center gap-2 text-sm breadcrumbs mb-4">
+        <ul>
+          <li><%= link_to "Lista integracji", integrations_path, class: "text-base-content/60 hover:text-base-content" %></li>
+          <li class="text-base-content">Nowa integracja (<%= @config[:name] %>)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mb-6">
+      <% if @account_integration.errors.any? %>
+        <div class="alert bg-error/5 border border-error/20 text-error mb-6">
+          <div class="flex gap-3">
+            <div class="flex-shrink-0">
+              <i class="fas fa-circle-exclamation text-lg"></i>
+            </div>
+            <div>
+              <% if @account_integration.errors.count == 1 %>
+                <p class="text-sm opacity-90"><%= @account_integration.errors.full_messages.first %></p>
+              <% else %>
+                <ul class="text-sm mt-2 space-y-1 list-disc list-inside opacity-90">
+                  <% @account_integration.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="card bg-base-100 shadow-sm border border-base-200">
+      <div class="card-body">
+        <%= render "form", 
+            form_url: account_integrations_path,
+            submit_text: "Zapisz integrację",
+            cancel_path: integrations_path %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,20 @@
+<div class="form-control">
+  <%= label_tag field_id, field[:label], class: "label" %>
+  <div class="space-y-2">
+    <%= select_tag field_name,
+        options_for_select(field[:options]&.map { |o| [o[:label], o[:value]] }, field[:default] || field_value),
+        id: field_id,
+        class: "select select-bordered w-full #{'select-error' if has_error}",
+        include_blank: field[:required] ? false : "Wybierz..." %>
+    <% if has_error %>
+      <span class="text-sm text-error">
+        <%= @account_integration.errors[:"#{section[:store]}_#{field_key}"].first %>
+      </span>
+    <% end %>
+    <% if field[:hint].present? %>
+      <p class="text-xs text-base-content/60 leading-relaxed">
+        <%= field[:hint] %>
+      </p>
+    <% end %>
+  </div>
+</div>

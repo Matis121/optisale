@@ -1,0 +1,21 @@
+<div class="form-control">
+  <%= label_tag field_id, field[:label], class: "label" %>
+  <div class="space-y-2">
+    <%= text_area_tag field_name, field_value,
+        id: field_id,
+        class: "textarea textarea-bordered w-full #{'textarea-error' if has_error}",
+        placeholder: field[:placeholder],
+        rows: field[:rows] || 3,
+        required: field[:required] %>
+    <% if has_error %>
+      <span class="text-sm text-error">
+        <%= @account_integration.errors[:"#{section[:store]}_#{field_key}"].first %>
+      </span>
+    <% end %>
+    <% if field[:hint].present? %>
+      <p class="text-xs text-base-content/60 leading-relaxed">
+        <%= field[:hint] %>
+      </p>
+    <% end %>
+  </div>
+</div>

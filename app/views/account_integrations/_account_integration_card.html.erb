@@ -1,0 +1,45 @@
+<%= link_to edit_account_integration_path(account_integration), class: "block" do %>
+  <div class="bg-base-100 border border-transparent hover:border-gray-500/30 rounded-md p-3 hover:shadow-sm transition-all duration-50">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <%# Left Side: Icon & Info %>
+      <div class="flex items-center gap-4">
+        <%= render "account_integrations/integration_icon", account_integration: account_integration %>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="font-semibold text-base-content text-lg leading-tight"><%= account_integration.name %></h3>
+            <%= render "account_integrations/status_dot", account_integration: account_integration, mobile_only: true %>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-base-content/60 mt-0.5">
+            <span><%= account_integration.integration.name %></span>
+            <span>•</span>
+            <span><%= account_integration.integration.integration_type&.humanize || "Inne" %></span>
+          </div>
+        </div>
+        <% if account_integration.error_message.present? %>
+          <div class="text-xs bg-error/10 text-error p-2 rounded-lg flex items-start gap-2">
+            <i class="fas fa-exclamation-circle mt-0.5"></i>
+            <span><%= account_integration.error_message %></span>
+          </div>
+        <% end %>
+      </div>
+      <%# Right Side: Status & Actions %>
+      <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-0 border-base-100">
+        <div class="hidden sm:flex flex-col items-end gap-1 min-w-[100px]">
+          <%= render "account_integrations/status_badge", account_integration: account_integration %>
+          <span class="text-[10px] text-base-content/40">
+            Aktualizacja: <%= account_integration.updated_at.strftime("%d.%m") %>
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <%= button_to account_integration_path(account_integration), 
+              method: :delete, 
+              class: "btn",
+            onclick: "event.stopPropagation()", 
+            data: { turbo_confirm: "Czy na pewno chcesz usunąć tę integrację?" } do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

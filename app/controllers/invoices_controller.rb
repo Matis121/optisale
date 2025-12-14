@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: [ :show, :edit, :update, :destroy, :sync_status, :cancel_invoice, :delete_from_external, :restore_products, :restore_customer_data ]
+  before_action :set_invoice, only: [ :show, :edit, :update, :destroy, :restore_products, :restore_customer_data, :download_pdf ]
   before_action :set_invoices, only: [ :index, :destroy ]
   before_action :set_order, only: [ :create ]
 
@@ -39,9 +39,18 @@ class InvoicesController < ApplicationController
 
   def destroy
     order = @invoice.order
+
+    begin
+      @invoice.delete_from_external!
+    rescue => e
+      flash.now[:alert] = e.message
+      render_flash_messages
+      return
+    end
+
     if @invoice.destroy
-       order.association(:invoice).reload
-      flash.now[:notice] = "Faktura została usunięta z lokalnej bazy danych."
+      order.association(:invoice).reload
+      flash.now[:notice] = "Faktura została usunięta."
       if request.referer.match?(%r{/invoices/\d+})
         redirect_to invoices_path, notice: "Faktura została usunięta."
       elsif request.referer.include?("invoices")
@@ -52,123 +61,6 @@ class InvoicesController < ApplicationController
     else
       flash.now[:alert] = "Nie udało się usunąć faktury z lokalnej bazy danych."
       render_flash_messages
-    end
-  end
-
-  def sync_status
-    if @invoice.sync_status!
-      redirect_to @invoice, notice: "Status faktury został zsynchronizowany."
-    else
-      redirect_to @invoice, alert: "Nie udało się zsynchronizować statusu faktury."
-    end
-  end
-
-  def cancel_invoice
-    unless @invoice.invoicing_integration.ready?
-      redirect_back_or_to(@invoice, alert: "Integracja nie jest aktywna. Nie można anulować faktury.")
-      return
-    end
-
-    invoice_service = InvoiceService.new(current_account)
-
-    if invoice_service.cancel_invoice(@invoice)
-      redirect_to @invoice, notice: "Faktura została anulowana."
-    else
-      error_message = invoice_service.errors.any? ?
-        "#{invoice_service.errors.join(', ')}" :
-        "Nie udało się anulować faktury."
-      redirect_to @invoice, alert: error_message
-    end
-  end
-
-  def delete_from_external
-    unless @invoice.invoicing_integration.ready?
-      redirect_back_or_to(@invoice.order, alert: "Integracja nie jest aktywna. Nie można usunąć faktury z zewnętrznego systemu.")
-      return
-    end
-
-    order = @invoice.order # Remember order before deleting invoice
-    invoice_service = InvoiceService.new(current_account)
-
-    begin
-      if invoice_service.delete_invoice(@invoice)
-        # Also delete from local database after successful deletion from external system
-        @invoice.destroy
-        order.reload
-
-
-        respond_to do |format|
-          format.html { redirect_to invoices_path, notice: "Faktura została usunięta." }
-          format.turbo_stream {
-            flash.now[:notice] = "Faktura została usunięta."
-            # Check if we're on the invoices index page
-            if request.referer&.include?("invoices")
-              @invoices = current_account.invoices.includes(:order, :invoicing_integration)
-                                     .order(created_at: :desc)
-                                     .page(params[:page]).per(20)
-              render turbo_stream: turbo_stream.replace("invoices_table",
-                partial: "invoices/table")
-            else
-              # Original behavior for order page
-              render turbo_stream: turbo_stream.replace("invoice_section_#{order.id}",
-                partial: "orders/invoice_section", locals: { order: order })
-            end
-          }
-        end
-      else
-        error_message = "Nie udało się usunąć faktury z zewnętrznego systemu."
-
-        respond_to do |format|
-          format.html { redirect_back_or_to(order, alert: error_message) }
-          format.turbo_stream {
-            flash.now[:alert] = error_message
-            # Check if we're on the invoices index page
-            if request.referer&.include?("invoices")
-              @invoices = current_account.invoices.includes(:order, :invoicing_integration)
-                                     .order(created_at: :desc)
-                                     .page(params[:page]).per(20)
-              render turbo_stream: turbo_stream.replace("invoices_table",
-                partial: "invoices/table")
-            else
-              # Original behavior for order page
-              render turbo_stream: turbo_stream.replace("invoice_section_#{order.id}",
-                partial: "orders/invoice_section", locals: { order: order })
-            end
-          }
-        end
-      end
-    rescue => e
-      user_friendly_error = case e.message
-      when /Unauthorized/
-        "Błąd autoryzacji. Sprawdź dane logowania do #{@invoice.invoicing_integration.provider.humanize}."
-      when /not found/i, /404/
-        "Faktura nie została znaleziona w zewnętrznym systemie. Możliwe że została już usunięta."
-      when /Connection/i, /timeout/i
-        "Błąd połączenia z systemem fakturowania. Sprawdź połączenie internetowe."
-      else
-        "Nieoczekiwany błąd: #{e.message}"
-      end
-
-      error_message = "#{user_friendly_error}"
-
-      respond_to do |format|
-        format.html { redirect_back_or_to(order, alert: error_message) }
-        format.turbo_stream {
-          flash.now[:alert] = error_message
-          # Check if we're on the invoices index page
-          if request.referer&.include?("invoices")
-            @invoices = current_account.invoices.includes(:order, :invoicing_integration)
-                                   .order(created_at: :desc)
-                                   .page(params[:page]).per(20)
-            render turbo_stream: turbo_stream.replace("invoices_table",
-              partial: "invoices/table")
-          else
-            order.reload
-            render turbo_stream: turbo_stream.replace("invoice_section_#{order.id}",
-              partial: "orders/invoice_section", locals: { order: order })
-          end
-        }
-      end
     end
   end
 
@@ -186,6 +78,16 @@ class InvoicesController < ApplicationController
       redirect_to @invoice, notice: "Dane klienta zostały przywrócone z zamówienia."
     else
       redirect_to @invoice, alert: "Nie udało się przywrócić danych klienta z zamówienia."
+    end
+  end
+
+  def download_pdf
+    pdf_data = @invoice.download_pdf
+
+    if pdf_data
+      send_data pdf_data, filename: "#{@invoice.external_invoice_number}.pdf", type: "application/pdf"
+    else
+      redirect_to @invoice, alert: "Nie udało się pobrać PDF faktury."
     end
   end
 

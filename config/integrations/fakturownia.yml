@@ -1,0 +1,70 @@
+# config/integrations/fakturownia.yml
+name: "Fakturownia"
+key: "fakturownia"
+integration_type: "invoicing"
+description: "Popularna platforma do wystawiania faktur"
+logo_icon: "fas fa-file-invoice"
+
+schema:
+  - section: "Konto"
+    url_hash: "account"
+    store: credentials
+    fields:
+      subdomain:
+        type: text
+        label: "Subdomena konta"
+        placeholder: "twojafirma"
+        hint: "Z adresu: https://twojafirma.fakturownia.pl"
+        required: true
+      api_token:
+        type: password
+        label: "Token API"
+        placeholder: "Wprowadź token API"
+        required: true
+  - section: "Ustawienia"
+    url_hash: "settings"
+    store: settings
+    fields:
+      auto_export_invoices:
+        type: checkbox
+        label: "Automatyczne eksportowanie faktur"
+        default: false
+        hint: "Jeśli jest włączone, faktury będą automatycznie eksportowane do Fakturowni"
+        required: false
+      auto_export_receipts:
+        type: checkbox
+        label: "Automatyczne eksportowanie paragonów"
+        default: false
+        hint: "Jeśli jest włączone, paragony będą automatycznie eksportowane do Fakturowni"
+        required: false
+  # - section: "Eksport"
+  #   store: settings
+  #   fields:
+  #     invoice_month_export:
+  #       type: month_export
+  #       label: "Eksport faktur z miesiąca"
+  #       hint: "Wybierz miesiąc i wyeksportuj faktury. Zostaną wyeksportowane tylko faktury, które jeszcze nie zostały wyeksportowane."
+  #       required: false
+  #       document_type: invoices
+  #     receipt_month_export:
+  #       type: month_export
+  #       label: "Eksport paragonów z miesiąca"
+  #       hint: "Wybierz miesiąc i wyeksportuj paragony. Zostaną wyeksportowane tylko paragony, które jeszcze nie zostały wyeksportowane."
+  #       required: false
+  #       document_type: receipts
+  - section: "Metody płatności"
+    url_hash: "payment_methods"
+    store: settings
+    fields:
+      payment_method_mapping:
+        type: payment_method_mapping
+        label: "Mapowanie metod płatności"
+        hint: "Mapuj metody płatności z Twoich zamówień na metody płatności w Fakturowni. Jeśli metoda nie jest zmapowana, zostanie użyta domyślna wartość."
+        required: false
+
+instructions:
+  title: "Jak pobrać dane z Fakturowni:"
+  steps:
+    - "Zaloguj się do swojego konta Fakturownia"
+    - "Przejdź do Ustawienia → Ustawienia konta → Integracja"
+    - "W sekcji \"Kod autoryzacyjny API\" skopiuj token"
