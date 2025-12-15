@@ -1,4 +1,4 @@
-<div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none">
+<div role="tablist" class="tabs tabs-box border-b bg-base-300 border-gray-500/30 rounded-none">
   <%= link_to storage_products_path, 
         class: "tab #{current_page?(storage_products_path) ? 'tab-active' : ''}" do %>
     <i class="fas fa-box mr-2"></i> Produkty
@@ -12,7 +12,7 @@
     <i class="fas fa-warehouse mr-2"></i> Magazyny
   <% end %>
   <%= link_to storage_price_groups_path, 
-        class: "tab #{current_page?(storage_price_groups_path) ? 'tab-active' : ''}" do %>
+        class: "tab #{current_page?(storage_price_groups_path) ? '' : ''}" do %>
     <i class="fas fa-tags mr-2"></i> Grupy cenowe
   <% end %>
 </div>

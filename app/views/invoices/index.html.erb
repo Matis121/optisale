@@ -1,5 +1,5 @@
 <% content_for :title, "Faktury" %>
-<div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none">
+<div role="tablist" class="tabs tabs-box border-b bg-base-300 border-gray-500/30 rounded-none">
   <%= link_to invoices_path, 
         class: "tab #{current_page?(invoices_path) ? 'tab-active' : ''}" do %>
     <i class="fas fa-file-invoice mr-2"></i> Faktury

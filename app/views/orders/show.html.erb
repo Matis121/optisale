@@ -51,7 +51,7 @@
       <!-- Add Product Modal -->
       <%= render(Ui::Order::AddProductModalComponent.new(order: @order, current_account: current_account)) %>
       <!-- Order Information -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+      <div class="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-4 mb-8">
         <!-- Payment, Status, Invoices -->
         <div class="border border-gray-500/30 rounded-lg p-5 bg-base-300">
           <div class="space-y-4">

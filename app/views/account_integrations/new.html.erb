@@ -2,7 +2,7 @@
 <% content_for :title, "Nowa integracja" %>
 <div data-controller="tabs" data-tabs-loading-class="tabs-loading" class="tabs-loading">
   <%# Tabs Header %>
-  <div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none bg-base-100">
+  <div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none bg-base-300">
     <% @config[:schema]&.each_with_index do |section, index| %>
       <%= link_to section[:section], "##{section[:url_hash].parameterize}", 
           class: "tab", 

@@ -1,4 +1,8 @@
-<div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none bg-base-100">
-  <%= link_to "Moje integracje", account_integrations_path, class: "tab #{current_page?(account_integrations_path) ? 'tab-active' : ''}" %>
-  <%= link_to "Dostępne integracje", integrations_path, class: "tab #{current_page?(integrations_path) ? 'tab-active' : ''}" %>
+<div role="tablist" class="tabs tabs-box border-b border-gray-500/30 rounded-none bg-base-300">
+  <%= link_to account_integrations_path, class: "tab #{current_page?(account_integrations_path) ? 'tab-active' : ''}" do %>
+    <i class="fas fa-plug mr-2"></i> Moje integracje
+  <% end %>
+  <%= link_to integrations_path, class: "tab #{current_page?(integrations_path) ? 'tab-active' : ''}" do %>
+    <i class="fas fa-box-open mr-2"></i> Dostępne integracje
+  <% end %>
 </div>
