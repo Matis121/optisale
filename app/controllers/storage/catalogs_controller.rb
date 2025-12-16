@@ -38,15 +38,19 @@ class Storage::CatalogsController < ApplicationController
   end
 
   def destroy
-    @catalog.destroy!
-    flash.now[:success] = "Katalog został usunięty."
-    update_catalogs_frame_with_flash
+    if @catalog.destroy
+      flash.now[:success] = "Katalog został usunięty."
+      update_catalogs_frame_with_flash
+    else
+      flash.now[:error] = "#{@catalog.errors.full_messages.join(", ")}"
+      update_catalogs_frame_with_flash
+    end
   end
 
   private
 
   def set_catalogs
-    @catalogs = current_account.catalogs
+    @catalogs = current_account.catalogs.order(created_at: :asc)
   end
 
   def update_catalogs_frame_with_flash

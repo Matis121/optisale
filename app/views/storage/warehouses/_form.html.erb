@@ -47,15 +47,17 @@
         <span class="label-text-alt text-base-content/40 text-xs">Wybierz katalogi, które będą przypisane do tego magazynu</span>
       </div>
     </div>
-    <div class="form-control">
-      <label class="label cursor-pointer justify-start gap-3">
-        <span class="label-text font-medium">Magazyn domyślny</span>
-        <%= form.check_box :default, class: "toggle toggle-primary" %>
-      </label>
-      <div class="label">
-        <span class="label-text-alt text-base-content/40 text-xs">Ten magazyn będzie używany jako domyślny dla nowych produktów</span>
+    <% unless @warehouse.default?%>
+      <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-3">
+          <span class="label-text font-medium">Magazyn domyślny</span>
+          <%= form.check_box :default, class: "toggle toggle-primary" %>
+        </label>
+        <div class="label">
+          <span class="label-text-alt text-base-content/40 text-xs">Ten magazyn będzie używany jako domyślny dla nowych produktów</span>
+        </div>
       </div>
-    </div>
+    <% end %>
   </div>
   <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-gray-500/30">
     <% if @warehouse.new_record? %>

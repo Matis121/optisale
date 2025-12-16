@@ -42,10 +42,13 @@ class Storage::WarehousesController < ApplicationController
   end
 
   def destroy
-    @warehouse.destroy!
-
+    if @warehouse.destroy
       flash.now[:success] = "Magazyn został usunięty."
       update_warehouses_frame_with_flash
+    else
+      flash.now[:error] = "#{@warehouse.errors.full_messages.join(", ")}"
+      update_warehouses_frame_with_flash
+    end
   end
 
   private
@@ -61,7 +64,7 @@ class Storage::WarehousesController < ApplicationController
     end
 
     def set_warehouses
-      @warehouses = current_account.warehouses
+      @warehouses = current_account.warehouses.order(created_at: :asc)
     end
 
     def set_warehouse

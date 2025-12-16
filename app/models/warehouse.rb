@@ -7,7 +7,7 @@ class Warehouse < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :account_id }
 
   before_save :ensure_default_warehouse
-  before_destroy :prevent_destroy_if_default
+  before_destroy :prevent_destroy, prepend: true
 
   private
 
@@ -17,7 +17,7 @@ class Warehouse < ApplicationRecord
     end
   end
 
-  def prevent_destroy_if_default
+  def prevent_destroy
     if default?
       errors.add(:base, "Nie można usunąć domyślnego magazynu")
       throw :abort

@@ -20,10 +20,12 @@
         <span class="label-text-alt text-base-content/40 text-xs">Nazwa katalogu będzie widoczna w systemie i używana do organizacji produktów</span>
       </div>
     </div>
-    <div class="form-control w-full">
-      <%= form.label :default, "Domyślny katalog", class: "label" %>
-      <%= form.check_box :default, class: "toggle toggle-primary" %>
-    </div>
+    <% unless @catalog.default?%>
+      <div class="form-control w-full">
+        <%= form.label :default, "Domyślny katalog", class: "label" %>
+        <%= form.check_box :default, class: "toggle toggle-primary" %>
+      </div>
+    <% end %>
   </div>
   <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-gray-500/30">
     <% if @catalog.new_record? %>

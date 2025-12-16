@@ -43,16 +43,19 @@ class Storage::PriceGroupsController < ApplicationController
   end
 
   def destroy
-    @price_group.destroy!
-
-    flash.now[:success] = "Grupa cenowa została usunięta."
-    update_price_groups_frame_with_flash
+    if @price_group.destroy
+      flash.now[:success] = "Grupa cenowa została usunięta."
+      update_price_groups_frame_with_flash
+    else
+      flash.now[:error] = "#{@price_group.errors.full_messages.join(", ")}"
+      update_price_groups_frame_with_flash
+    end
   end
 
   private
 
   def set_catalogs
-    @catalogs = current_account.catalogs
+    @catalogs = current_account.catalogs.order(created_at: :asc)
   end
 
   def update_price_groups_frame_with_flash
@@ -78,7 +81,7 @@ class Storage::PriceGroupsController < ApplicationController
   end
 
   def set_price_groups
-    @price_groups = current_account.price_groups
+    @price_groups = current_account.price_groups.order(created_at: :asc)
   end
 
   def price_group_params

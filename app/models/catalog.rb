@@ -9,7 +9,8 @@ class Catalog < ApplicationRecord
   validates :account_id, presence: true
 
   before_save :ensure_default_catalog
-  before_destroy :prevent_destroy_if_default
+
+  before_destroy :prevent_destroy, prepend: true
 
   private
 
@@ -19,9 +20,13 @@ class Catalog < ApplicationRecord
     end
   end
 
-  def prevent_destroy_if_default
+  def prevent_destroy
     if default?
       errors.add(:base, "Nie można usunąć domyślnego katalogu")
+      throw :abort
+    end
+    if products.any?
+      errors.add(:base, "Nie można usunąć katalogu, jeśli są do niego przypisane produkty")
       throw :abort
     end
   end

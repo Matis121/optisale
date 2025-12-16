@@ -7,7 +7,7 @@ class PriceGroup < ApplicationRecord
 
 
   before_save :ensure_default_price_group
-  before_destroy :prevent_destroy_if_default
+  before_destroy :prevent_destroy, prepend: true
 
   private
 
@@ -17,7 +17,7 @@ class PriceGroup < ApplicationRecord
     end
   end
 
-  def prevent_destroy_if_default
+  def prevent_destroy
     if default?
       errors.add(:base, "Nie można usunąć domyślnej grupy cenowej")
       throw :abort

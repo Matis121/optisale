@@ -47,15 +47,17 @@
         <span class="label-text-alt text-base-content/40 text-xs">Wybierz katalogi, które będą przypisane do tej grupy cenowej</span>
       </div>
     </div>
-    <div class="form-control">
-      <label class="label cursor-pointer justify-start gap-3">
-        <span class="label-text font-medium">Domyślna grupa cenowa</span>
-        <%= form.check_box :default, class: "toggle toggle-primary" %>
-      </label>
-      <div class="label">
-        <span class="label-text-alt text-base-content/40 text-xs">Ta grupa będzie używana jako domyślna dla nowych produktów</span>
+    <% unless @price_group.default? %>
+      <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-3">
+          <span class="label-text font-medium">Domyślna grupa cenowa</span>
+          <%= form.check_box :default, class: "toggle toggle-primary" %>
+        </label>
+        <div class="label">
+          <span class="label-text-alt text-base-content/40 text-xs">Ta grupa będzie używana jako domyślna dla nowych produktów</span>
+        </div>
       </div>
-    </div>
+    <% end %>
   </div>
   <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-gray-500/30">
     <% if @price_group.new_record? %>
