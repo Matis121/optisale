@@ -4,14 +4,13 @@ class User < ApplicationRecord
   attr_accessor :account_name, :account_nip
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         password_length: 12..64
 
-  validates :email, presence: true, uniqueness: true
-  validates :password, presence: true, length: { minimum: 12 }, on: :create
-  validates :password_confirmation, presence: true, length: { minimum: 12 }, on: :create
   validates :role, presence: true, inclusion: { in: %w[owner employee] }
   validates :account_id, presence: true, unless: -> { new_record? && owner? }
-  validates_associated :account
+
+  validate :account_must_be_valid
 
   before_validation :build_account_from_attributes, on: :create, if: :owner?
   before_destroy :prevent_destroy_if_owner
@@ -29,6 +28,23 @@ class User < ApplicationRecord
   end
 
   private
+
+  def account_must_be_valid
+    return unless account
+    return if account.valid?
+
+    account.errors.each do |error|
+      # Przenosimy błędy z account do odpowiednich pól w user
+      case error.attribute
+      when :name
+        errors.add(:account_name, error.message)
+      when :nip
+        errors.add(:account_nip, error.message)
+      else
+        errors.add(:base, error.full_message)
+      end
+    end
+  end
 
   def prevent_destroy_if_owner
     if owner?

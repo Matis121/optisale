@@ -61,9 +61,10 @@ pl:
       expired: "wygasło, poproś o nowe"
       not_found: "nie znaleziono"
       not_locked: "nie było zablokowane"
+      confirmation: "nie zgadza się z polem %{attribute}"
       not_saved:
-        one: "1 błąd uniemożliwił zapisanie %{resource}:"
-        few: "%{count} błędy uniemożliwiły zapisanie %{resource}:"
-        many: "%{count} błędów uniemożliwiło zapisanie %{resource}:"
-        other: "%{count} błędów uniemożliwiło zapisanie %{resource}:"
+        one: "Popraw błąd:"
+        few: "Popraw błędy:"
+        many: "Popraw błędy:"
+        other: "Popraw błędy:"
 

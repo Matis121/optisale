@@ -64,9 +64,28 @@ pl:
         required: " - pole wymagane"
         taken: "zostało już zajęte"
         invalid: "jest nieprawidłowe"
+        confirmation: "nie pasuje"
         too_short: "jest za krótkie (minimum to %{count} znaków)"
         too_long: "jest za długie (maksimum to %{count} znaków)"
       models:
+        user:
+          attributes:
+            password_confirmation:
+              confirmation: "nie pasuje do hasła"
+            account_name:
+              blank: "nie może być pusta"
+            account_nip:
+              blank: "nie może być pusty"
+              invalid: "jest nieprawidłowy (powinien zawierać 10 cyfr)"
+              taken: "jest już zajęty"
+        account:
+          attributes:
+            name:
+              blank: "nie może być pusta"
+            nip:
+              blank: "nie może być pusty"
+              invalid: "jest nieprawidłowy (powinien zawierać 10 cyfr)"
+              taken: "jest już zajęty"
         integration:
           attributes:
             name:
@@ -86,10 +105,26 @@ pl:
             credentials_api_token:
               blank: "nie może być pusty"
     models:
-      integration: "Integracja"
-      invoicing_integration: "Integracja fakturowania"
-      user: "Użytkownik"
-      account: "Konto"
+      integration:
+        one: "Integracja"
+        few: "Integracje"
+        many: "Integracji"
+        other: "Integracji"
+      invoicing_integration:
+        one: "Integracja fakturowania"
+        few: "Integracje fakturowania"
+        many: "Integracji fakturowania"
+        other: "Integracji fakturowania"
+      user:
+        one: "Użytkownik"
+        few: "Użytkowników"
+        many: "Użytkowników"
+        other: "Użytkowników"
+      account:
+        one: "Konto"
+        few: "Kont"
+        many: "Kont"
+        other: "Kont"
     attributes:
       invoice:
         invoice_number: "Numer faktury"
@@ -106,6 +141,7 @@ pl:
         password: "Hasło"
         password_confirmation: "Potwierdzenie hasła"
         role: "Rola"
+        account: "Konto"
         account_id: "Konto"
         account_name: "Nazwa konta"
         account_nip: "NIP"

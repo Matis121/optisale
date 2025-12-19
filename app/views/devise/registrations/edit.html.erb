@@ -12,8 +12,24 @@
         </h1>
         <p class="text-base-content/60 mt-2 text-sm">Edytuj profil</p>
       </div>
+
+      <!-- Flash Messages -->
+      <% if flash[:alert].present? %>
+        <div class="alert alert-error mb-6" role="alert">
+          <i class="fas fa-exclamation-circle"></i>
+          <span><%= flash[:alert] %></span>
+        </div>
+      <% end %>
+
+      <% if flash[:notice].present? %>
+        <div class="alert alert-info mb-6" role="alert">
+          <i class="fas fa-info-circle"></i>
+          <span><%= flash[:notice] %></span>
+        </div>
+      <% end %>
+
       <!-- Profile Edit Form -->
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }, data: { turbo: false }) do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
         <!-- Email Field -->
         <div class="form-control">

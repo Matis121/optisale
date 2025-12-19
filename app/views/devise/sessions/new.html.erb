@@ -19,8 +19,21 @@
         </h1>
         <p class="text-base-content/60 mt-2 text-sm">Zaloguj się, aby kontynuować</p>
       </div>
+      <!-- Flash Messages -->
+      <% if flash[:alert].present? %>
+        <div class="alert alert-error mb-6" role="alert">
+          <i class="fas fa-exclamation-circle"></i>
+          <span><%= flash[:alert] %></span>
+        </div>
+      <% end %>
+      <% if flash[:notice].present? %>
+        <div class="alert alert-info mb-6" role="alert">
+          <i class="fas fa-info-circle"></i>
+          <span><%= flash[:notice] %></span>
+        </div>
+      <% end %>
       <!-- Login Form -->
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f| %>
         <!-- Email Field -->
         <div class="form-control">
           <%= f.label :email, class: "label" do %>

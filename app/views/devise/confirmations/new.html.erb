@@ -13,8 +13,24 @@
         <p class="text-base-content/60 mt-2 text-sm">Wyślij ponownie instrukcje potwierdzenia</p>
         <p class="text-xs text-base-content/50 mt-1">Podaj swój email, a wyślemy Ci ponownie instrukcje potwierdzenia konta</p>
       </div>
+
+      <!-- Flash Messages -->
+      <% if flash[:alert].present? %>
+        <div class="alert alert-error mb-6" role="alert">
+          <i class="fas fa-exclamation-circle"></i>
+          <span><%= flash[:alert] %></span>
+        </div>
+      <% end %>
+
+      <% if flash[:notice].present? %>
+        <div class="alert alert-info mb-6" role="alert">
+          <i class="fas fa-info-circle"></i>
+          <span><%= flash[:notice] %></span>
+        </div>
+      <% end %>
+
       <!-- Confirmation Form -->
-      <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+      <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, data: { turbo: false }) do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
         <!-- Email Field -->
         <div class="form-control">
