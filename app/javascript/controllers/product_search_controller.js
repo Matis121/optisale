@@ -159,7 +159,7 @@ export default class extends Controller {
     
     this.addProductToStorage(product, quantity)
     this.updateSelectedProductsSummary()
-    this.showAddSuccess(event.target)
+    this.showAddSuccess(event.currentTarget)
   }
 
   // Get product data from DOM element
@@ -199,7 +199,12 @@ export default class extends Controller {
   }
 
   // Show success feedback on add button
-  showAddSuccess(button) {
+  showAddSuccess(element) {
+    // In Stimulus actions, event.target can be the inner <i>, while event.currentTarget is the <button>.
+    // We always want to update the button itself to avoid rendering both icons at once.
+    const button = element?.closest?.('button') || element
+    if (!button) return
+
     const originalText = button.innerHTML
     button.innerHTML = '<i class="fas fa-check"></i>'
     button.classList.add('btn-success')

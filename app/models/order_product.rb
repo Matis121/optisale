@@ -67,11 +67,14 @@ class OrderProduct < ApplicationRecord
     default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
+    current_user = order.account.users.first || order.account.owner
+    return unless current_user
+
     begin
       product.reduce_stock!(
         default_warehouse,
         quantity,
-        order.account,
+        current_user,
         reference: order
       )
     rescue ArgumentError => e
@@ -84,6 +87,9 @@ class OrderProduct < ApplicationRecord
     default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
+    current_user = order.account.users.first || order.account.owner
+    return unless current_user
+
     old_quantity = quantity_before_last_save
     quantity_difference = quantity - old_quantity
 
@@ -95,7 +101,7 @@ class OrderProduct < ApplicationRecord
         product.reduce_stock!(
           default_warehouse,
           quantity_difference,
-          order.account,
+          current_user,
           reference: order
         )
       else
@@ -107,7 +113,7 @@ class OrderProduct < ApplicationRecord
         product.update_stock!(
           default_warehouse,
           new_stock,
-          order.account,
+          current_user,
           movement_type: "return",
           reference: order
         )
@@ -122,6 +128,9 @@ class OrderProduct < ApplicationRecord
     default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
+    current_user = order.account.users.first || order.account.owner
+    return unless current_user
+
     begin
       current_stock = product.stock_in_warehouse(default_warehouse)
       new_stock = current_stock + quantity
@@ -129,7 +138,7 @@ class OrderProduct < ApplicationRecord
       product.update_stock!(
         default_warehouse,
         new_stock,
-        order.account,
+        current_user,
         movement_type: "return",
         reference: order
       )

@@ -37,6 +37,7 @@ class Product < ApplicationRecord
 
       # Zapisz ruch magazynowy
       stock_movements.create!(
+        account: warehouse.account,
         warehouse: warehouse,
         user: user,
         movement_type: movement_type,
