@@ -2,7 +2,6 @@ class Storage::ProductsController < ApplicationController
   before_action :set_product, only: %i[ edit update destroy ]
   before_action :ensure_turbo_frame, only: %i[ edit new ]
   before_action :set_current_catalog_in_session, only: %i[ index create update ]
-  before_action :set_current_warehouse_in_session, only: %i[ index create update ]
   before_action :set_current_price_group_in_session, only: %i[ index create update ]
 
 
@@ -66,7 +65,7 @@ class Storage::ProductsController < ApplicationController
 
     respond_to do |format|
       if @product.save
-        format.html { redirect_to storage_products_path, notice: "Product was successfully created." }
+        format.html { redirect_to storage_products_path, notice: "Produkt został dodany." }
         format.json { render :show, status: :created, location: @product }
       else
         format.turbo_stream { render turbo_stream: turbo_stream.update("product-form", partial: "storage/products/form") }
@@ -76,56 +75,21 @@ class Storage::ProductsController < ApplicationController
 
   # PATCH/PUT /products/1 or /products/1.json
   def update
-    stock_updates = []
-
-    # Collect stock changes BEFORE product update (so nested attributes don't change them)
-    if product_params[:product_stocks_attributes]
-      product_params[:product_stocks_attributes].each do |_, stock_attrs|
-        if stock_attrs[:id].present?
-          existing_stock = @product.product_stocks.find(stock_attrs[:id])
-          new_quantity = stock_attrs[:quantity].to_i
-          old_quantity = existing_stock.quantity
-
-          if old_quantity != new_quantity
-            stock_updates << {
-              product: @product,
-              warehouse: existing_stock.warehouse,
-              quantity: new_quantity,
-              old_quantity: old_quantity
-            }
-          end
-        end
-      end
-    end
-
-    # Now update product (without stock movements - we do them manually)
-    # Temporarily remove product_stocks_attributes to handle them manually
-    product_params_without_stocks = product_params.except(:product_stocks_attributes)
+    stock_service = StockManagementService.new
+    result = stock_service.update_product_with_stocks(
+      product: @product,
+      params: product_params,
+      user: current_user
+    )
 
     respond_to do |format|
-      if @product.update(product_params_without_stocks)
-
-        # Handle manual stock changes through StockManagementService
-        if stock_updates.any?
-          stock_service = StockManagementService.new
-          stock_service.batch_update_stocks(stock_updates, current_user, movement_type: "manual_adjustment")
-        end
-
-        # Update remaining stock attributes (without quantity - already handled)
-        if product_params[:product_stocks_attributes]
-          product_params[:product_stocks_attributes].each do |_, stock_attrs|
-            if stock_attrs[:id].present?
-              stock = @product.product_stocks.find(stock_attrs[:id])
-              stock.update!(stock_attrs.except(:quantity)) if stock_attrs.keys.any? { |k| k != :quantity }
-            end
-          end
-        end
-
-        format.html { redirect_to storage_products_path, notice: "Product was successfully updated." }
+      if result[:success]
+        format.html { redirect_to storage_products_path, notice: "Produkt został zaktualizowany." }
         format.json { render :show, status: :ok, location: @product }
       else
+        @product.errors.add(:base, stock_service.errors.join(", ")) if stock_service.errors.any?
         format.turbo_stream { render turbo_stream: turbo_stream.update("product-form", partial: "storage/products/form") }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
+        format.json { render json: { errors: stock_service.errors }, status: :unprocessable_entity }
       end
     end
   end

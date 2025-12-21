@@ -8,7 +8,6 @@ class OrderProduct < ApplicationRecord
 
   before_save :set_product_details, if: :product_id_changed?
 
-  # DODAJ te hooki:
   after_create :reduce_stock_on_create
   after_update :adjust_stock_on_update, if: :saved_change_to_quantity?
   before_destroy :restore_stock_on_destroy
@@ -60,7 +59,7 @@ class OrderProduct < ApplicationRecord
     end
   end
 
-  # NOWE METODY:
+  # NEW METHODS - delegates to StockManagementService:
   def reduce_stock_on_create
     return unless product
 
@@ -70,15 +69,16 @@ class OrderProduct < ApplicationRecord
     current_user = order.account.users.first || order.account.owner
     return unless current_user
 
-    begin
-      product.reduce_stock!(
-        default_warehouse,
-        quantity,
-        current_user,
-        reference: order
-      )
-    rescue ArgumentError => e
-    end
+    # Delegates to StockManagementService
+    stock_service = StockManagementService.new
+    stock_service.adjust_stock_for_order(
+      product: product,
+      warehouse: default_warehouse,
+      quantity: quantity,
+      user: current_user,
+      order: order,
+      action: "reduce"
+    )
   end
 
   def adjust_stock_on_update
@@ -95,31 +95,16 @@ class OrderProduct < ApplicationRecord
 
     return if quantity_difference == 0
 
-    begin
-      if quantity_difference > 0
-        # Quantity increased - reduce additional stock
-        product.reduce_stock!(
-          default_warehouse,
-          quantity_difference,
-          current_user,
-          reference: order
-        )
-      else
-        # Quantity decreased - restore stock
-        quantity_to_restore = -quantity_difference
-        current_stock = product.stock_in_warehouse(default_warehouse)
-        new_stock = current_stock + quantity_to_restore
-
-        product.update_stock!(
-          default_warehouse,
-          new_stock,
-          current_user,
-          movement_type: "return",
-          reference: order
-        )
-      end
-    rescue ArgumentError => e
-    end
+    # Delegates to StockManagementService
+    stock_service = StockManagementService.new
+    stock_service.adjust_stock_for_order(
+      product: product,
+      warehouse: default_warehouse,
+      quantity: quantity_difference,
+      user: current_user,
+      order: order,
+      action: "adjust"
+    )
   end
 
   def restore_stock_on_destroy
@@ -131,18 +116,15 @@ class OrderProduct < ApplicationRecord
     current_user = order.account.users.first || order.account.owner
     return unless current_user
 
-    begin
-      current_stock = product.stock_in_warehouse(default_warehouse)
-      new_stock = current_stock + quantity
-
-      product.update_stock!(
-        default_warehouse,
-        new_stock,
-        current_user,
-        movement_type: "return",
-        reference: order
-      )
-    rescue ArgumentError => e
-    end
+    # Delegates to StockManagementService
+    stock_service = StockManagementService.new
+    stock_service.adjust_stock_for_order(
+      product: product,
+      warehouse: default_warehouse,
+      quantity: -quantity, # negative value = restore
+      user: current_user,
+      order: order,
+      action: "restore"
+    )
   end
 end

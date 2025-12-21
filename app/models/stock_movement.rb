@@ -15,10 +15,11 @@ class StockMovement < ApplicationRecord
     transfer_in
     transfer_out
     correction
+    product_creation
   ].freeze
 
   validates :movement_type, presence: true, inclusion: { in: MOVEMENT_TYPES }
-  validates :quantity, presence: true, numericality: { other_than: 0 }
+  validates :quantity, presence: true
   validates :stock_before, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :stock_after, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :occurred_at, presence: true
@@ -65,6 +66,8 @@ class StockMovement < ApplicationRecord
       "Transfer wewnętrzny (wyjście)"
     when "correction"
       "Korekta"
+    when "product_creation"
+      "Utworzenie produktu"
     else
       movement_type.humanize
     end

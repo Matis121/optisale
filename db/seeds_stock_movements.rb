@@ -45,51 +45,59 @@ if products.empty?
   ]
 end
 
+# Initialize stock service
+stock_service = StockManagementService.new
+
 # Create sample stock movements for each product
 products.each_with_index do |product, index|
   puts "Creating stock movements for #{product.name}..."
 
   # Initial stock 100 pieces
-  product.update_stock!(
-    warehouse,
-    100,
-    user,
+  stock_service.update_stock!(
+    product: product,
+    warehouse: warehouse,
+    new_quantity: 100,
+    user: user,
     movement_type: 'stock_in'
   )
 
   # Downward correction
   sleep(1) # To have different timestamps
-  product.update_stock!(
-    warehouse,
-    95,
-    user,
+  stock_service.update_stock!(
+    product: product,
+    warehouse: warehouse,
+    new_quantity: 95,
+    user: user,
     movement_type: 'manual_adjustment'
   )
 
   # Uszkodzenie
   sleep(1)
-  product.update_stock!(
-    warehouse,
-    90,
-    user,
+  stock_service.update_stock!(
+    product: product,
+    warehouse: warehouse,
+    new_quantity: 90,
+    user: user,
     movement_type: 'damage'
   )
 
   # Issue for order (simulation)
   sleep(1)
-  product.update_stock!(
-    warehouse,
-    85,
-    user,
+  stock_service.update_stock!(
+    product: product,
+    warehouse: warehouse,
+    new_quantity: 85,
+    user: user,
     movement_type: 'order_placement'
   )
 
   # Goods receipt
   sleep(1)
-  product.update_stock!(
-    warehouse,
-    135,
-    user,
+  stock_service.update_stock!(
+    product: product,
+    warehouse: warehouse,
+    new_quantity: 135,
+    user: user,
     movement_type: 'stock_in'
   )
 end
