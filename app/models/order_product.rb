@@ -66,16 +66,13 @@ class OrderProduct < ApplicationRecord
     default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
-    current_user = order.account.users.first || order.account.owner
-    return unless current_user
-
     # Delegates to StockManagementService
     stock_service = StockManagementService.new
     stock_service.adjust_stock_for_order(
       product: product,
       warehouse: default_warehouse,
       quantity: quantity,
-      user: current_user,
+      user: Current.user,
       order: order,
       action: "reduce"
     )
@@ -86,9 +83,6 @@ class OrderProduct < ApplicationRecord
 
     default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
-
-    current_user = order.account.users.first || order.account.owner
-    return unless current_user
 
     old_quantity = quantity_before_last_save
     quantity_difference = quantity - old_quantity
@@ -101,7 +95,7 @@ class OrderProduct < ApplicationRecord
       product: product,
       warehouse: default_warehouse,
       quantity: quantity_difference,
-      user: current_user,
+      user: Current.user,
       order: order,
       action: "adjust"
     )
@@ -113,16 +107,13 @@ class OrderProduct < ApplicationRecord
     default_warehouse = order.account.warehouses.find_by(default: true)
     return unless default_warehouse
 
-    current_user = order.account.users.first || order.account.owner
-    return unless current_user
-
     # Delegates to StockManagementService
     stock_service = StockManagementService.new
     stock_service.adjust_stock_for_order(
       product: product,
       warehouse: default_warehouse,
       quantity: -quantity, # negative value = restore
-      user: current_user,
+      user: Current.user,
       order: order,
       action: "restore"
     )

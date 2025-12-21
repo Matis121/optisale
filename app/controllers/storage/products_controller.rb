@@ -3,7 +3,7 @@ class Storage::ProductsController < ApplicationController
   before_action :ensure_turbo_frame, only: %i[ edit new ]
   before_action :set_current_catalog_in_session, only: %i[ index create update ]
   before_action :set_current_price_group_in_session, only: %i[ index create update ]
-
+  before_action :set_current_warehouse_in_session, only: %i[ index create update ]
 
   # GET /products or /products.json
   def index

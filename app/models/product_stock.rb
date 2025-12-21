@@ -14,7 +14,7 @@ class ProductStock < ApplicationRecord
     product.stock_movements.create!(
       account: warehouse.account,
       warehouse: warehouse,
-      user: warehouse.account.users.first || warehouse.account.owner,
+      user: Current.user,
       movement_type: "product_creation",
       quantity: quantity,
       stock_before: 0,
