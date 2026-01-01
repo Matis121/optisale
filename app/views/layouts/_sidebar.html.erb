@@ -1,6 +1,6 @@
-<div class="fixed top-0 left-0 h-full w-62 text-base-content overflow-y-auto flex flex-col">
+<div class="fixed top-0 left-0 h-full w-62 text-base-content flex flex-col">
   <!-- Header/Logo Section -->
-  <div class="pl-4 pr-5 py-4 border-b border-base-300/50">
+  <div class="pl-4 pr-5 py-4 border-b border-base-300/50 shrink-0">
     <div class="flex items-center gap-2.5">
       <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
         <i class="fas fa-chart-line text-primary-content text-lg"></i>
@@ -14,7 +14,7 @@
     </div>
   </div>
   <!-- Main Navigation -->
-  <nav class="flex-1 pl-3 pr-4 py-4 space-y-1.5">
+  <nav class="flex-1 pl-3 pr-4 py-4 space-y-1.5 overflow-y-auto scrollbar-hide">
     <!-- Home Link -->
     <div class="mb-3">
       <%= link_to root_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(root_path) ? 'bg-primary/10' : ''}" do %>
@@ -124,7 +124,7 @@
     </div>
   </nav>
   <!-- Footer Section (Optional User Info) -->
-  <div class="pl-3 pr-4 py-3 border-t border-base-300/50">
+  <div class="pl-3 pr-4 py-3 border-t border-base-300/50 shrink-0">
     <div class="flex items-center gap-2.5 px-1.5 py-1.5 mb-2">
       <div class="avatar avatar-placeholder">
         <div class="bg-primary text-primary-content w-8 h-8 rounded-full flex items-center justify-center">
