@@ -1,17 +1,22 @@
-<tr class="hover:bg-base-300/50 transition-colors duration-200 border-gray-500/30">
-  <td class="relative">
-    <div class="flex items-center gap-3">
-      <label class="px-4 cursor-pointer absolute top-1/2 left-0 -translate-y-1/2 h-full flex items-center justify-center">
+<tr>
+  <%# Kolumna 1: Numer (z checkbox i tag dropdown) %>
+  <td class="w-[200px]">
+    <div class="flex items-center gap-2">
+      <label class="cursor-pointer">
         <%= check_box_tag "", order.id, false, class: "checkbox checkbox-primary checkbox-sm", data: { checkbox_selection_target: "child", action: "change->checkbox-selection#updateSelection" } %>
       </label>
-      <%= link_to "#{order.id}", order_path(order), data: { turbo_frame: "_top" }, class: "font-medium text-base-content hover:text-primary transition-colors duration-150 ml-[40px]" %>
+      <%= render partial: "orders/tag_dropdown", locals: { order: order, available_tags: @available_tags } %>
+      <%= link_to "##{order.id}", order_path(order), data: { turbo_frame: "_top" }, class: "font-medium text-base-content hover:text-primary transition-colors duration-150" %>
+    </div>
+    <div class="mt-2">
+      <%= render partial: "orders/tags", locals: { order: order } %>
     </div>
   </td>
-  <td>
-    <div class="font-medium text-base-content">
-      <%= order.addresses.find_by(kind: :delivery)&.fullname.presence || content_tag(:span, "Brak danych", class: "text-base-content/40 text-sm") %>
-    </div>
+  <%# Kolumna 2: Klient %>
+  <td class="font-medium text-base-content">
+    <%= order.addresses.find_by(kind: :delivery)&.fullname.presence || content_tag(:span, "Brak danych", class: "text-base-content/40 text-sm") %>
   </td>
+  <%# Kolumna 3: Przedmioty %>
   <td>
     <% if order.order_products.any? %>
       <div class="space-y-1">
@@ -25,24 +30,20 @@
       <span class="text-sm text-base-content/40">Brak produktów</span>
     <% end %>
   </td>
-  <td>
-    <div class="font-normal text-base-content">
-      <%= number_to_currency(order.total_price, unit: "PLN", format: "%n %u") %>
-    </div>
+  <%# Kolumna 4: Kwota %>
+  <td class="font-normal text-base-content">
+    <%= number_to_currency(order.total_price, unit: "PLN", format: "%n %u") %>
   </td>
+  <%# Kolumna 5: Status %>
   <td>
     <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium text-white" style="background-color: <%= order.order_status&.color %>">
       <%= order.order_status&.short_name || "Brak statusu" %>
     </span>
   </td>
+  <%# Kolumna 6: Data %>
   <td>
-    <div class="space-y-1">
-      <div class="text-sm font-medium text-base-content">
-        <%= order.created_at.strftime('%d.%m.%Y %H:%M') %>
-      </div>
-      <div class="text-xs text-base-content/60">
-        <%= order.updated_at.strftime('%d.%m.%Y %H:%M') %>
-      </div>
+    <div class="text-sm font-medium text-base-content">
+      <%= order.created_at.strftime('%d.%m.%Y %H:%M') %>
     </div>
   </td>
 </tr>

@@ -1,0 +1,28 @@
+<%= render Ui::Layout::Table::DefaultComponent.new do |component| %>
+  <% component.with_header(title: "Tagi", href: new_tag_path, text_button: "Dodaj tag") %>
+  <% component.with_table_header do %>
+    <thead>
+      <tr>
+        <th class="text-base-content font-semibold w-10">
+          <button class="btn btn-ghost btn-xs p-1" onclick="toggleTableBody()">
+            <i class="fas fa-chevron-down transition-transform" id="toggle-icon"></i>
+          </button>
+        </th>
+        <th class="text-base-content font-semibold">Nazwa tagu</th>
+        <th class="text-base-content font-semibold">Użycia</th>
+        <th class="text-base-content font-semibold text-right">Akcje</th>
+      </tr>
+    </thead>
+  <%end %>
+  <% component.with_table_body do %>
+    <tbody id="tags-table-body" data-controller="sortable" data-sortable-resource-name-value="tag" data-sortable-handle-value=".handle">
+      <% if @tags.present? %>
+        <% @tags.each do |tag| %>
+          <%= render partial: "tags/row", locals: { tag: tag } %>
+        <% end %>
+      <% else %>
+        <%= render Ui::Layout::Table::EmptyStateComponent.new(icon: "fa-file-question", title: "Brak tagów", paragraph: "Utwórz swój pierwszy tag.", href: "tags/new", text_button: "Utwórz tag" ) %>
+      <% end %>
+    </tbody>
+  <% end %>
+<% end %>

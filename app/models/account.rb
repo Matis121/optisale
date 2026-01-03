@@ -1,6 +1,7 @@
 class Account < ApplicationRecord
   has_many :users, dependent: :destroy
   has_many :orders, dependent: :destroy
+  has_many :tags, dependent: :destroy
   has_many :catalogs, dependent: :delete_all
   has_many :products, through: :catalogs
   has_many :warehouses, dependent: :delete_all

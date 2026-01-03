@@ -25,6 +25,10 @@
             <%= @order.addresses.find_by(kind: :delivery)&.fullname.presence || "Brak danych klienta" %> • 
             <%= @order.created_at.strftime('%d.%m.%Y %H:%M') %>
           </p>
+          <div class="mt-4 flex items-center gap-1">
+            <%= render partial: "orders/tag_dropdown", locals: { order: @order, available_tags: @available_tags } %>
+            <%= render partial: "orders/tags", locals: { order: @order, available_tags: @available_tags } %>
+          </div>
         </div>
         <div class="flex items-center gap-3">
           <div class="dropdown dropdown-end">

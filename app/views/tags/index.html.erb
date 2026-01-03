@@ -1,0 +1,21 @@
+<% content_for :title, "Tagi" %>
+<%= render Ui::Layout::Container::DefaultComponent.new do %>
+  <!-- Header -->
+  <%= render Ui::Layout::Header::DefaultComponent.new(title: "Zarządzanie tagami") %>
+  <!-- Content -->
+  <div class="alert bg-base-200 border-base-300 shadow-sm mb-8">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <div>
+      <h3 class="font-semibold">Tagi</h3>
+      <p class="text-sm text-base-content/70">Tagi służą do grupowania zamówień i produktów. Możesz używać ich do filtrowania i szybkiego wyszukiwania.</p>
+    </div>
+  </div>
+  <div class="flex flex-col gap-10">
+    <!-- Tags Section -->
+    <%= turbo_frame_tag "tags_frame" do %>
+      <%= render partial: "tags/table" %>
+    <% end %>
+  </div>
+<% end %>

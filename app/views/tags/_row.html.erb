@@ -1,0 +1,49 @@
+<tr class="hover:bg-base-300/50 transition-colors duration-200" data-sortable-update-url="<%= tag_path(tag) %>">
+  <td class="handle cursor-move">
+    <div class="flex items-center justify-center w-8 h-8 text-base-content/40 hover:text-base-content/70 transition-colors">
+      <i class="fas fa-grip-vertical"></i>
+    </div>
+  </td>
+  <td>
+    <div class="flex items-center gap-3">
+      <div class="w-3 h-3 rounded-full flex items-center justify-center" style="background-color: <%= tag.color %>">
+      </div>
+      <div>
+        <div class="font-semibold text-base-content"><%= tag.name %></div>
+      </div>
+    </td>
+    <td>
+      <div>
+        <% if tag.scopes.any? %>
+          <span class="badge badge-sm badge-primary"><%= tag.scope_names.join(", ") %></span>
+        <% else %>
+          <span class="badge badge-sm badge-ghost text-base-content/40">Brak zakresów</span>
+        <% end %>
+      </div>
+    </td>
+    <td class="text-right">
+      <div class="flex items-center justify-end gap-2">
+        <div class="dropdown dropdown-end">
+          <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+            <i class="fas fa-ellipsis-v text-base-content/60"></i>
+          </div>
+          <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-32 border border-base-200 overflow-hidden">
+            <li>
+              <%= link_to edit_tag_path(tag), 
+                class: "gap-2",
+                data: { turbo_frame: "modal-frame" } do %>
+                <i class="fas fa-edit text-base-content"></i> Edytuj
+              <% end %>
+            </li>
+            <li>
+              <%= link_to tag_path(tag), 
+                  data: { turbo_method: :delete, turbo_confirm: "Czy na pewno chcesz usunąć ten tag?" },
+                  class: "text-error gap-2" do %>
+                <i class="fas fa-trash"></i> Usuń
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </td>
+  </tr>

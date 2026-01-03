@@ -1,0 +1,48 @@
+<%= form_with(model: @tag, data: { turbo_frame: "_top" }, id: "tag-form") do |form| %>
+  <% if @tag.errors.any? %>
+    <div class="alert alert-error mb-6">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div>
+        <h3 class="font-bold">Błąd podczas zapisywania:</h3>
+        <ul class="list-disc list-inside">
+          <% @tag.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+  <div class="space-y-8">
+    <div class="form-control w-full">
+      <%= form.label :name, "Nazwa", class: "label" %>
+      <%= form.text_field :name, class: "input input-bordered w-full focus:input-primary", placeholder: "np. Tag główny" %>
+    </div>
+    <div class="form-control w-full">
+      <%= form.label :scopes, "Zakres użycia", class: "label" %>
+      <%= form.collection_check_boxes :scopes, Tag::SCOPES, :last, :first do |b| %>
+        <label class="label flex cursor-pointer items-start gap-4">
+          <div class="flex items-center gap-2">
+            <%= b.check_box class: "checkbox checkbox-primary" %>
+            <%= b.label class: "label-text" %>
+          </div>
+        </label>
+      <% end %>
+    </div>
+    <div class="form-control w-full">
+      <%= form.label :color, "Kolor", class: "label" %>
+      <div data-controller="color-picker" data-color-picker-theme-value="nano" class="flex items-center gap-3">
+        <div data-color-picker-target="button"></div>
+        <%= form.text_field :color, value: @tag.color || "#667EEA", data: { color_picker_target: "input" }, class: "input input-bordered flex-1" %>
+      </div>
+      <span class="label-text-alt text-base-content/40 text-xs">Wybierz kolor lub wpisz wartość hex</span>
+    </div>
+  </div>
+  <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-gray-500/30">
+    <% if @tag.new_record? %>
+      <%= form.submit "Utwórz tag", class: "btn btn-primary" %>
+    <% else %>
+      <%= form.submit "Zapisz zmiany", class: "btn btn-primary" %>
+    <% end %>
+    <button type="button" class="btn btn-ghost" onclick="modal.close()">Zamknij</button>
+  </div>
+<% end %>

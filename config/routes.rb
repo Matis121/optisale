@@ -30,6 +30,8 @@ Rails.application.routes.draw do
       patch :bulk_update
     end
     member do
+      post :add_tag
+      delete :remove_tag
       get :edit_extra_fields
       patch :update_extra_fields
       get :edit_payment
@@ -45,6 +47,9 @@ Rails.application.routes.draw do
   # Order statuses
   resources :order_statuses, controller: "order_statuses"
   resources :order_status_groups, controller: "order_status_groups"
+
+  # Tags
+  resources :tags, controller: "tags"
 
   # Integrations - lista dostępnych integracji
   resources :integrations, only: [ :index ]

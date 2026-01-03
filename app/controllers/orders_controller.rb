@@ -6,6 +6,7 @@ class OrdersController < ApplicationController
 
   before_action :set_order, only: [ :show, :update, :destroy, :edit, :edit_extra_fields, :update_extra_fields, :edit_payment, :update_payment ]
   before_action :set_order_statuses
+  before_action :set_available_tags, only: [ :index, :add_tag, :remove_tag, :show ]
 
   # GET /orders or /orders.json
   def index
@@ -40,7 +41,7 @@ class OrdersController < ApplicationController
     # Then apply filters from params[:q]
     @q = orders_scope.ransack(params[:q])
     @orders = @q.result
-                .includes(:order_status, :addresses, :order_products)
+                .includes(:order_status, :addresses, :order_products, :tags)
                 .order(created_at: :desc)
                 .page(params[:page]).per(@per_page)
 
@@ -214,7 +215,36 @@ class OrdersController < ApplicationController
       return
     end
 
+    if params[:toggle_tag_id].present?
+      @orders.each do |order|
+        tag = current_account.tags.find(params[:toggle_tag_id])
+        if order.tags.include?(tag)
+          order.tags.delete(tag)
+        else
+          order.tags << tag
+        end
+      end
+      flash[:success] = "Zmiany zostały wprowadzone."
+      redirect_to request.referer || orders_path
+      return
+    end
+
     head :ok
+  end
+
+  def add_tag
+    @order = current_account.orders.find(params[:id])
+    tag = current_account.tags.find(params[:tag_id])
+    @order.tags << tag unless @order.tags.include?(tag)
+
+    render_tag_dropdown_and_tags
+  end
+
+  def remove_tag
+    @order = current_account.orders.find(params[:id])
+    @order.taggings.find_by(tag_id: params[:tag_id])&.destroy
+
+    render_tag_dropdown_and_tags
   end
 
 
@@ -243,5 +273,16 @@ class OrdersController < ApplicationController
       @order_statuses = current_account.order_statuses.order(:position)
       @order_status_groups = current_account.order_status_groups.joins(:order_statuses).includes(:order_statuses).order(:position).distinct
       @ungrouped_statuses = current_account.order_statuses.where(order_status_group_id: nil).order(:position)
+    end
+
+    def set_available_tags
+      @available_tags = current_account.tags.order(:position).select { |t| t.scopes.include?("orders") }
+    end
+
+    def render_tag_dropdown_and_tags
+      streams = []
+      streams << turbo_stream.replace(dom_id(@order, :tag_dropdown), partial: "orders/tag_dropdown", locals: { order: @order, available_tags: @available_tags })
+      streams << turbo_stream.replace(dom_id(@order, :tags), partial: "orders/tags", locals: { order: @order, available_tags: @available_tags })
+      render turbo_stream: streams
     end
 end

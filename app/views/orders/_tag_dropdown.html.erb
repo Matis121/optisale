@@ -1,0 +1,32 @@
+<%= turbo_frame_tag dom_id(order, :tag_dropdown) do %>
+  <% if @available_tags.any? %>
+    <div class="dropdown dropdown-start">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+        <i class="fas fa-tag text-xs"></i>
+      </div>
+      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-xl bg-base-100 rounded-box min-w-[200px] w-fit border border-base-200">
+        <% @available_tags.each do |tag| %>
+          <% is_assigned = order.tags.include?(tag) %>
+          <li>
+            <% if is_assigned %>
+              <%= link_to remove_tag_order_path(order, tag_id: tag.id), 
+      data: { turbo_method: :delete, turbo_frame: dom_id(order, :tag_dropdown) },
+      class: "flex items-center gap-2 bg-base-200" do %>
+                <span class="w-3 h-3 rounded-full" style="background-color: <%= tag.color %>"></span>
+                <%= tag.name %>
+                <i class="fas fa-check ml-auto text-success"></i>
+              <% end %>
+            <% else %>
+              <%= link_to add_tag_order_path(order, tag_id: tag.id), 
+      data: { turbo_method: :post, turbo_frame: dom_id(order, :tag_dropdown) },
+      class: "flex items-center gap-2" do %>
+                <span class="w-3 h-3 rounded-full" style="background-color: <%= tag.color %>"></span>
+                <%= tag.name %>
+              <% end %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>

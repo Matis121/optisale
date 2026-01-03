@@ -57,6 +57,25 @@
               </div>
             </ul>
           </div>
+          <div class="dropdown dropdown-down">
+            <label tabindex="0" class="btn btn-ghost btn-sm border border-base-200 gap-2">
+              <i class="fas fa-tags text-sm"></i>
+              Tagi
+            </label>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-lg w-48 border border-base-200 max-h-[85vh] overflow-y-auto">
+              <% @available_tags.each do |tag| %>
+                <li>
+                  <button type="submit" name="toggle_tag_id" class="text-sm flex items-center gap-2" value="<%= tag.id %>">
+                    <span class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: <%= tag.color %>;"></span>
+                    <%= tag.name %>
+                  </button>
+                </li>
+              <% end %>
+              <% if @available_tags.empty? %>
+                <li class="text-sm text-base-content/50 px-3 py-2">Brak tagów</li>
+              <% end %>
+            </ul>
+          </div>
           <button class="btn btn-ghost btn-sm border border-base-200 gap-2 text-error hover:bg-error/10" type="button" onclick="delete_orders.showModal()">
             <i class="fas fa-trash text-sm"></i>
             Usuń
@@ -106,6 +125,7 @@
       <%= filter_select :amount_paid_eq, "Status płatności", @q, options: [["Nieopłacone", "0"], ["Częściowo opłacone", "partial"], ["Opłacone", "full"]] %>
       <%= filter_text :addresses_city_cont, "Miasto", @q %>
       <%= filter_text :order_products_name_cont, "Nazwa produktu", @q %>
+      <%= filter_select :tags_id_eq, "Tag", @q, collection: @available_tags, option_value: :id, option_text: :name %>
     <% end %>
   </div>
   <%= turbo_frame_tag "orders_frame" do %>
@@ -151,7 +171,7 @@
       <table class="table w-full">
         <thead class="bg-base-300">
           <tr>
-            <th class="text-base-content font-semibold">Numer</th>
+            <th class="text-base-content font-semibold w-[200px]">Numer</th>
             <th class="text-base-content font-semibold">Klient</th>
             <th class="text-base-content font-semibold">Przedmioty</th>
             <th class="text-base-content font-semibold">Kwota</th>

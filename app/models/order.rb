@@ -2,6 +2,8 @@ class Order < ApplicationRecord
   belongs_to :account
   belongs_to :order_status, foreign_key: :status_id
   belongs_to :customer
+  has_many :taggings, as: :taggable, dependent: :destroy
+  has_many :tags, through: :taggings
   has_many :order_products, dependent: :destroy
   has_many :addresses, dependent: :destroy
   has_one :customer_pickup_point, dependent: :destroy
@@ -16,7 +18,7 @@ class Order < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    %w[order_status customer addresses order_products]
+    %w[order_status customer addresses order_products tags]
   end
 
   # Custom ransacker for total amount

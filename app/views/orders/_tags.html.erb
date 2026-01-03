@@ -1,0 +1,11 @@
+<%# app/views/orders/_tags.html.erb %>
+<%= turbo_frame_tag dom_id(order, :tags) do %>
+  <div class="flex flex-wrap items-center gap-1.5">
+    <%# Display assigned tags %>
+    <% order.tags.each do |tag| %>
+      <span class="badge badge-sm text-white" style="background-color: <%= tag.color %>">
+        <%= tag.name %>
+      </span>
+    <% end %>
+  <% end %>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_14_011351) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_03_131633) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -326,6 +326,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_14_011351) do
     t.index ["warehouse_id"], name: "index_stock_movements_on_warehouse_id"
   end
 
+  create_table "taggings", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.string "taggable_type"
+    t.bigint "taggable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_id", "taggable_type", "taggable_id"], name: "index_taggings_on_tag_id_and_taggable_type_and_taggable_id", unique: true
+    t.index ["tag_id"], name: "index_taggings_on_tag_id"
+    t.index ["taggable_type", "taggable_id"], name: "index_taggings_on_taggable_type_and_taggable_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "name"
+    t.string "color"
+    t.string "scopes", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "position"
+    t.index ["account_id", "name"], name: "index_tags_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_tags_on_account_id"
+    t.index ["scopes"], name: "index_tags_on_scopes", using: :gin
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -380,6 +404,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_14_011351) do
   add_foreign_key "stock_movements", "products"
   add_foreign_key "stock_movements", "users"
   add_foreign_key "stock_movements", "warehouses"
+  add_foreign_key "taggings", "tags"
+  add_foreign_key "tags", "accounts"
   add_foreign_key "users", "accounts"
   add_foreign_key "warehouses", "accounts"
 end

@@ -4,6 +4,8 @@ class Product < ApplicationRecord
   has_many :product_stocks, dependent: :destroy
   has_many :product_prices, dependent: :destroy
   has_many :stock_movements, dependent: :destroy
+  has_many :taggings, as: :taggable, dependent: :destroy
+  has_many :tags, through: :taggings
 
   accepts_nested_attributes_for :product_stocks, :product_prices
 
