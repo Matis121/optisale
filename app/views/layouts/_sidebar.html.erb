@@ -1,3 +1,17 @@
+<style>
+  .sidebar-section summary {
+    list-style: none;
+  }
+  .sidebar-section summary::-webkit-details-marker {
+    display: none;
+    opacity: 0;
+  }
+  .sidebar-section .menu-content {
+    overflow: hidden;
+    transition: height 0.1s ease-out;
+    opacity: 1;
+  }
+</style>
 <div class="fixed top-0 left-0 h-full w-62 text-base-content flex flex-col">
   <!-- Header/Logo Section -->
   <div class="pl-4 pr-5 py-4 border-b border-base-300/50 shrink-0">
@@ -18,7 +32,7 @@
     <!-- Home Link -->
     <div class="mb-3">
       <%= link_to root_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(root_path) ? 'bg-primary/10' : ''}" do %>
-        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
+        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
           <i class="fas fa-home text-sm"></i>
         </div>
         <span class="flex-1  text-sm <%= 'text-primary ' if current_page?(root_path) %>">Strona główna</span>
@@ -26,82 +40,88 @@
     </div>
     <!-- Zamówienia Section -->
     <div class="mb-3">
-      <details name="sidebar-section" <%= 'open' if request.path.start_with?('/orders', '/invoices', '/order_statuses', '/receipts') %> class="group">
-        <summary class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 list-none group-open:bg-base-200/50">
-          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
+      <div class="sidebar-section group" data-open="<%= request.path.start_with?('/orders', '/invoices', '/order_statuses', '/receipts') %>">
+        <button type="button" class="sidebar-toggle w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 group-data-[open=true]:bg-base-200/50">
+          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
             <i class="fas fa-shopping-cart text-sm"></i>
           </div>
-          <span class="flex-1  text-sm">Zamówienia</span>
-          <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-open:rotate-180"></i>
-        </summary>
-        <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
-          <li><%= link_to "Lista zamówień", orders_path(status: "all"), class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(orders_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
-          <li><%= link_to "Faktury i paragony", invoices_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(invoices_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
-          <li><%= link_to "Statusy zamówień", order_statuses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(order_statuses_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
-          <li>
-            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
-              <span>Automatyczne akcje</span>
-              <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
-            </div>
-          </li>
-        </ul>
-      </details>
+          <span class="flex-1 text-sm text-left">Zamówienia</span>
+          <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-data-[open=true]:rotate-180"></i>
+        </button>
+        <div class="menu-content">
+          <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
+            <li><%= link_to "Lista zamówień", orders_path(status: "all"), class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 transition-all duration-200 #{current_page?(orders_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+            <li><%= link_to "Faktury i paragony", invoices_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 transition-all duration-200 #{(current_page?(invoices_path) || current_page?(receipts_path)) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+            <li><%= link_to "Statusy zamówień", order_statuses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 transition-all duration-200 #{current_page?(order_statuses_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+            <li>
+              <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
+                <span>Automatyczne akcje</span>
+                <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <!-- Produkty Section -->
     <div class="mb-3">
-      <details name="sidebar-section" <%= 'open' if request.path.start_with?('/storage') %> class="group">
-        <summary class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 list-none group-open:bg-base-200/50">
-          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
+      <div class="sidebar-section group" data-open="<%= request.path.start_with?('/storage') %>">
+        <button type="button" class="sidebar-toggle w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 group-data-[open=true]:bg-base-200/50">
+          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
             <i class="fas fa-box text-sm"></i>
           </div>
-          <span class="flex-1  text-sm">Produkty</span>
-          <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-open:rotate-180"></i>
-        </summary>
-        <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
-          <li><%= link_to "Lista produktów", storage_products_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_products_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
-          <li><%= link_to "Katalogi", storage_catalogs_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_catalogs_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
-          <li><%= link_to "Magazyny", storage_warehouses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_warehouses_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
-          <li><%= link_to "Grupy cenowe", storage_price_groups_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(storage_price_groups_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
-          <li>
-            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
-              <span>Import/Eksport</span>
-              <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
-            </div>
-          </li>
-          <li>
-            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
-              <span>Ustawienia</span>
-              <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
-            </div>
-          </li>
-        </ul>
-      </details>
+          <span class="flex-1 text-sm text-left">Produkty</span>
+          <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-data-[open=true]:rotate-180"></i>
+        </button>
+        <div class="menu-content">
+          <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
+            <li><%= link_to "Lista produktów", storage_products_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 transition-all duration-200 #{current_page?(storage_products_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+            <li><%= link_to "Katalogi", storage_catalogs_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 transition-all duration-200 #{current_page?(storage_catalogs_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+            <li><%= link_to "Magazyny", storage_warehouses_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 transition-all duration-200 #{current_page?(storage_warehouses_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+            <li><%= link_to "Grupy cenowe", storage_price_groups_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 transition-all duration-200 #{current_page?(storage_price_groups_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+            <li>
+              <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
+                <span>Import/Eksport</span>
+                <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm cursor-not-allowed opacity-60">
+                <span>Ustawienia</span>
+                <span class="badge badge-ghost badge-xs text-[8px] py-0 px-1.5">Wkrótce</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <!-- Settings Section -->
     <div class="mb-3">
-      <details name="sidebar-section" <%= 'open' if request.path.start_with?('/tags') %> class="group">
-        <summary class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 list-none group-open:bg-base-200/50">
-          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
+      <div class="sidebar-section group" data-open="<%= request.path.start_with?('/tags') %>">
+        <button type="button" class="sidebar-toggle w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 group-data-[open=true]:bg-base-200/50">
+          <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
             <i class="fas fa-cog text-sm"></i>
           </div>
-          <span class="flex-1  text-sm">Ustawienia</span>
-          <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-open:rotate-180"></i>
-        </summary>
-        <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
-          <li><%= link_to "Tagi (Zamówienia / Produkty)", tags_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 hover:pl-3.5 transition-all duration-200 #{current_page?(tags_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
-        </ul>
-      </details>
+          <span class="flex-1 text-sm text-left">Ustawienia</span>
+          <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 group-data-[open=true]:rotate-180"></i>
+        </button>
+        <div class="menu-content">
+          <ul class="mt-1.5 ml-6 mr-2 space-y-0.5">
+            <li><%= link_to "Tagi (Zamówienia / Produkty)", tags_path, class: "block px-2.5 py-1.5 rounded-md text-sm hover:bg-base-200/70 transition-all duration-200 #{current_page?(tags_path) ? 'bg-primary/10 text-primary ' : ''}" %></li>
+          </ul>
+        </div>
+      </div>
     </div>
     <!-- Single Items -->
     <div class="space-y-1.5">
       <%= link_to account_integrations_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(account_integrations_path) || controller_name == 'account_integrations' ? 'bg-primary/10' : ''}" do %>
-        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
+        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
           <i class="fas fa-plug text-sm"></i>
         </div>
-        <span class="flex-1  text-sm <%= 'text-primary ' if controller_name == 'integrations' %>">Integracje</span>
+        <span class="flex-1  text-sm <%= 'text-primary ' if controller_name == 'account_integrations' %>">Integracje</span>
       <% end %>
       <%= link_to manage_users_path, class: "flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-base-200/70 transition-all duration-200 group #{current_page?(manage_users_path) || controller_name == 'users' ? 'bg-primary/10' : ''}" do %>
-        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content group-hover:scale-110 transition-transform">
+        <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
           <i class="fas fa-users text-sm"></i>
         </div>
         <span class="flex-1  text-sm <%= 'text-primary ' if controller_name == 'users' %>">Użytkownicy</span>
@@ -161,3 +181,29 @@
     <% end %>
   </div>
 </div>
+<script>
+  document.addEventListener('turbo:load', () => {
+    document.querySelectorAll('.sidebar-section').forEach(section => {
+      const toggle = section.querySelector('.sidebar-toggle');
+      const content = section.querySelector('.menu-content');
+
+      content.style.height = section.dataset.open === 'true' ? `${content.scrollHeight}px` : '0';
+
+      toggle.onclick = () => {
+        const isOpen = section.dataset.open === 'true';
+
+        // Close others
+        document.querySelectorAll('.sidebar-section[data-open="true"]').forEach(s => {
+          if (s !== section) {
+            s.dataset.open = 'false';
+            s.querySelector('.menu-content').style.height = '0';
+          }
+        });
+
+        // Toggle this
+        section.dataset.open = isOpen ? 'false' : 'true';
+        content.style.height = isOpen ? '0' : `${content.scrollHeight}px`;
+      };
+    });
+  });
+</script>
