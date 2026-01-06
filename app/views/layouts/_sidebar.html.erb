@@ -40,7 +40,7 @@
     </div>
     <!-- Zamówienia Section -->
     <div class="mb-3">
-      <div class="sidebar-section group" data-open="<%= request.path.start_with?('/orders', '/invoices', '/order_statuses', '/receipts') %>">
+      <div class="sidebar-section group" data-section-id="orders" data-open="<%= request.path.start_with?('/orders', '/invoices', '/order_statuses', '/receipts') %>">
         <button type="button" class="sidebar-toggle w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 group-data-[open=true]:bg-base-200/50">
           <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
             <i class="fas fa-shopping-cart text-sm"></i>
@@ -65,7 +65,7 @@
     </div>
     <!-- Produkty Section -->
     <div class="mb-3">
-      <div class="sidebar-section group" data-open="<%= request.path.start_with?('/storage') %>">
+      <div class="sidebar-section group" data-section-id="products" data-open="<%= request.path.start_with?('/storage') %>">
         <button type="button" class="sidebar-toggle w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 group-data-[open=true]:bg-base-200/50">
           <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
             <i class="fas fa-box text-sm"></i>
@@ -97,7 +97,7 @@
     </div>
     <!-- Settings Section -->
     <div class="mb-3">
-      <div class="sidebar-section group" data-open="<%= request.path.start_with?('/tags') %>">
+      <div class="sidebar-section group" data-section-id="settings" data-open="<%= request.path.start_with?('/tags') %>">
         <button type="button" class="sidebar-toggle w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer hover:bg-base-200/70 transition-all duration-200 group-data-[open=true]:bg-base-200/50">
           <div class="w-7 h-7 flex items-center justify-center rounded-md bg-base-300 text-base-content transition-transform">
             <i class="fas fa-cog text-sm"></i>
@@ -182,28 +182,49 @@
   </div>
 </div>
 <script>
-  document.addEventListener('turbo:load', () => {
-    document.querySelectorAll('.sidebar-section').forEach(section => {
-      const toggle = section.querySelector('.sidebar-toggle');
-      const content = section.querySelector('.menu-content');
+  (function() {
+    const STORAGE_KEY = 'sidebar_open_section';
 
-      content.style.height = section.dataset.open === 'true' ? `${content.scrollHeight}px` : '0';
+    function initSidebar() {
+      const sections = document.querySelectorAll('.sidebar-section');
+      const savedSection = localStorage.getItem(STORAGE_KEY);
 
-      toggle.onclick = () => {
-        const isOpen = section.dataset.open === 'true';
+      // Check if any section should be open based on current URL (server-rendered)
+      const hasActiveSection = [...sections].some(s => s.dataset.open === 'true');
+      console.log(hasActiveSection);
+      console.log(savedSection);
 
-        // Close others
-        document.querySelectorAll('.sidebar-section[data-open="true"]').forEach(s => {
-          if (s !== section) {
-            s.dataset.open = 'false';
-            s.querySelector('.menu-content').style.height = '0';
-          }
-        });
+      sections.forEach(section => {
+        const toggle = section.querySelector('.sidebar-toggle');
+        const content = section.querySelector('.menu-content');
+        const sectionId = section.dataset.sectionId;
 
-        // Toggle this
-        section.dataset.open = isOpen ? 'false' : 'true';
-        content.style.height = isOpen ? '0' : `${content.scrollHeight}px`;
-      };
-    });
-  });
+        // If page has an active section, respect it. Otherwise use localStorage.
+        if (!hasActiveSection && savedSection) {
+          section.dataset.open = savedSection === sectionId ? 'true' : 'false';
+        }
+
+        content.style.height = section.dataset.open === 'true' ? `${content.scrollHeight}px` : '0';
+
+        toggle.onclick = () => {
+          const isOpen = section.dataset.open === 'true';
+
+          sections.forEach(s => {
+            if (s !== section && s.dataset.open === 'true') {
+              s.dataset.open = 'false';
+              s.querySelector('.menu-content').style.height = '0';
+            }
+          });
+
+          section.dataset.open = isOpen ? 'false' : 'true';
+          content.style.height = isOpen ? '0' : `${content.scrollHeight}px`;
+
+          localStorage.setItem(STORAGE_KEY, isOpen ? '' : sectionId);
+        };
+      });
+    }
+
+    initSidebar();
+    document.addEventListener('turbo:render', initSidebar);
+  })();
 </script>
