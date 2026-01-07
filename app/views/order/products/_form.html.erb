@@ -1,0 +1,45 @@
+<%= form_with(model: @order_product, data: { turbo_frame: "_top" }, id: "order-product-form") do |form| %>
+  <% if @order_product.errors.any? %>
+    <div class="alert alert-error mb-6">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div>
+        <h3 class="font-bold">Błąd podczas zapisywania:</h3>
+        <ul class="list-disc list-inside">
+          <% @order_product.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+  <div class="space-y-8">
+    <div class="form-control w-full">
+      <%= form.label :name, "Nazwa", class: "label" %>
+      <%= form.text_field :name, class: "input input-bordered w-full focus:input-primary", placeholder: "np. Jogurt" %>
+    </div>
+    <div class="form-control w-full">
+      <%= form.label :ean, "EAN", class: "label" %>
+      <%= form.text_field :ean, class: "input input-bordered w-full focus:input-primary", placeholder: "np. 5901234123457" %>
+    </div>
+    <div class="form-control w-full">
+      <%= form.label :sku, "SKU", class: "label" %>
+      <%= form.text_field :sku, class: "input input-bordered w-full focus:input-primary", placeholder: "np. 1234567890" %>
+    </div>
+    <div class="form-control w-full">
+      <%= form.label :tax_rate, "VAT", class: "label" %>
+      <%= form.number_field :tax_rate, class: "input input-bordered w-full focus:input-primary", placeholder: "np. 23" %>
+    </div>
+    <div class="form-control w-full">
+      <%= form.label :gross_price, "Cena brutto", class: "label" %>
+      <%= form.number_field :gross_price, class: "input input-bordered w-full focus:input-primary", placeholder: "np. 10.00" %>
+    </div>
+  </div>
+  <div class="flex gap-3 justify-end mt-10 pt-6 border-t border-gray-500/30">
+    <% if @order_product.new_record? %>
+      <%= form.submit "Utwórz produkt", class: "btn btn-primary" %>
+    <% else %>
+      <%= form.submit "Zapisz", class: "btn btn-primary" %>
+    <% end %>
+    <button type="button" class="btn btn-ghost" onclick="modal.close()">Zamknij</button>
+  </div>
+<% end %>

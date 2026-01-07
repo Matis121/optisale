@@ -1,0 +1,5 @@
+<%= turbo_frame_tag "modal-frame" do %>
+  <%= render Ui::Layout::Modal::DefaultComponent.new(title: "Edytuj produkt") do %>
+    <%= render "form" %>
+  <% end %>
+<% end %>

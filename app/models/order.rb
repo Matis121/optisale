@@ -4,7 +4,7 @@ class Order < ApplicationRecord
   belongs_to :customer
   has_many :taggings, as: :taggable, dependent: :destroy
   has_many :tags, through: :taggings
-  has_many :order_products, dependent: :destroy
+  has_many :order_products, -> { order(created_at: :asc) }, dependent: :destroy
   has_many :addresses, dependent: :destroy
   has_one :customer_pickup_point, dependent: :destroy
   has_one :invoice, dependent: :destroy
